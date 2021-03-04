@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-bounce.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"odddog-git.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="队列是一个有序列表，可以用数组或是链表来实现。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数组队列与环形队列">
+<meta property="og:url" content="http://odddog-git.github.io/2021/03/04/%E6%95%B0%E7%BB%84%E9%98%9F%E5%88%97%E4%B8%8E%E7%8E%AF%E5%BD%A2%E9%98%9F%E5%88%97/index.html">
+<meta property="og:site_name" content="hui&#39;s Blog">
+<meta property="og:description" content="队列是一个有序列表，可以用数组或是链表来实现。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.ax1x.com/2021/03/04/6ZdR8s.png">
+<meta property="article:published_time" content="2021-03-04T13:22:30.000Z">
+<meta property="article:modified_time" content="2021-03-04T13:58:40.945Z">
+<meta property="article:author" content="怪狗狗">
+<meta property="article:tag" content="队列">
+<meta property="article:tag" content="环形队列">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3.ax1x.com/2021/03/04/6ZdR8s.png">
+
+<link rel="canonical" href="http://odddog-git.github.io/2021/03/04/%E6%95%B0%E7%BB%84%E9%98%9F%E5%88%97%E4%B8%8E%E7%8E%AF%E5%BD%A2%E9%98%9F%E5%88%97/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>数组队列与环形队列 | hui's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://oddDog-git" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hui's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://odddog-git.github.io/2021/03/04/%E6%95%B0%E7%BB%84%E9%98%9F%E5%88%97%E4%B8%8E%E7%8E%AF%E5%BD%A2%E9%98%9F%E5%88%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/jerry.jpg">
+      <meta itemprop="name" content="怪狗狗">
+      <meta itemprop="description" content="前端是个坑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hui's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数组队列与环形队列
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-04 21:22:30 / 修改时间：21:58:40" itemprop="dateCreated datePublished" datetime="2021-03-04T21:22:30+08:00">2021-03-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/03/04/%E6%95%B0%E7%BB%84%E9%98%9F%E5%88%97%E4%B8%8E%E7%8E%AF%E5%BD%A2%E9%98%9F%E5%88%97/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/03/04/%E6%95%B0%E7%BB%84%E9%98%9F%E5%88%97%E4%B8%8E%E7%8E%AF%E5%BD%A2%E9%98%9F%E5%88%97/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p> 队列是一个有序列表，可以用数组或是链表来实现。 </p>
+<a id="more"></a>
+
+<p> 遵循先入先出的原则。即：先存入队列的数据，要先取出。后存入的要后取出 </p>
+<p> 示意图：(使用数组模拟队列示意图)</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/6ZdR8s"><img src="https://s3.ax1x.com/2021/03/04/6ZdR8s.png" alt="6ZdR8s.png"></a></p>
+<h1 id="数组模拟队列思路"><a href="#数组模拟队列思路" class="headerlink" title="数组模拟队列思路"></a>数组模拟队列思路</h1><p>1.队列本身是有序列表，若使用数组的结构来存储队列的数据，则队列数组的声明如上图, 其中 maxSize 是该队 列的最大容量。</p>
+<p>2.因为队列的输出、输入是分别从前后端来处理，因此需要两个变量 front 及 rear 分别记录队列前后端的下标， front 会随着数据输出而改变，而 rear 则是随着数据输入而改变</p>
+<p>3.头指针front 指向队列头元素的前一个位置，默认为-1</p>
+<p>4.尾指针rear指向队列尾元素， 默认为-1</p>
+<p>5.向队列中添加数据时：</p>
+<p>​    1). 将尾指针往后移：rear+1</p>
+<p>​    2).若尾指针 rear == maxSize - 1  ，表示队列已满，不能再存放数据了</p>
+<p>6.向队列弹出一个数据时:</p>
+<p>​    1). 将头指针往后移： front+1</p>
+<p>​    2).将下标为 front+1 返回即可</p>
+<p>​    3).头指针等于尾指针 ，即 front==rear ,则表示该队列为空，不能弹出数据了</p>
+<h2 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码"></a>实现代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Queue</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> maxSize;<span class="comment">//数组大小</span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> front;<span class="comment">//前部</span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> rear;<span class="comment">//后部</span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span>[] arr;<span class="comment">//存放数据的数组</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//创建队列的构造函数</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Queue</span><span class="params">(<span class="keyword">int</span> max)</span></span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.arr=<span class="keyword">new</span> <span class="keyword">int</span>[max];</span><br><span class="line">            <span class="keyword">this</span>.maxSize=max;</span><br><span class="line">            <span class="keyword">this</span>.rear=-<span class="number">1</span>;<span class="comment">// 指向队列尾部，默认-1</span></span><br><span class="line">            <span class="keyword">this</span>.front=-<span class="number">1</span>;<span class="comment">// 指向队列头部的前一个位置，默认-1</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//判断队列是否满</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isFull</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>.rear==<span class="keyword">this</span>.maxSize-<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//判断队列是否为空</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>.rear==<span class="keyword">this</span>.front;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//添加一个数据</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> data)</span></span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>.isFull())&#123; <span class="comment">//判断队列是否满</span></span><br><span class="line">                System.out.println(<span class="string">&quot;队列满了，不能添加数据!!!&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            rear++;</span><br><span class="line">            <span class="keyword">this</span>.arr[rear]=data;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//获取一个数据</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">pop</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>.isEmpty())&#123;<span class="comment">//判断队列是否为空</span></span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;队列为空！！！&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">this</span>.front++;</span><br><span class="line">            <span class="keyword">return</span> arr[front];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//显示队列所有内容</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showQueue</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>.isEmpty())&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;队列为空&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> ;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.print(<span class="string">&quot;队列内容为:\t&quot;</span>);</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=front+<span class="number">1</span>;i&lt;maxSize-<span class="number">1</span>;i++)&#123;</span><br><span class="line">                System.out.print(<span class="string">&quot;arr[&quot;</span>+i+<span class="string">&quot;]&quot;</span>+arr[i]+<span class="string">&quot;\t&quot;</span>);</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//显示队列头</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showHead</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>.isEmpty())&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;队列为空&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> ;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(<span class="keyword">this</span>.arr[front+<span class="number">1</span>]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="问题分析并优化"><a href="#问题分析并优化" class="headerlink" title="问题分析并优化"></a>问题分析并优化</h3><ol>
+<li><p>目前数组使用一次就不能用， 没有达到复用的效果 </p>
+</li>
+<li><p>将这个数组使用算法，改进成一个环形的队列 （取模：%）</p>
+</li>
+</ol>
+<h1 id="环形数组模拟队列"><a href="#环形数组模拟队列" class="headerlink" title="环形数组模拟队列"></a>环形数组模拟队列</h1><p>对前面的数组模拟队列的优化，充分利用数组. 因此将数组看做是一个环形的。(通过取模的方式来实现即可)</p>
+<h2 id="分析说明"><a href="#分析说明" class="headerlink" title="分析说明"></a>分析说明</h2><ol>
+<li>  对头指针front含义做一个调整：front指向队列的第一个元素，初始值为 0</li>
+</ol>
+<p>2）对尾指针rear含义做一个调整：rear指向队列最后一个元素的下一个位置，初始值为 0  ，因为希望空出一个位置作为约定</p>
+<p>3）队列满表示为 ：(rear+1)%maxSize==front </p>
+<p>4）队列空表示为：rear==front</p>
+<ol start="5">
+<li><p>  队列中有效的值的个数表示为: (rear+maxSize-front)%maxSize </p>
+</li>
+<li><p>  front++   与  rear++   统一写成  (front+1)%maxSize  与  (rear+1)%maxSize  ,因为这是个环形队列，如果front或rear超过数组最大下标则需要从下标0开始添加数据</p>
+</li>
+</ol>
+<p>7）根据原来的队列代码进行修改，就可以得到一个环形队列</p>
+<h2 id="实现代码-1"><a href="#实现代码-1" class="headerlink" title="实现代码"></a>实现代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CircleQueue</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> maxSize;<span class="comment">//数组大小</span></span><br><span class="line">        <span class="comment">//指向队列头部 默认为0</span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> front;</span><br><span class="line">        <span class="comment">//指向队列尾部的后一个位置 默认为0  因为这是一个环形队列，需要预留一个位置作为约定</span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> rear;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span>[] arr;<span class="comment">//存放数据的数组</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//创建队列的构造函数</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">CircleQueue</span><span class="params">(<span class="keyword">int</span> max)</span></span>&#123;</span><br><span class="line">            arr=<span class="keyword">new</span> <span class="keyword">int</span>[max];</span><br><span class="line">            maxSize=max;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//判断队列是否满</span></span><br><span class="line">        <span class="comment">//尾索引的下一个为头索引时表示队列满，即将队列容量空出一个作为约定,这个在做判断队列满的时候需要注意 (rear + 1) % maxSize == front</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isFull</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">return</span> (rear+<span class="number">1</span>)%maxSize==front;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//判断队列是否为空</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">return</span> rear==front;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//添加一个数据</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> data)</span></span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(isFull())&#123; <span class="comment">//判断队列是否满</span></span><br><span class="line">                System.out.println(<span class="string">&quot;队列满了，不能添加数据!!!&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 因为 rear 指向队列尾元素的下一个位置，直接添加，再进行 rear++操作</span></span><br><span class="line">            arr[rear]=data;</span><br><span class="line">            <span class="comment">// 本来这里是 rear++ ，但是这是个环形队列，如果rear超过数组最大下标则需要从下标0开始添加数据</span></span><br><span class="line">            rear=(rear+<span class="number">1</span>)%maxSize;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//获取一个数据</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">pop</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(isEmpty())&#123;<span class="comment">//判断队列是否为空</span></span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;队列为空！！！&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//将队列头元素先保存下来,最后需要返回</span></span><br><span class="line">            <span class="keyword">int</span> result=arr[front];</span><br><span class="line">            <span class="comment">//本来这里是 front++ ，但是这是个环形队列，如果front超过数组最大下标则需要从下标0开始添加数据</span></span><br><span class="line">            front=front+<span class="number">1</span>%maxSize;</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//显示队列所有内容</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showQueue</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(isEmpty())&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;队列为空&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> ;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.print(<span class="string">&quot;队列内容为:\t&quot;</span>);</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=front;i&lt;front+size();i++)&#123;</span><br><span class="line">                System.out.print(<span class="string">&quot;arr[&quot;</span>+i%maxSize+<span class="string">&quot;]=&quot;</span>+arr[i%maxSize]+<span class="string">&quot;\t&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//获取当前队列中的有效个数</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">return</span> (rear+maxSize-front)%maxSize;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//显示队列头</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showHead</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(isEmpty())&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;队列为空&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> ;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(arr[front]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">       <span class="comment">//测试数组队列</span></span><br><span class="line">    	<span class="comment">//Queue queue = new Queue(3);</span></span><br><span class="line">    	<span class="comment">//测试环形数组队列</span></span><br><span class="line">       CircleQueue queue = <span class="keyword">new</span> CircleQueue(<span class="number">4</span>);<span class="comment">//因为需要预留一个位置作为约定, 所以该队列中只能存放3个数据，如需存放4个数据，该算法即可</span></span><br><span class="line">    	</span><br><span class="line">       Scanner scanner=<span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">       <span class="keyword">boolean</span> flag=<span class="keyword">true</span>;</span><br><span class="line">       <span class="keyword">while</span> (flag)&#123;</span><br><span class="line">           System.out.println(<span class="string">&quot;\na : 添加数据&quot;</span>);</span><br><span class="line">           System.out.println(<span class="string">&quot;p : 弹出一个数据&quot;</span>);</span><br><span class="line">           System.out.println(<span class="string">&quot;s : 显示队列&quot;</span>);</span><br><span class="line">           System.out.println(<span class="string">&quot;h : 显示头&quot;</span>);</span><br><span class="line">           System.out.println(<span class="string">&quot;e : 退出&quot;</span>);</span><br><span class="line">           String key = scanner.next();</span><br><span class="line">           <span class="keyword">switch</span> (key)&#123;</span><br><span class="line">               <span class="keyword">case</span> <span class="string">&quot;a&quot;</span>:</span><br><span class="line">                   System.out.println(<span class="string">&quot;请输入值:&quot;</span>);</span><br><span class="line">                   <span class="keyword">int</span> i = scanner.nextInt();</span><br><span class="line">                   queue.add(i);</span><br><span class="line">                   <span class="keyword">break</span>;</span><br><span class="line">               <span class="keyword">case</span> <span class="string">&quot;p&quot;</span>:</span><br><span class="line">                   <span class="keyword">try</span> &#123;</span><br><span class="line">                       <span class="keyword">int</span> pop = queue.pop();</span><br><span class="line">                       System.out.println(<span class="string">&quot;弹出值为:&quot;</span>+pop);</span><br><span class="line">                   &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                       System.out.println(e.getMessage());</span><br><span class="line">                   &#125;</span><br><span class="line">                   <span class="keyword">break</span>;</span><br><span class="line">               <span class="keyword">case</span> <span class="string">&quot;s&quot;</span>:</span><br><span class="line">                   queue.showQueue();</span><br><span class="line">                   <span class="keyword">break</span>;</span><br><span class="line">               <span class="keyword">case</span> <span class="string">&quot;h&quot;</span>:</span><br><span class="line">                   queue.showHead();</span><br><span class="line">                   <span class="keyword">break</span>;</span><br><span class="line">               <span class="keyword">case</span> <span class="string">&quot;e&quot;</span>:</span><br><span class="line">                   flag=<span class="keyword">false</span>;</span><br><span class="line">                   <span class="keyword">break</span>;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       scanner.close();</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>over…</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>感谢老铁们的支持!!!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/weChatPay.png" alt="怪狗狗 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/aliPay.jpg" alt="怪狗狗 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%98%9F%E5%88%97/" rel="tag"> 队列</a>
+              <a href="/tags/%E7%8E%AF%E5%BD%A2%E9%98%9F%E5%88%97/" rel="tag"> 环形队列</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/03/%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E4%B8%8E%E7%A8%80%E7%96%8F%E6%95%B0%E7%BB%84/" rel="prev" title="二维数组与稀疏数组">
+      <i class="fa fa-chevron-left"></i> 二维数组与稀疏数组
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E6%A8%A1%E6%8B%9F%E9%98%9F%E5%88%97%E6%80%9D%E8%B7%AF"><span class="nav-number">1.</span> <span class="nav-text">数组模拟队列思路</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%BB%A3%E7%A0%81"><span class="nav-number">1.1.</span> <span class="nav-text">实现代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90%E5%B9%B6%E4%BC%98%E5%8C%96"><span class="nav-number">1.1.1.</span> <span class="nav-text">问题分析并优化</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8E%AF%E5%BD%A2%E6%95%B0%E7%BB%84%E6%A8%A1%E6%8B%9F%E9%98%9F%E5%88%97"><span class="nav-number">2.</span> <span class="nav-text">环形数组模拟队列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E8%AF%B4%E6%98%8E"><span class="nav-number">2.1.</span> <span class="nav-text">分析说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%BB%A3%E7%A0%81-1"><span class="nav-number">2.2.</span> <span class="nav-text">实现代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">测试代码</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="怪狗狗"
+      src="/images/jerry.jpg">
+  <p class="site-author-name" itemprop="name">怪狗狗</p>
+  <div class="site-description" itemprop="description">前端是个坑</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/oddDog-git" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;oddDog-git" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://1764501567@qq.com/" title="E-Mail → https:&#x2F;&#x2F;1764501567@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://wpa.qq.com/msgrd?v=3&uin=1764501567&site=qq&menu=yes" title="http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;1764501567&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener" target="_blank">加我QQ</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">怪狗狗</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div> -->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'YVPmrsyUdC4uV9bapDgb8ll6-gzGzoHsz',
+      appKey     : 'MUI57EQtRoMQjLvpW68kiNyE',
+      placeholder: "快来评论吧！！！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
