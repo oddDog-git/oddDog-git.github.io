@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-bounce.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"odddog-git.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="​     链表是以节点的方式来存储,是链式存储 ， 每个节点包含 data 域， next 域：指向下一个节点.链表分带头节点的链表和没有头节点的链表，根据实际的需求来确定,这里主要介绍带头节点的链表">
+<meta property="og:type" content="article">
+<meta property="og:title" content="单向链表与双向链表">
+<meta property="og:url" content="http://odddog-git.github.io/2021/03/06/%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8%E4%B8%8E%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8/index.html">
+<meta property="og:site_name" content="hui&#39;s Blog">
+<meta property="og:description" content="​     链表是以节点的方式来存储,是链式存储 ， 每个节点包含 data 域， next 域：指向下一个节点.链表分带头节点的链表和没有头节点的链表，根据实际的需求来确定,这里主要介绍带头节点的链表">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.ax1x.com/2021/03/06/6uwseI.png">
+<meta property="og:image" content="https://s3.ax1x.com/2021/03/06/6uwgFf.png">
+<meta property="article:published_time" content="2021-03-06T13:49:39.000Z">
+<meta property="article:modified_time" content="2021-03-06T14:44:35.572Z">
+<meta property="article:author" content="怪狗狗">
+<meta property="article:tag" content="链表">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3.ax1x.com/2021/03/06/6uwseI.png">
+
+<link rel="canonical" href="http://odddog-git.github.io/2021/03/06/%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8%E4%B8%8E%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>单向链表与双向链表 | hui's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://oddDog-git" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hui's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://odddog-git.github.io/2021/03/06/%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8%E4%B8%8E%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/jerry.jpg">
+      <meta itemprop="name" content="怪狗狗">
+      <meta itemprop="description" content="前端是个坑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hui's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          单向链表与双向链表
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-06 21:49:39 / 修改时间：22:44:35" itemprop="dateCreated datePublished" datetime="2021-03-06T21:49:39+08:00">2021-03-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/03/06/%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8%E4%B8%8E%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/03/06/%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8%E4%B8%8E%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​     链表是以节点的方式来存储,是链式存储 ， 每个节点包含 data 域， next 域：指向下一个节点.链表分带头节点的链表和没有头节点的链表，根据实际的需求来确定,这里主要介绍带头节点的链表</p>
+<a id="more"></a>
+
+<h1 id="使用带-head-头的单向链表实现-–完成水浒英雄排行榜管理完成对英雄人物的增删改查操作"><a href="#使用带-head-头的单向链表实现-–完成水浒英雄排行榜管理完成对英雄人物的增删改查操作" class="headerlink" title="使用带 head 头的单向链表实现 –完成水浒英雄排行榜管理完成对英雄人物的增删改查操作"></a>使用带 head 头的单向链表实现 –完成水浒英雄排行榜管理完成对英雄人物的增删改查操作</h1><ol>
+<li><p>第一种方法在添加英雄时，直接添加到链表的尾部 </p>
+</li>
+<li><p>第二种方式在添加英雄时，根据排名将英雄插入到指定位置(如果有这个排名，则添加失败，并给出提示) 思路的分析示意图:</p>
+</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/6uwseI"><img src="https://s3.ax1x.com/2021/03/06/6uwseI.png" alt="6uwseI.png"></a></p>
+<ol start="3">
+<li>修改节点功能, 思路:</li>
+</ol>
+<p>​                (1) 通过遍历,先找到该节点,直接修改数据即可</p>
+<p>​                (2) temp.name = newHeroNode.name ; temp.nickname= newHeroNode.nickname</p>
+<ol start="4">
+<li>删除节点 ，思路分析的示意图</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/6uwgFf"><img src="https://s3.ax1x.com/2021/03/06/6uwgFf.png" alt="6uwgFf.png"></a></p>
+<h2 id="代码演示"><a href="#代码演示" class="headerlink" title="代码演示"></a>代码演示</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//链表节点</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">    Integer no;  <span class="comment">//序号</span></span><br><span class="line">    String name;    <span class="comment">//名称</span></span><br><span class="line">    String nickName;    <span class="comment">//昵称</span></span><br><span class="line">    Node next;  <span class="comment">//指向下一个节点</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(Integer no, String name, String nickName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.no = no;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.nickName = nickName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;node&#123;&quot;</span> +</span><br><span class="line">                <span class="string">&quot;no=&#x27;&quot;</span> + no + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&quot;, name=&#x27;&quot;</span> + name + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&quot;, nickName=&#x27;&quot;</span> + nickName + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&#x27;&#125;&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//单向链表</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SingleLinkedList</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Node head;<span class="comment">//头节点</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Node <span class="title">getHead</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> head;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SingleLinkedList</span><span class="params">()</span></span>&#123;</span><br><span class="line">        head=<span class="keyword">new</span> Node(<span class="number">0</span>,<span class="string">&quot;&quot;</span>,<span class="string">&quot;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//添加  找到最后一个节点，将新节点添加到链表的尾部</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(Node node)</span></span>&#123;</span><br><span class="line">        Node temp=head;</span><br><span class="line">        <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(temp.next==<span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//循环遍历</span></span><br><span class="line">            temp=temp.next;</span><br><span class="line">        &#125;</span><br><span class="line">        temp.next=node;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//按照序号进行添加  根据从小到大序号进行插入，找到节点序号大于新节点序号的前一个节点，将新节点插入到前一个节点之后。注意：如果该序号已存在，则无法插入</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addByOrder</span><span class="params">(Node node)</span></span>&#123;</span><br><span class="line">        Node temp=head;</span><br><span class="line">        <span class="keyword">boolean</span> flag=<span class="keyword">false</span>; <span class="comment">//标记新节点序号是否存在</span></span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(temp.next==<span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(temp.next.no&gt;node.no)&#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(temp.next.no==node.no)&#123; <span class="comment">//该序号已存在，则无法插入</span></span><br><span class="line">                flag=<span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//循环遍历</span></span><br><span class="line">            temp=temp.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(flag)&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;该节点序号已存在，添加数据失败！！！&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            node.next=temp.next;</span><br><span class="line">            temp.next=node;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//显示链表所有内容</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Node temp=head.next;</span><br><span class="line">        <span class="keyword">if</span>(temp==<span class="keyword">null</span>)&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;当前链表为空！！！&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (temp!=<span class="keyword">null</span>)&#123;</span><br><span class="line">            System.out.println(temp);</span><br><span class="line">            temp=temp.next;<span class="comment">//循环遍历</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//修改  根据序号进行修改节点</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(Node node)</span></span>&#123;</span><br><span class="line">        Node temp=head.next;</span><br><span class="line">        <span class="keyword">boolean</span> flag=<span class="keyword">false</span>;<span class="comment">//标记是否存在该节点</span></span><br><span class="line">        <span class="keyword">if</span>(temp==<span class="keyword">null</span>)&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;当前链表为空！！！&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">            <span class="comment">//遍历完成</span></span><br><span class="line">            <span class="keyword">if</span>(temp==<span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//找到需要修改的节点</span></span><br><span class="line">            <span class="keyword">if</span>(temp.no==node.no)&#123;</span><br><span class="line">                flag=<span class="keyword">true</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            temp=temp.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(flag)&#123;</span><br><span class="line">            temp.name=node.name;</span><br><span class="line">            temp.nickName= node.nickName;</span><br><span class="line">            System.out.println(<span class="string">&quot;修改成功:&quot;</span>+temp);</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;没找到序号为&#x27;&quot;</span>+node.no+<span class="string">&quot;&#x27;的节点&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//删除 根据序号进行删除节点</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">delete</span><span class="params">(Integer no)</span></span>&#123;</span><br><span class="line">        Node temp=head;</span><br><span class="line">        <span class="keyword">boolean</span> flag=<span class="keyword">false</span>;<span class="comment">//标记是否存在该序号</span></span><br><span class="line">        <span class="keyword">if</span>(temp.next==<span class="keyword">null</span>)&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;当前链表为空！！！&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(temp.next==<span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//找到需要删除节点的前一个节点</span></span><br><span class="line">            <span class="keyword">if</span>(temp.next.no==no)&#123;</span><br><span class="line">                flag=<span class="keyword">true</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//循环遍历</span></span><br><span class="line">            temp=temp.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(flag)&#123;</span><br><span class="line">            <span class="comment">//进行删除</span></span><br><span class="line">            temp.next=temp.next.next;</span><br><span class="line">            System.out.println(<span class="string">&quot;删除成功序号为‘&quot;</span>+no+<span class="string">&quot;’节点&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;没找到序号为&#x27;&quot;</span>+no+<span class="string">&quot;&#x27;的节点&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="一些单项链表常见面试题"><a href="#一些单项链表常见面试题" class="headerlink" title="一些单项链表常见面试题"></a>一些单项链表常见面试题</h3><ol>
+<li>求单链表中有效节点的个数,代码演示(easy):</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> head 链表的头节点</span></span><br><span class="line"><span class="comment">* <span class="doctag">@return</span> 返回的就是有效节点的个数</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getLength</span><span class="params">(Node head)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(head.next==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> size=<span class="number">0</span>;</span><br><span class="line">        Node curr=head.next;</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span>(curr==<span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            curr=curr.next;<span class="comment">//循环遍历</span></span><br><span class="line">            size++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> size;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>查找单链表中的倒数第 k 个结点  代码演示:</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> head 列表头</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> index 倒数第 index 个</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 倒数第index个节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Node <span class="title">getLastIndexNode</span><span class="params">(Node head,Integer index)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(head.next==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//第一次遍历，获取该链表有效节点</span></span><br><span class="line">        Integer size=getLength(head);</span><br><span class="line">        <span class="keyword">if</span>(index&lt;<span class="number">1</span> || index&gt;size)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//第二次遍历，遍历 (size-index)次</span></span><br><span class="line">        Node curr=head.next;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;(size-index);i++)&#123;</span><br><span class="line">            curr=curr.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> curr;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>单链表的反转 采用头插法</li>
+</ol>
+<p>思路分析：1.先创建一个头节点，暂时存放反转节点   Node reverseHead=new Node(0,””,””);</p>
+<p>​                   2.循环遍历原来的链表，每遍历一遍，就把当前的节点转移到临时头节点  reverseHead的最前面</p>
+<p>​                            curr.next=reverseHead.next;      reverseHead.next=curr;</p>
+<p>​                   3.遍历完毕后原来的头节点后的节点全部反转到临时头节点 reverseHead后面，直接将原来头节点指向临时头节点之后的节点即可           head.next=reverseHead.next</p>
+<p>代码实现:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">reverse</span> <span class="params">(Node head)</span></span>&#123;</span><br><span class="line">       <span class="comment">//当链表为空或只有一个节点，无需反转</span></span><br><span class="line">       <span class="keyword">if</span>(head.next==<span class="keyword">null</span> || head.next.next==<span class="keyword">null</span>)&#123;</span><br><span class="line">           <span class="keyword">return</span> ;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//暂时存放反转节点的节点头</span></span><br><span class="line">       Node reverseHead=<span class="keyword">new</span> Node(<span class="number">0</span>,<span class="string">&quot;&quot;</span>,<span class="string">&quot;&quot;</span>);</span><br><span class="line">       Node curr=head.next;<span class="comment">//需要转移到到reverseList头部的节点</span></span><br><span class="line">       Node next=<span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">while</span>(curr!=<span class="keyword">null</span>)&#123;</span><br><span class="line">           next=curr.next;</span><br><span class="line">           <span class="comment">//开始转移</span></span><br><span class="line">           curr.next=reverseHead.next;</span><br><span class="line">           reverseHead.next=curr;</span><br><span class="line">           curr=next;</span><br><span class="line">       &#125;</span><br><span class="line">       head.next=reverseHead.next;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+
+<ol start="4">
+<li>从尾到头打印单链表 【要求方式 1：反向遍历 。 方式 2：Stack 栈】</li>
+</ol>
+<p>方法一:先反转链表，再遍历打印 （这样改变了链表原来的结构，不推荐，即使再次反转过来也很浪费时间）<br>方法二:将链表的数据全部放入栈中，再遍历栈取出数据，这样不会改变链表原来的结构（这里暂时使用java中的stack，不手写栈了）</p>
+<p>代码实现:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">reversePrint</span><span class="params">(Node head)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(head.next==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Stack&lt;Node&gt; stack = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        <span class="comment">//循环遍历将链表的数据放入栈中</span></span><br><span class="line">        Node curr=head.next;</span><br><span class="line">        <span class="keyword">while</span> (curr!=<span class="keyword">null</span>) &#123;</span><br><span class="line">            stack.push(curr);</span><br><span class="line">            <span class="comment">//循环遍历</span></span><br><span class="line">            curr=curr.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//循环遍历打印栈的数据</span></span><br><span class="line">        <span class="keyword">while</span> (stack.size()&gt;<span class="number">0</span>)&#123;</span><br><span class="line">            System.out.println(stack.pop());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>合并两个有序的单链表，合并之后的链表依然有序</li>
+</ol>
+<p>思路分析: </p>
+<p>1.如果两个链表全部空则返回空；如果list1为空，返回list2；如果list2为空，返回list1</p>
+<p>2.新建一个链表list用来存放合并list1与list2合并后的数据</p>
+<p>3.同时遍历list1与list2，每一次比较list1当前节点与list2当前节点，谁更小就转移到list最后 (转移节点可参考问题三:链表的反转)</p>
+<p>4.如果list1为空了，则把list2中的数据全部转移到list最后；如果list2空了，则把list1中的数据全部转移到list最后</p>
+<p>注意: 可添加一个新的指针来标识list中新插入的节点位置</p>
+<p>代码实现:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//合并两个有序的单链表，合并之后的链表依然有序 ,如果链表中的有两个序号相同，默认先取 list1 中的数</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> SingleLinkedList <span class="title">merge</span><span class="params">(SingleLinkedList list1,SingleLinkedList list2)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(list1.getHead().next==<span class="keyword">null</span> &amp;&amp; list2.getHead().next==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> list1;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(list1.getHead().next==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> list2;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(list2.getHead().next==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> list1;</span><br><span class="line">        &#125;</span><br><span class="line">        SingleLinkedList list = <span class="keyword">new</span> SingleLinkedList();</span><br><span class="line">        <span class="comment">//记录当前插入的节点</span></span><br><span class="line">        Node newNode=list.getHead();</span><br><span class="line">        <span class="comment">//标志list1暂时需要转移的节点</span></span><br><span class="line">        Node curr1=list1.getHead().next;</span><br><span class="line">        <span class="comment">//记录curr1的下一个节点</span></span><br><span class="line">        Node next1=<span class="keyword">null</span>;</span><br><span class="line">        <span class="comment">//标志list2暂时需要转移的节点</span></span><br><span class="line">        Node curr2=list2.getHead().next;</span><br><span class="line">        <span class="comment">//记录list2的下一个节点</span></span><br><span class="line">        Node next2=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(curr1==<span class="keyword">null</span>)&#123;<span class="comment">//list1合并完毕,可将curr2中的剩余数据全部添加到list尾部</span></span><br><span class="line">                newNode.next=curr2;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(curr2==<span class="keyword">null</span>)&#123;<span class="comment">//list2合并完毕，可将curr1中的剩余数据全部添加到list尾部</span></span><br><span class="line">                newNode.next=curr1;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            next1=curr1.next;</span><br><span class="line">            next2=curr2.next;</span><br><span class="line">            <span class="keyword">if</span>(curr1.no&lt;=curr2.no)&#123; <span class="comment">//添加curr1</span></span><br><span class="line">                newNode.next=curr1;</span><br><span class="line">                newNode=newNode.next;</span><br><span class="line">                curr1=next1;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;<span class="comment">//添加curr2</span></span><br><span class="line">                newNode.next=curr2;</span><br><span class="line">                newNode=newNode.next;</span><br><span class="line">                curr2=next2;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> list;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="使用带-head-头的双向链表实现-–水浒英雄排行榜"><a href="#使用带-head-头的双向链表实现-–水浒英雄排行榜" class="headerlink" title="使用带 head 头的双向链表实现 –水浒英雄排行榜"></a>使用带 head 头的双向链表实现 –水浒英雄排行榜</h1><p>管理单向链表的缺点分析:</p>
+<p>​                 1) 单向链表，查找的方向只能是一个方向，而双向链表可以向前或者向后查找。</p>
+<p>​                 2) 单向链表不能自我删除，需要靠辅助节点 ，而双向链表，则可以自我删除，前面我们单链表删除 时节点，总是找到待删除节点的前一个节点.</p>
+<p>双向链表的遍历与修改与单链表一样，添加与删除方法略有不同</p>
+<p>实现代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//节点需要新增一个值</span></span><br><span class="line">DoubleNode pre; <span class="comment">//指向前一个结点</span></span><br><span class="line"></span><br><span class="line"> <span class="comment">//添加 添加再链表最后位置</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(DoubleNode newNode)</span> </span>&#123;</span><br><span class="line">        DoubleNode temp = head;</span><br><span class="line">        <span class="comment">//找到最后一个节点</span></span><br><span class="line">        <span class="keyword">while</span> (temp.next != <span class="keyword">null</span>) &#123;</span><br><span class="line">            temp = temp.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//进行添加</span></span><br><span class="line">        temp.next = newNode;</span><br><span class="line">        newNode.pre = temp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//按顺序进行添加 根据从小到大序号进行插入，找到节点序号大于新节点序号的前一个节点，将新节点插入到前一个节点之后。注意：如果该序号已存在，则无法插入</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addByOrder</span><span class="params">(DoubleNode newNode)</span> </span>&#123;</span><br><span class="line">            DoubleNode temp=head;</span><br><span class="line">            <span class="comment">//标记新节点是否存在</span></span><br><span class="line">            <span class="keyword">boolean</span> exist=<span class="keyword">false</span>;</span><br><span class="line">            <span class="comment">//标记新节点是否插入到最后</span></span><br><span class="line">            <span class="keyword">boolean</span> last=<span class="keyword">false</span>;</span><br><span class="line">            <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">                <span class="keyword">if</span>(temp.next==<span class="keyword">null</span>)&#123;<span class="comment">//表示新节点序号最大，需要插入到最后</span></span><br><span class="line">                    last=<span class="keyword">true</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(temp.next.no&gt; newNode.no)&#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(temp.next.no== newNode.no)&#123;<span class="comment">//表示新节点序号已存在</span></span><br><span class="line">                    exist=<span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                temp=temp.next;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(exist)&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;插入失败:该节点序号‘&quot;</span>+newNode.no+<span class="string">&quot;’已存在！！！&quot;</span>);</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">if</span>(last)&#123; <span class="comment">//插入到最后</span></span><br><span class="line">                    temp.next=newNode;</span><br><span class="line">                    newNode.pre=temp;</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    <span class="comment">//表示后一个节点</span></span><br><span class="line">                    DoubleNode rear = temp.next;</span><br><span class="line">                    temp.next=newNode;</span><br><span class="line">                    newNode.next=rear;</span><br><span class="line">                    rear.pre=newNode;</span><br><span class="line">                    newNode.pre=temp;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//删除 无需像单链表一样找到要删除的前一个节点，直接找到需要删除的节点，就可执行自我删除</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">delete</span><span class="params">(Integer no)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (head.next == <span class="keyword">null</span>) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;该链表为空！！！&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//寻找序号为no的节点</span></span><br><span class="line">        DoubleNode temp = head.next;</span><br><span class="line">        <span class="keyword">while</span> (temp != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (temp.no == no) &#123;<span class="comment">//找到该节点,进行自我删除</span></span><br><span class="line">                temp.pre.next = temp.next;<span class="comment">//让temp前一个节点指向temp的后一个节点</span></span><br><span class="line">                <span class="keyword">if</span> (temp.next!=<span class="keyword">null</span>) &#123; <span class="comment">//如果temp的后一个节点为空，则会有空控制在异常</span></span><br><span class="line">                    temp.next.pre = temp.pre;<span class="comment">//让temp的后一个节点指向temp的前一个节点</span></span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            temp = temp.next;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;删除失败:没找到序号为‘&quot;</span> + no + <span class="string">&quot;’的节点&quot;</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>over…</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>感谢老铁们的支持!!!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/weChatPay.png" alt="怪狗狗 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/aliPay.jpg" alt="怪狗狗 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%93%BE%E8%A1%A8/" rel="tag"> 链表</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/04/%E6%95%B0%E7%BB%84%E9%98%9F%E5%88%97%E4%B8%8E%E7%8E%AF%E5%BD%A2%E9%98%9F%E5%88%97/" rel="prev" title="数组队列与环形队列">
+      <i class="fa fa-chevron-left"></i> 数组队列与环形队列
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/06/%E7%BA%A6%E7%91%9F%E5%A4%AB%E9%97%AE%E9%A2%98/" rel="next" title="约瑟夫问题">
+      约瑟夫问题 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%B8%A6-head-%E5%A4%B4%E7%9A%84%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8%E5%AE%9E%E7%8E%B0-%E2%80%93%E5%AE%8C%E6%88%90%E6%B0%B4%E6%B5%92%E8%8B%B1%E9%9B%84%E6%8E%92%E8%A1%8C%E6%A6%9C%E7%AE%A1%E7%90%86%E5%AE%8C%E6%88%90%E5%AF%B9%E8%8B%B1%E9%9B%84%E4%BA%BA%E7%89%A9%E7%9A%84%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5%E6%93%8D%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">使用带 head 头的单向链表实现 –完成水浒英雄排行榜管理完成对英雄人物的增删改查操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%BC%94%E7%A4%BA"><span class="nav-number">1.1.</span> <span class="nav-text">代码演示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%8D%95%E9%A1%B9%E9%93%BE%E8%A1%A8%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98"><span class="nav-number">1.1.1.</span> <span class="nav-text">一些单项链表常见面试题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%B8%A6-head-%E5%A4%B4%E7%9A%84%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8%E5%AE%9E%E7%8E%B0-%E2%80%93%E6%B0%B4%E6%B5%92%E8%8B%B1%E9%9B%84%E6%8E%92%E8%A1%8C%E6%A6%9C"><span class="nav-number">2.</span> <span class="nav-text">使用带 head 头的双向链表实现 –水浒英雄排行榜</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="怪狗狗"
+      src="/images/jerry.jpg">
+  <p class="site-author-name" itemprop="name">怪狗狗</p>
+  <div class="site-description" itemprop="description">前端是个坑</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/oddDog-git" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;oddDog-git" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://1764501567@qq.com/" title="E-Mail → https:&#x2F;&#x2F;1764501567@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://wpa.qq.com/msgrd?v=3&uin=1764501567&site=qq&menu=yes" title="http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;1764501567&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener" target="_blank">加我QQ</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">怪狗狗</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div> -->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'YVPmrsyUdC4uV9bapDgb8ll6-gzGzoHsz',
+      appKey     : 'MUI57EQtRoMQjLvpW68kiNyE',
+      placeholder: "快来评论吧！！！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
