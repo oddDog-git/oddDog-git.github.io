@@ -460,6 +460,34 @@
 <li><p>有负数的数组，我们不用基数排序来进行排序, 如果要支持负数，参考: <a href="https://code.i-harness.com/zh-CN/q/e98fa9">https://code.i-harness.com/zh-CN/q/e98fa9</a></p>
 </li>
 </ol>
+<h3 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h3><ol>
+<li><p>堆排序是利用堆这种数据结构而设计的一种排序算法，堆排序是一种选择排序，它的最坏，最好，平均时间复 杂度均为 O(nlogn)，它也是不稳定排序。 </p>
+</li>
+<li><p>堆是具有以下性质的完全二叉树：每个结点的值都大于或等于其左右孩子结点的值，称为大顶堆, 注意 : 没有 要求结点的左孩子的值和右孩子的值的大小关系。 </p>
+</li>
+<li><p>每个结点的值都小于或等于其左右孩子结点的值，称为小顶堆 </p>
+</li>
+<li><p>大顶堆举例说明</p>
+</li>
+</ol>
+<p><a href="https://imgtu.com/i/6B9M1H"><img src="https://s3.ax1x.com/2021/03/14/6B9M1H.png" alt="6B9M1H.png"></a></p>
+<ol start="5">
+<li>小顶堆举例说明</li>
+</ol>
+<p><a href="https://imgtu.com/i/6B93nI"><img src="https://s3.ax1x.com/2021/03/14/6B93nI.png" alt="6B93nI.png"></a></p>
+<ol start="6">
+<li>一般升序采用大顶堆，降序采用小顶堆</li>
+</ol>
+<h4 id="思路分析-7"><a href="#思路分析-7" class="headerlink" title="思路分析"></a>思路分析</h4><p>1).将无序序列构建成一个堆，根据升序降序需求选择大顶堆或小顶堆，这里是大顶堆，此时，整个序列的最大值就是堆顶的根节点</p>
+<p>2).将堆顶元素与末尾元素交换，将最大元素”沉”到数组末端; </p>
+<ol start="3">
+<li>然后将剩余 n-1 个元素重新构造成一个堆，这样会得到 n 个元素的次大值,如此反复执行，便能得到一个有序 序列了</li>
+</ol>
+<p>​        可以看到在构建大顶堆的过程中，元素的个数逐渐减少，最后就得到一个有序序列了.</p>
+<p>提示:最后一个非叶子节点:(arr.length/2-1) , 左子树:(n<em>2+1) , 右子树:(n</em>2+2) , 父节点:(n+1)/2</p>
+<h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">	<span class="comment">//堆排序，从小到大</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">heap</span><span class="params">(<span class="keyword">int</span>[] arr)</span></span>&#123;</span><br><span class="line">       <span class="comment">//将数组变成大顶堆</span></span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">int</span> i=arr.length/<span class="number">2</span>-<span class="number">1</span>;i&gt;=<span class="number">0</span>;i--)&#123;</span><br><span class="line">           adjust(arr,i,arr.length);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="comment">//循环遍历，将最大值依次放到数组最后</span></span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">int</span> i=arr.length-<span class="number">1</span>;i&gt;<span class="number">0</span>;i--)&#123;</span><br><span class="line">           <span class="comment">//将根节点（最大值）与最后一个节点的数据交换位置</span></span><br><span class="line">           <span class="keyword">int</span> temp=arr[<span class="number">0</span>];</span><br><span class="line">           arr[<span class="number">0</span>]=arr[i];</span><br><span class="line">           arr[i]=temp;</span><br><span class="line">           <span class="comment">//再调整位置</span></span><br><span class="line">           adjust(arr,<span class="number">0</span>,i);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;	</span><br><span class="line"><span class="comment">//------------------------------核心代码-------------------------------------</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    *</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> arr 要排序的数组</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> i   将当前树的 i 节点与左右子树比较，将大的排在前面</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> length 排序的个数</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="comment">//调整当前数组i位置的值，将该值要大于子树的值</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">adjust</span><span class="params">(<span class="keyword">int</span>[] arr,<span class="keyword">int</span> i,<span class="keyword">int</span> length)</span></span>&#123;</span><br><span class="line">       <span class="comment">//保存当前值</span></span><br><span class="line">       <span class="keyword">int</span> temp=arr[i];</span><br><span class="line">       <span class="comment">//如果存在子节点，循环遍历左子树</span></span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">int</span> k=(i*<span class="number">2</span>+<span class="number">1</span>);k&lt;length;k=k*<span class="number">2</span>+<span class="number">1</span>)&#123;</span><br><span class="line">           <span class="comment">//如果存在右子树，且大于左子树，将大的子树提出来</span></span><br><span class="line">           <span class="keyword">if</span>(k+<span class="number">1</span>&lt;length &amp;&amp; arr[k+<span class="number">1</span>]&gt;arr[k])&#123;</span><br><span class="line">               k++;</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="comment">//判断 k 指向的子树是否大于当前节点,如果大则将子节点放入到当前节点位置</span></span><br><span class="line">           <span class="keyword">if</span>(arr[k]&gt;temp)&#123;</span><br><span class="line">               arr[i]=arr[k];</span><br><span class="line">               i=k;</span><br><span class="line">           &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">               <span class="keyword">break</span>;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//上面循环结束，最大值已经放入到当前树的根节点处</span></span><br><span class="line">       <span class="comment">//如果当前值被替换了，需将 temp 值放到调整后的位置</span></span><br><span class="line">       <span class="keyword">if</span>(temp!=arr[i])&#123;</span><br><span class="line">           arr[i]=temp;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+
 <h3 id="常用排序算法总结和对比"><a href="#常用排序算法总结和对比" class="headerlink" title="常用排序算法总结和对比"></a>常用排序算法总结和对比</h3><p><a href="https://imgtu.com/i/6Ymrl9"><img src="https://s3.ax1x.com/2021/03/10/6Ymrl9.png" alt="6Ymrl9.png"></a></p>
 <h4 id="相关术语解释"><a href="#相关术语解释" class="headerlink" title="相关术语解释"></a>相关术语解释</h4><ol>
 <li><p>稳定：如果 a 原本在 b 前面，而 a=b，排序之后 a 仍然在 b 的前面；</p>
@@ -658,5 +686,10 @@
         <tag>二叉树</tag>
         <tag>数</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>线索化二叉树</title>
+    <url>/2021/03/14/%E7%BA%BF%E7%B4%A2%E5%8C%96%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
+    <content><![CDATA[]]></content>
   </entry>
 </search>
