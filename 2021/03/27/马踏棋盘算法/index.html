@@ -22,17 +22,23 @@
     var CONFIG = {"hostname":"odddog-git.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Unless I do not want to win,otherwise nothing makes me lose">
+  <meta name="description" content="马踏棋盘算法也被称为骑士周游问题   将马随机放在国际象棋的 8×8 棋盘的某个方格中，马按走棋规则(马走日字)进行移动。要求 每个方格只进入一次，走遍棋盘上全部 64 个方格">
 <meta property="og:type" content="article">
 <meta property="og:title" content="马踏棋盘算法">
 <meta property="og:url" content="http://odddog-git.github.io/2021/03/27/%E9%A9%AC%E8%B8%8F%E6%A3%8B%E7%9B%98%E7%AE%97%E6%B3%95/index.html">
 <meta property="og:site_name" content="hui&#39;s Blog">
-<meta property="og:description" content="Unless I do not want to win,otherwise nothing makes me lose">
+<meta property="og:description" content="马踏棋盘算法也被称为骑士周游问题   将马随机放在国际象棋的 8×8 棋盘的某个方格中，马按走棋规则(马走日字)进行移动。要求 每个方格只进入一次，走遍棋盘上全部 64 个方格">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://z3.ax1x.com/2021/03/27/6zFtu4.png">
 <meta property="article:published_time" content="2021-03-27T03:33:37.000Z">
-<meta property="article:modified_time" content="2021-03-27T03:33:37.639Z">
+<meta property="article:modified_time" content="2021-03-27T08:06:50.776Z">
 <meta property="article:author" content="怪狗狗">
+<meta property="article:tag" content="递归">
+<meta property="article:tag" content="回溯">
+<meta property="article:tag" content="贪心算法">
+<meta property="article:tag" content="DFS">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://z3.ax1x.com/2021/03/27/6zFtu4.png">
 
 <link rel="canonical" href="http://odddog-git.github.io/2021/03/27/%E9%A9%AC%E8%B8%8F%E6%A3%8B%E7%9B%98%E7%AE%97%E6%B3%95/">
 
@@ -184,8 +190,18 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2021-03-27 11:33:37" itemprop="dateCreated datePublished" datetime="2021-03-27T11:33:37+08:00">2021-03-27</time>
+              <time title="创建时间：2021-03-27 11:33:37 / 修改时间：16:06:50" itemprop="dateCreated datePublished" datetime="2021-03-27T11:33:37+08:00">2021-03-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
             </span>
 
           
@@ -220,7 +236,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        
+        <ol>
+<li><p>马踏棋盘算法也被称为骑士周游问题 </p>
+</li>
+<li><p>将马随机放在国际象棋的 8×8 棋盘的某个方格中，马按走棋规则(马走日字)进行移动。要求 每个方格只进入一次，走遍棋盘上全部 64 个方格</p>
+</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/6zFtu4"><img src="https://z3.ax1x.com/2021/03/27/6zFtu4.png" alt="6zFtu4.png"></a></p>
+<a id="more"></a>
+
+<h4 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h4><p>如果使用回溯（就是深度优先搜索）来解决，假如马儿踏了 53 个点，如图：走到了第 53 个，坐标（1,0），发 现已经走到尽头，没办法，那就只能回退了，查看其他的路径，就在棋盘上不停的回溯……</p>
+<p>1.假设当前位置可以走，设置当前已访问，并标记步数</p>
+<p>1.获取马儿当前位置可以走的所有位置</p>
+<p>2.遍历所有位置，如果该位置没走就递归走</p>
+<p>3.一旦步数达到了棋盘总数，就标记  finished</p>
+<p>3.如果遍历完毕，马儿走的步数没达到棋盘总数，或则没有完成，就表示当前位置走不了，清空当前位置的步数，且标记为未访问</p>
+<h4 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码"></a>实现代码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//棋盘的总列数</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span>  <span class="keyword">int</span> X ;</span><br><span class="line">   <span class="comment">//棋盘的中行数</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span>  <span class="keyword">int</span> Y;</span><br><span class="line">   <span class="comment">//马儿是否走过的位置</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span>[] visited;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> finished;</span><br><span class="line">   <span class="comment">//开始走</span></span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> row  当前马儿所在的 行 轴 ，从0开始</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> col  当前马儿所在的 列 轴 ，从0开始</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> step  当前的步数</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">go</span><span class="params">(<span class="keyword">int</span>[][] chessBoard,<span class="keyword">int</span> row,<span class="keyword">int</span> col,<span class="keyword">int</span> step)</span></span>&#123;</span><br><span class="line">       <span class="comment">//标记当前步数</span></span><br><span class="line">       chessBoard[row][col]=step;</span><br><span class="line">       <span class="comment">//标记当前走过,当前位置在一位数组中表示: 当前行*总列数+当前列</span></span><br><span class="line">       visited[row*X+col]=<span class="keyword">true</span>;</span><br><span class="line">       <span class="comment">//获取当前位置可以走的位置</span></span><br><span class="line">       List&lt;Point&gt; nextList = getNext(<span class="keyword">new</span> Point(col, row));</span><br><span class="line">       <span class="comment">//遍历所有的下一步</span></span><br><span class="line">       <span class="keyword">while</span> (!nextList.isEmpty()) &#123;</span><br><span class="line">           Point next = nextList.remove(<span class="number">0</span>);</span><br><span class="line">           <span class="comment">//如果下一步没走，就走该位置</span></span><br><span class="line">           <span class="keyword">if</span>(!visited[next.y*X+next.x])&#123;</span><br><span class="line">               go(chessBoard,next.y,next.x,step+<span class="number">1</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">// 判断马儿是否完成了任务</span></span><br><span class="line">       <span class="comment">// 如果上面的循环结束，step没有走到X*Y步，并且还没完成，就将当前位置设置成未访问，并且清空当前位置的步数</span></span><br><span class="line">       <span class="comment">// 如果 step==X*Y ,表示走完，将finished=true; 之后回溯的过程中就不需要清空当前位置的步数了</span></span><br><span class="line">       <span class="keyword">if</span>(step&lt;X*Y &amp;&amp; !finished )&#123;</span><br><span class="line">           chessBoard[row][col]=<span class="number">0</span>;</span><br><span class="line">           visited[row*X+col]=<span class="keyword">false</span>;</span><br><span class="line">       &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">           finished=<span class="keyword">true</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">	<span class="comment">//获取当前马儿可以走的路线</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;Point&gt; <span class="title">getNext</span><span class="params">(Point curr)</span></span>&#123;</span><br><span class="line">       List&lt;Point&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">       Point p = <span class="keyword">new</span> Point();</span><br><span class="line">       <span class="comment">// 5</span></span><br><span class="line">       <span class="keyword">if</span>((p.x=curr.x-<span class="number">2</span>)&gt;=<span class="number">0</span> &amp;&amp; (p.y=curr.y-<span class="number">1</span>)&gt;=<span class="number">0</span>)&#123;</span><br><span class="line">           list.add(<span class="keyword">new</span> Point(p));</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">// 6</span></span><br><span class="line">       <span class="keyword">if</span>((p.x=curr.x-<span class="number">1</span>)&gt;=<span class="number">0</span> &amp;&amp; (p.y=curr.y-<span class="number">2</span>)&gt;=<span class="number">0</span>)&#123;</span><br><span class="line">           list.add(<span class="keyword">new</span> Point(p));</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">// 7</span></span><br><span class="line">       <span class="keyword">if</span>((p.x=curr.x+<span class="number">1</span>)&lt;X &amp;&amp; (p.y=curr.y-<span class="number">2</span>)&gt;=<span class="number">0</span>)&#123;</span><br><span class="line">           list.add(<span class="keyword">new</span> Point(p));</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">// 0</span></span><br><span class="line">       <span class="keyword">if</span>((p.x=curr.x+<span class="number">2</span>)&lt;X &amp;&amp; (p.y=curr.y-<span class="number">1</span>)&gt;=<span class="number">0</span>)&#123;</span><br><span class="line">           list.add(<span class="keyword">new</span> Point(p));</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">// 1</span></span><br><span class="line">       <span class="keyword">if</span>((p.x=curr.x+<span class="number">2</span>)&lt;X &amp;&amp; (p.y=curr.y+<span class="number">1</span>)&lt;Y)&#123;</span><br><span class="line">           list.add(<span class="keyword">new</span> Point(p));</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">// 2</span></span><br><span class="line">       <span class="keyword">if</span>((p.x=curr.x+<span class="number">1</span>)&lt;X &amp;&amp; (p.y=curr.y+<span class="number">2</span>)&lt;Y)&#123;</span><br><span class="line">           list.add(<span class="keyword">new</span> Point(p));</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">// 3</span></span><br><span class="line">       <span class="keyword">if</span>((p.x=curr.x-<span class="number">1</span>)&gt;=<span class="number">0</span> &amp;&amp; (p.y=curr.y+<span class="number">2</span>)&lt;Y)&#123;</span><br><span class="line">           list.add(<span class="keyword">new</span> Point(p));</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">// 4</span></span><br><span class="line">       <span class="keyword">if</span>((p.x=curr.x-<span class="number">2</span>)&gt;=<span class="number">0</span> &amp;&amp; (p.y=curr.y+<span class="number">1</span>)&lt;Y)&#123;</span><br><span class="line">           list.add(<span class="keyword">new</span> Point(p));</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> list;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        X=<span class="number">6</span>;</span><br><span class="line">        Y=<span class="number">6</span>;</span><br><span class="line">        <span class="comment">//创建棋盘</span></span><br><span class="line">        <span class="keyword">int</span> [][] chessBoard=<span class="keyword">new</span> <span class="keyword">int</span>[X][Y];</span><br><span class="line">        visited=<span class="keyword">new</span> <span class="keyword">boolean</span>[X*Y];</span><br><span class="line">        <span class="keyword">long</span> start = System.currentTimeMillis();</span><br><span class="line">        <span class="comment">//开始走</span></span><br><span class="line">        go(chessBoard,<span class="number">1</span>,<span class="number">4</span>,<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">long</span> end = System.currentTimeMillis();</span><br><span class="line">        System.out.println(<span class="string">&quot;消耗&quot;</span>+(end-start)+<span class="string">&quot;毫秒&quot;</span>);</span><br><span class="line">        <span class="comment">//输出棋盘</span></span><br><span class="line">        System.out.println(<span class="string">&quot;棋盘为:&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> [] ints:chessBoard)&#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i:ints)&#123;</span><br><span class="line">                System.out.print(i+<span class="string">&quot;\t&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="使用贪心算法进行优化"><a href="#使用贪心算法进行优化" class="headerlink" title="使用贪心算法进行优化"></a>使用贪心算法进行优化</h4><p>基本思路: 遍历所有下一步可走的位置时，不直接遍历，先对该结果进行排序</p>
+<p>排序规则: 当前位置的下一次可走位置次数越大，就排在越前面</p>
+<h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><p>再上面的遍历nextList的代码上加上  sort(nextList)   </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//排序  point下一次可以走的次数递增排序</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(List&lt;Point&gt; list)</span></span>&#123;</span><br><span class="line">        list.sort(<span class="keyword">new</span> Comparator&lt;Point&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Point o1, Point o2)</span> </span>&#123;</span><br><span class="line">                <span class="comment">//获取下一步可以走的步数</span></span><br><span class="line">                <span class="keyword">int</span> count1=getNext(o1).size();</span><br><span class="line">                <span class="keyword">int</span> count2=getNext(o2).size();</span><br><span class="line">                <span class="keyword">if</span>(count1-count2&gt;<span class="number">0</span>)&#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">                &#125;<span class="keyword">else</span> <span class="keyword">if</span>(count1-count2==<span class="number">0</span>)&#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>over。。。</p>
+
     </div>
 
     
@@ -248,6 +286,12 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%80%92%E5%BD%92/" rel="tag"> 递归</a>
+              <a href="/tags/%E5%9B%9E%E6%BA%AF/" rel="tag"> 回溯</a>
+              <a href="/tags/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/" rel="tag"> 贪心算法</a>
+              <a href="/tags/DFS/" rel="tag"> DFS</a>
+          </div>
 
         
 
@@ -318,6 +362,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">思路分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">实现代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">测试代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95%E8%BF%9B%E8%A1%8C%E4%BC%98%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">使用贪心算法进行优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.</span> <span class="nav-text">代码实现</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -340,13 +385,13 @@
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-count">39</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
