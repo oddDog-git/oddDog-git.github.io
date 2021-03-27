@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-bounce.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"odddog-git.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="最小生成树(Minimum Cost Spanning Tree)，简称 MST。 给定一个带权的无向连通图,如何选取一棵生成树,使树上所有边上权的总和为最小,这叫最小生成树">
+<meta property="og:type" content="article">
+<meta property="og:title" content="最小生成树">
+<meta property="og:url" content="http://odddog-git.github.io/2021/03/27/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/index.html">
+<meta property="og:site_name" content="hui&#39;s Blog">
+<meta property="og:description" content="最小生成树(Minimum Cost Spanning Tree)，简称 MST。 给定一个带权的无向连通图,如何选取一棵生成树,使树上所有边上权的总和为最小,这叫最小生成树">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://z3.ax1x.com/2021/03/27/6xhH2D.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/03/27/6xoaWV.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/03/27/6xbSmD.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/03/27/6xb9TH.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/03/27/6xbitA.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/03/27/6xbFfI.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/03/27/6xbApt.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/03/27/6xbE1P.png">
+<meta property="article:published_time" content="2021-03-27T03:32:42.000Z">
+<meta property="article:modified_time" content="2021-03-27T04:28:22.209Z">
+<meta property="article:author" content="怪狗狗">
+<meta property="article:tag" content="图">
+<meta property="article:tag" content="prim">
+<meta property="article:tag" content="kruskal">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://z3.ax1x.com/2021/03/27/6xhH2D.png">
+
+<link rel="canonical" href="http://odddog-git.github.io/2021/03/27/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>最小生成树 | hui's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://oddDog-git" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hui's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://odddog-git.github.io/2021/03/27/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/jerry.jpg">
+      <meta itemprop="name" content="怪狗狗">
+      <meta itemprop="description" content="Unless I do not want to win,otherwise nothing makes me lose">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hui's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          最小生成树
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-27 11:32:42 / 修改时间：12:28:22" itemprop="dateCreated datePublished" datetime="2021-03-27T11:32:42+08:00">2021-03-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/03/27/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/03/27/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最小生成树(Minimum Cost Spanning Tree)，简称 MST。 给定一个带权的无向连通图,如何选取一棵生成树,使树上所有边上权的总和为最小,这叫最小生成树</p>
+<a id="more"></a>
+
+<h2 id="普里姆（prim）算法"><a href="#普里姆（prim）算法" class="headerlink" title="普里姆（prim）算法"></a>普里姆（prim）算法</h2><p>普利姆(Prim)算法求最小生成树，也就是在包含 n 个顶点的连通图中，找出只有(n-1)条边包含所有 n 个顶点的 连通子图，也就是所谓的极小连通子图</p>
+<h3 id="修路问题"><a href="#修路问题" class="headerlink" title="修路问题"></a>修路问题</h3><p><a target="_blank" rel="noopener" href="https://imgtu.com/i/6xhH2D"><img src="https://z3.ax1x.com/2021/03/27/6xhH2D.png" alt="6xhH2D.png"></a></p>
+<ol>
+<li><p>有胜利乡有 7 个村庄(A, B, C, D, E, F, G) ，现在需要修路把 7 个村庄连通 </p>
+</li>
+<li><p>各个村庄的距离用边线表示(权) ，比如 A – B 距离 5 公里 </p>
+</li>
+<li><p>问：如何修路保证各个村庄都能连通，并且总的修建公路总里程最短?</p>
+</li>
+</ol>
+<h4 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析:"></a>思路分析:</h4><p>有n个顶点，则需要获取n-1条边</p>
+<p>每一次获取边一条边的步骤:</p>
+<p>1.假如从A开始，将A设为已访问，获取所有已访问与未访问相连的边 如 &lt;A,C&gt;=7   &lt;A,B&gt;=5    &lt;A,G&gt;=2</p>
+<p>2.上面三条边中取权值最小的一条边:&lt;A,G&gt;=2,并将G设为已访问</p>
+<p>接下来获取第二条边时，A   G  已经是访问过的点了</p>
+<p>可以获取 &lt;A,C&gt;=7   &lt;A,B&gt;=5   &lt;G,B&gt;=3   &lt;G,E&gt;=4   &lt;G,F&gt;=6   这5条边，选择最小的一条边: &lt;G,B&gt;=3,并将B设为已访问</p>
+<p>循环 n-1次上面的操作</p>
+<h4 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码"></a>实现代码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MinTree</span></span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> graph  需要生产最小数的图</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> v      从哪个顶点下标开始</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">prim</span><span class="params">(Graph graph,<span class="keyword">int</span> v)</span></span>&#123;</span><br><span class="line">        <span class="comment">//标记顶点是否被访问过</span></span><br><span class="line">        <span class="keyword">int</span>[] isVisited = <span class="keyword">new</span> <span class="keyword">int</span>[graph.vertexNum];</span><br><span class="line">        <span class="comment">//标记当前被访问过</span></span><br><span class="line">        isVisited[v]=<span class="number">1</span>;</span><br><span class="line">        <span class="comment">//标记当前生产边的两个点的下标</span></span><br><span class="line">        <span class="keyword">int</span> h1=-<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> h2=-<span class="number">1</span>;</span><br><span class="line">        <span class="comment">// 存放最小值，初始值可以用无穷大代替</span></span><br><span class="line">        <span class="keyword">int</span> minWeight=<span class="number">10000</span>;</span><br><span class="line">        <span class="comment">//因为普利姆算法最后产生顶点个数x-1条边，每循环一次添加一条边</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> n=<span class="number">0</span>;n&lt; graph.vertexNum-<span class="number">1</span>;n++)&#123;</span><br><span class="line">            <span class="comment">// i 表示被访问过的顶点下标</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt; graph.vertexNum;i++)&#123;</span><br><span class="line">                <span class="comment">// j 表示没有被访问过的顶点下标</span></span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;graph.vertexNum;j++)&#123;</span><br><span class="line">                    <span class="keyword">if</span>(isVisited[i]==<span class="number">1</span> &amp;&amp; isVisited[j]==<span class="number">0</span> &amp;&amp; graph.weight[i][j]&lt;minWeight)&#123;</span><br><span class="line">                        <span class="comment">//替换最小值 与顶点</span></span><br><span class="line">                        minWeight=graph.weight[i][j];</span><br><span class="line">                        h1=i;</span><br><span class="line">                        h2=j;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//结束上面两个循环，就生产了一条边</span></span><br><span class="line">            System.out.println(<span class="string">&quot;边&lt;&quot;</span>+graph.data[h1]+<span class="string">&quot;,&quot;</span>+graph.data[h2]+<span class="string">&quot;&gt;,&quot;</span>+minWeight);</span><br><span class="line">            <span class="comment">//标记当前点已访问</span></span><br><span class="line">            isVisited[h2]=<span class="number">1</span>;</span><br><span class="line">            minWeight=<span class="number">10000</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//创建图</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> vertexNum  顶点个数</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data       所有顶点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> weight     矩阵图</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Graph <span class="title">createGraph</span><span class="params">(<span class="keyword">int</span> vertexNum,<span class="keyword">char</span>[] data,<span class="keyword">int</span>[][] weight)</span></span>&#123;</span><br><span class="line">        Graph graph = <span class="keyword">new</span> Graph(vertexNum);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;vertexNum;i++)&#123;</span><br><span class="line">            graph.data[i]=data[i];</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;vertexNum;j++)&#123;</span><br><span class="line">                graph.weight[i][j]=weight[i][j];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span>  graph;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 图</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span></span>&#123;</span><br><span class="line">    <span class="comment">//顶点个数</span></span><br><span class="line">    <span class="keyword">int</span> vertexNum;</span><br><span class="line">    <span class="comment">//顶点</span></span><br><span class="line">    <span class="keyword">char</span>[] data;</span><br><span class="line">    <span class="comment">//矩阵图</span></span><br><span class="line">    <span class="keyword">int</span>[][] weight;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Graph</span><span class="params">(<span class="keyword">int</span> vertexNum)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.vertexNum = vertexNum;</span><br><span class="line">        <span class="keyword">this</span>.data=<span class="keyword">new</span> <span class="keyword">char</span>[vertexNum];</span><br><span class="line">        <span class="keyword">this</span>.weight=<span class="keyword">new</span> <span class="keyword">int</span>[vertexNum][vertexNum];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 顶点</span></span><br><span class="line">        <span class="keyword">char</span>[] data=&#123;<span class="string">&#x27;A&#x27;</span>,<span class="string">&#x27;B&#x27;</span>,<span class="string">&#x27;C&#x27;</span>,<span class="string">&#x27;D&#x27;</span>,<span class="string">&#x27;E&#x27;</span>,<span class="string">&#x27;F&#x27;</span>,<span class="string">&#x27;G&#x27;</span>&#125;;</span><br><span class="line">        <span class="comment">// 矩阵图</span></span><br><span class="line">        <span class="keyword">int</span>[][] weight=&#123;</span><br><span class="line">                &#123;<span class="number">10000</span>,<span class="number">5</span>,<span class="number">7</span>,<span class="number">10000</span>,<span class="number">10000</span>,<span class="number">10000</span>,<span class="number">2</span>&#125;,</span><br><span class="line">                &#123;<span class="number">5</span>,<span class="number">10000</span>,<span class="number">10000</span>,<span class="number">9</span>,<span class="number">10000</span>,<span class="number">10000</span>,<span class="number">3</span>&#125;,</span><br><span class="line">                &#123;<span class="number">7</span>,<span class="number">10000</span>,<span class="number">10000</span>,<span class="number">10000</span>,<span class="number">8</span>,<span class="number">10000</span>,<span class="number">10000</span>&#125;,</span><br><span class="line">                &#123;<span class="number">10000</span>,<span class="number">9</span>,<span class="number">10000</span>,<span class="number">10000</span>,<span class="number">10000</span>,<span class="number">4</span>,<span class="number">10000</span>&#125;,</span><br><span class="line">                &#123;<span class="number">10000</span>,<span class="number">10000</span>,<span class="number">8</span>,<span class="number">10000</span>,<span class="number">10000</span>,<span class="number">5</span>,<span class="number">4</span>&#125;,</span><br><span class="line">                &#123;<span class="number">10000</span>,<span class="number">10000</span>,<span class="number">10000</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">10000</span>,<span class="number">6</span>&#125;,</span><br><span class="line">                &#123;<span class="number">2</span>,<span class="number">3</span>,<span class="number">10000</span>,<span class="number">10000</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">10000</span>&#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        MinTree minTree = <span class="keyword">new</span> MinTree();</span><br><span class="line">        <span class="comment">//创建图</span></span><br><span class="line">        Graph graph = minTree.createGraph(data.length,data,weight);</span><br><span class="line">        <span class="comment">//生产最小数</span></span><br><span class="line">        System.out.println(<span class="string">&quot;最段路:&quot;</span>);</span><br><span class="line">        minTree.prim(graph,<span class="number">0</span>);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="克鲁斯卡尔-Kruskal-算法"><a href="#克鲁斯卡尔-Kruskal-算法" class="headerlink" title="克鲁斯卡尔(Kruskal)算法"></a>克鲁斯卡尔(Kruskal)算法</h2><ol>
+<li><p>克鲁斯卡尔(Kruskal)算法，是用来求加权连通图的最小生成树的算法。 </p>
+</li>
+<li><p>基本思想：按照权值从小到大的顺序选择 n-1 条边，并保证这 n-1 条边不构成回路 </p>
+</li>
+<li><p>具体做法：首先构造一个只含 n 个顶点的森林，然后依权值从小到大从连通网中选择边加入到森林中，并使森 林中不产生回路，直至森林变成一棵树为止</p>
+</li>
+</ol>
+<h3 id="公交站问题"><a href="#公交站问题" class="headerlink" title="公交站问题"></a>公交站问题</h3><p><a target="_blank" rel="noopener" href="https://imgtu.com/i/6xoaWV"><img src="https://z3.ax1x.com/2021/03/27/6xoaWV.png" alt="6xoaWV.png"></a></p>
+<ol>
+<li><p>有北京有新增 7 个站点(A, B, C, D, E, F, G) ，现在需要修路把 7 个站点连通 </p>
+</li>
+<li><p>各个站点的距离用边线表示(权) ，比如 A – B 距离 12 公里 </p>
+</li>
+<li><p>问：如何修路保证各个站点都能连通，并且总的修建公路总里程最短?</p>
+</li>
+</ol>
+<h4 id="思路分析-1"><a href="#思路分析-1" class="headerlink" title="思路分析"></a>思路分析</h4><p>第 1 步：将边加入 R 中。 边的权值最小，因此将它加入到最小生成树结果 R 中。 </p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/6xbSmD"><img src="https://z3.ax1x.com/2021/03/27/6xbSmD.png" alt="6xbSmD.png"></a></p>
+<p>第 2 步：将边加入 R 中。 上一步操作之后，边的权值最小，因此将它加入到最小生成树结果 R 中。</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/6xb9TH"><img src="https://z3.ax1x.com/2021/03/27/6xb9TH.png" alt="6xb9TH.png"></a></p>
+<p>第 3 步：将边加入 R 中。 上一步操作之后，边的权值最小，因此将它加入到最小生成树结果 R 中。 </p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/6xbitA"><img src="https://z3.ax1x.com/2021/03/27/6xbitA.png" alt="6xbitA.png"></a></p>
+<p>第 4 步：将边加入 R 中。 上一步操作之后，边的权值最小，但会和已有的边构成回路；因此，跳过边。同理，跳 过边。将边加入到最小生成树结果 R 中。 </p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/6xbFfI"><img src="https://z3.ax1x.com/2021/03/27/6xbFfI.png" alt="6xbFfI.png"></a></p>
+<p>第 5 步：将边加入 R 中。 上一步操作之后，边的权值最小，因此将它加入到最小生成树结果 R 中。 </p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/6xbApt"><img src="https://z3.ax1x.com/2021/03/27/6xbApt.png" alt="6xbApt.png"></a></p>
+<p>第 6 步：将边加入 R 中。 上一步操作之后，边的权值最小，但会和已有的边构成回路；因此，跳过边。同理，跳 过边。将边加入到最小生成树结果 R 中。 </p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/6xbE1P"><img src="https://z3.ax1x.com/2021/03/27/6xbE1P.png" alt="6xbE1P.png"></a></p>
+<p>此时，最小生成树构造完成！它包括的边依次是：&lt;E,F&gt; &lt;C,D&gt;  &lt;D,E&gt; &lt;B,F&gt; &lt;E,G&gt; &lt;A,B&gt;     </p>
+<h5 id="克鲁斯卡尔算法重点需要解决的以下两个问-题："><a href="#克鲁斯卡尔算法重点需要解决的以下两个问-题：" class="headerlink" title="克鲁斯卡尔算法重点需要解决的以下两个问 题："></a>克鲁斯卡尔算法重点需要解决的以下两个问 题：</h5><h6 id="问题一"><a href="#问题一" class="headerlink" title="问题一"></a>问题一</h6><p>对图的所有边按照权值大小进行排序。很好解决，采用排序算法进行排序即可。</p>
+<h6 id="问题二"><a href="#问题二" class="headerlink" title="问题二"></a>问题二</h6><p>将边添加到最小生成树中时，怎么样判断是否形成了回路。 </p>
+<p>记录顶点在”最小生成树”中的终点，顶点的终点是”在最小生成树中与它连通的最大顶点”。 然后每次需要将一条边添加到最小生存树时，判断该边的两个顶点的终点是否重合，重合的话则会构成回路。</p>
+<h4 id="实现代码-1"><a href="#实现代码-1" class="headerlink" title="实现代码"></a>实现代码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Kruskal</span> </span>&#123; </span><br><span class="line">    <span class="comment">//用无穷大表示不存在</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> INF = Integer.MAX_VALUE;</span><br><span class="line">    <span class="comment">//边的个数</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> edgeNum;</span><br><span class="line">    <span class="comment">//所有顶点</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">char</span>[] vertex;</span><br><span class="line">    <span class="comment">//矩阵图</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[][] weight;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//构造器</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Kruskal</span><span class="params">(<span class="keyword">char</span>[] vertex, <span class="keyword">int</span>[][] weight)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//这里全部采用复制拷贝的方式初始化，而不是直接赋值，是为了不改变原来传进来vertex，weight的值</span></span><br><span class="line">        <span class="keyword">int</span> len = vertex.length;</span><br><span class="line">        <span class="comment">//初始化顶点</span></span><br><span class="line">        <span class="keyword">this</span>.vertex = <span class="keyword">new</span> <span class="keyword">char</span>[len];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">            <span class="keyword">this</span>.vertex[i] = vertex[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//初始化矩阵图 与 边的个数</span></span><br><span class="line">        <span class="keyword">this</span>.weight = <span class="keyword">new</span> <span class="keyword">int</span>[len][len];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; len; j++) &#123;</span><br><span class="line">                <span class="keyword">this</span>.weight[i][j] = weight[i][j];</span><br><span class="line">                <span class="keyword">if</span> (weight[i][j] != INF &amp;&amp; weight[i][j] != <span class="number">0</span>) &#123;</span><br><span class="line">                    edgeNum++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        edgeNum /= <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//核心算法(生产最小树)</span></span><br><span class="line">    <span class="keyword">public</span> Edge[] kruskal() &#123;</span><br><span class="line">        <span class="comment">//存放最终结果</span></span><br><span class="line">        Edge[] result = <span class="keyword">new</span> Edge[vertex.length - <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">int</span> index = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">//存放各个顶点的终点，该数组是不断变化的</span></span><br><span class="line">        <span class="keyword">int</span>[] ends = <span class="keyword">new</span> <span class="keyword">int</span>[vertex.length];</span><br><span class="line">        <span class="comment">//获取所有边</span></span><br><span class="line">        Edge[] edges = getAllEdge();</span><br><span class="line">        <span class="comment">//将边从小到大排序</span></span><br><span class="line">        sort(edges);</span><br><span class="line">        <span class="comment">//遍历排序后的边</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; edgeNum; i++) &#123;</span><br><span class="line">            <span class="comment">//获取边的两个点的下标</span></span><br><span class="line">            <span class="keyword">char</span> v1 = edges[i].from;</span><br><span class="line">            <span class="keyword">int</span> p1 = getIndexOfVertex(v1);</span><br><span class="line">            <span class="keyword">char</span> v2 = edges[i].to;</span><br><span class="line">            <span class="keyword">int</span> p2 = getIndexOfVertex(v2);</span><br><span class="line">            <span class="comment">//然后获取两个点的终点,如果终点的值为0，返回的就是它的自己下标</span></span><br><span class="line">            <span class="keyword">int</span> n = getEnd(ends, p1);</span><br><span class="line">            <span class="keyword">int</span> m =getEnd(ends,p2);</span><br><span class="line">            <span class="comment">//如果两个点的终点不一样就加入到树中,并且标记终点</span></span><br><span class="line">            <span class="keyword">if</span> (n != m) &#123;</span><br><span class="line">                result[index++] = edges[i];</span><br><span class="line">                ends[n] = m;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//===============其他补充的重要方法======================</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> ends 存放每个顶点对应的终点，如果下标是0，则表示终点是自己</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> i    需要查找终点下标</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 下标 i 对应的终点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="comment">//获取下标 i 的终点</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getEnd</span><span class="params">(<span class="keyword">int</span>[] ends, <span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (ends[i] != <span class="number">0</span>) &#123;</span><br><span class="line">            i = ends[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//根据顶点获取该顶点所在的下标</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getIndexOfVertex</span><span class="params">(<span class="keyword">char</span> v)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; vertex.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (vertex[i] == v) &#123;</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//边排序(从小到大,冒泡)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Edge[] edges)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; edges.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; edges.length - <span class="number">1</span> - i; j++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (edges[j].weight &gt; edges[j + <span class="number">1</span>].weight) &#123;</span><br><span class="line">                    Edge temp = edges[j];</span><br><span class="line">                    edges[j] = edges[j + <span class="number">1</span>];</span><br><span class="line">                    edges[j + <span class="number">1</span>] = temp;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取所有边,如果边为INT 或 0（本身）则不显示</span></span><br><span class="line">    <span class="keyword">public</span> Edge[] getAllEdge() &#123;</span><br><span class="line">        Edge[] edges = <span class="keyword">new</span> Edge[edgeNum];</span><br><span class="line">        <span class="keyword">int</span> index = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; vertex.length; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; vertex.length; j++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (weight[i][j] != INF) &#123;</span><br><span class="line">                    Edge edge = <span class="keyword">new</span> Edge(vertex[i], vertex[j], weight[i][j]);</span><br><span class="line">                    edges[index++] = edge;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> edges;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//输出矩阵图</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; vertex.length; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; vertex.length; j++) &#123;</span><br><span class="line">                System.out.printf(<span class="string">&quot;%13d&quot;</span>, weight[i][j]);</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 边</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Edge</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span> from;</span><br><span class="line">    <span class="keyword">char</span> to;</span><br><span class="line">    <span class="keyword">int</span> weight;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Edge</span><span class="params">(<span class="keyword">char</span> from, <span class="keyword">char</span> to, <span class="keyword">int</span> weight)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.from = from;</span><br><span class="line">        <span class="keyword">this</span>.to = to;</span><br><span class="line">        <span class="keyword">this</span>.weight = weight;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&lt;&quot;</span> + from + <span class="string">&quot;,&quot;</span></span><br><span class="line">                + to +</span><br><span class="line">                <span class="string">&quot;&gt;=&quot;</span> + weight;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="测试代码-1"><a href="#测试代码-1" class="headerlink" title="测试代码"></a>测试代码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">char</span>[] vertex = &#123;<span class="string">&#x27;A&#x27;</span>, <span class="string">&#x27;B&#x27;</span>, <span class="string">&#x27;C&#x27;</span>, <span class="string">&#x27;D&#x27;</span>, <span class="string">&#x27;E&#x27;</span>, <span class="string">&#x27;F&#x27;</span>, <span class="string">&#x27;G&#x27;</span>&#125;;</span><br><span class="line">       <span class="keyword">int</span>[][] weight = &#123;</span><br><span class="line">               <span class="comment">/*A*/</span><span class="comment">/*B*/</span><span class="comment">/*C*/</span><span class="comment">/*D*/</span><span class="comment">/*E*/</span><span class="comment">/*F*/</span><span class="comment">/*G*/</span></span><br><span class="line">               <span class="comment">/*A*/</span> &#123;<span class="number">0</span>, <span class="number">12</span>, INF, INF, INF, <span class="number">16</span>, <span class="number">14</span>&#125;,</span><br><span class="line">               <span class="comment">/*B*/</span> &#123;<span class="number">12</span>, <span class="number">0</span>, <span class="number">10</span>, INF, INF, <span class="number">7</span>, INF&#125;,</span><br><span class="line">               <span class="comment">/*C*/</span> &#123;INF, <span class="number">10</span>, <span class="number">0</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">6</span>, INF&#125;,</span><br><span class="line">               <span class="comment">/*D*/</span> &#123;INF, INF, <span class="number">3</span>, <span class="number">0</span>, <span class="number">4</span>, INF, INF&#125;,</span><br><span class="line">               <span class="comment">/*E*/</span> &#123;INF, INF, <span class="number">5</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">8</span>&#125;,</span><br><span class="line">               <span class="comment">/*F*/</span> &#123;<span class="number">16</span>, <span class="number">7</span>, <span class="number">6</span>, INF, <span class="number">2</span>, <span class="number">0</span>, <span class="number">9</span>&#125;,</span><br><span class="line">               <span class="comment">/*G*/</span> &#123;<span class="number">14</span>, INF, INF, INF, <span class="number">8</span>, <span class="number">9</span>, <span class="number">0</span>&#125;</span><br><span class="line">       &#125;;</span><br><span class="line">       <span class="comment">//创建</span></span><br><span class="line">       Kruskal kruskal = <span class="keyword">new</span> Kruskal(vertex, weight);</span><br><span class="line">       System.out.println(<span class="string">&quot;矩阵图为:&quot;</span>);</span><br><span class="line">       kruskal.show();</span><br><span class="line">       <span class="comment">//开始生产最小树</span></span><br><span class="line">       Edge[] result = kruskal.kruskal();</span><br><span class="line">       System.out.println(<span class="string">&quot;最小树为:&quot;</span>);</span><br><span class="line">       System.out.println(Arrays.toString(result));</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>over。。。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>感谢老铁们的支持!!!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/weChatPay.png" alt="怪狗狗 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/aliPay.jpg" alt="怪狗狗 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%9B%BE/" rel="tag"> 图</a>
+              <a href="/tags/prim/" rel="tag"> prim</a>
+              <a href="/tags/kruskal/" rel="tag"> kruskal</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/27/KMP%E7%AE%97%E6%B3%95/" rel="prev" title="KMP算法">
+      <i class="fa fa-chevron-left"></i> KMP算法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/27/%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84/" rel="next" title="最短路径">
+      最短路径 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%99%AE%E9%87%8C%E5%A7%86%EF%BC%88prim%EF%BC%89%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">普里姆（prim）算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E8%B7%AF%E9%97%AE%E9%A2%98"><span class="nav-number">1.1.</span> <span class="nav-text">修路问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E5%88%86%E6%9E%90"><span class="nav-number">1.1.1.</span> <span class="nav-text">思路分析:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%BB%A3%E7%A0%81"><span class="nav-number">1.1.2.</span> <span class="nav-text">实现代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81"><span class="nav-number">1.1.3.</span> <span class="nav-text">测试代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%8B%E9%B2%81%E6%96%AF%E5%8D%A1%E5%B0%94-Kruskal-%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">克鲁斯卡尔(Kruskal)算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AC%E4%BA%A4%E7%AB%99%E9%97%AE%E9%A2%98"><span class="nav-number">2.1.</span> <span class="nav-text">公交站问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E5%88%86%E6%9E%90-1"><span class="nav-number">2.1.1.</span> <span class="nav-text">思路分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%8B%E9%B2%81%E6%96%AF%E5%8D%A1%E5%B0%94%E7%AE%97%E6%B3%95%E9%87%8D%E7%82%B9%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E7%9A%84%E4%BB%A5%E4%B8%8B%E4%B8%A4%E4%B8%AA%E9%97%AE-%E9%A2%98%EF%BC%9A"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">克鲁斯卡尔算法重点需要解决的以下两个问 题：</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E4%B8%80"><span class="nav-number">2.1.1.1.1.</span> <span class="nav-text">问题一</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E4%BA%8C"><span class="nav-number">2.1.1.1.2.</span> <span class="nav-text">问题二</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%BB%A3%E7%A0%81-1"><span class="nav-number">2.1.2.</span> <span class="nav-text">实现代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81-1"><span class="nav-number">2.1.3.</span> <span class="nav-text">测试代码</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="怪狗狗"
+      src="/images/jerry.jpg">
+  <p class="site-author-name" itemprop="name">怪狗狗</p>
+  <div class="site-description" itemprop="description">Unless I do not want to win,otherwise nothing makes me lose</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/oddDog-git" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;oddDog-git" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://1764501567@qq.com/" title="E-Mail → https:&#x2F;&#x2F;1764501567@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://wpa.qq.com/msgrd?v=3&uin=1764501567&site=qq&menu=yes" title="http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;1764501567&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener" target="_blank">加我QQ</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">怪狗狗</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div> -->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'YVPmrsyUdC4uV9bapDgb8ll6-gzGzoHsz',
+      appKey     : 'MUI57EQtRoMQjLvpW68kiNyE',
+      placeholder: "快来评论吧！！！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
