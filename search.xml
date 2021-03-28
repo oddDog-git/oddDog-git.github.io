@@ -1389,6 +1389,7 @@
         <tag>链表</tag>
         <tag>递归</tag>
         <tag>分治</tag>
+        <tag>困难</tag>
       </tags>
   </entry>
   <entry>
@@ -1431,6 +1432,31 @@
   <entry>
     <title>跳跃游戏</title>
     <url>/2021/03/28/%E8%B7%B3%E8%B7%83%E6%B8%B8%E6%88%8F/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p>给定一个非负整数数组 nums ，你最初位于数组的 第一个下标 。数组中的每个元素代表你在该位置可以跳跃的最大长度。</p>
+<p>判断你是否能够到达最后一个下标。</p>
+<h4 id="示例-1："><a href="#示例-1：" class="headerlink" title="示例 1："></a>示例 1：<a id="more"></a></h4><p>输入：nums = [2,3,1,1,4]<br>输出：true<br>解释：可以先跳 1 步，从下标 0 到达下标 1, 然后再从下标 1 跳 3 步到达最后一个下标。</p>
+<h4 id="示例-2："><a href="#示例-2：" class="headerlink" title="示例 2："></a>示例 2：</h4><p>输入：nums = [3,2,1,0,4]<br>输出：false<br>解释：无论怎样，总会到达下标为 3 的位置。但该下标的最大跳跃长度是 0 ， 所以永远不可能到达最后一个下标。</p>
+<h3 id="思路一-递归跳跃-超时"><a href="#思路一-递归跳跃-超时" class="headerlink" title="思路一:递归跳跃(超时)"></a>思路一:递归跳跃(超时)</h3><p>1.判断当前步数有没有超过数组长度，如果超过就返回 true</p>
+<p>2.如果没超过就获取当前位置的值，遍历当前位置能跳的所有情况，每次遍历就递归条越</p>
+<p>3.如果遍历完毕还没有跳出，就返回false</p>
+<p>4.这种方法严重超时，不推荐</p>
+<h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//递归跳跃</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">jump</span><span class="params">(<span class="keyword">int</span>[] nums,<span class="keyword">int</span> n)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(n&gt;=nums.length-<span class="number">1</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//获取当前值可以跳跃的次数</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=nums[n];i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(jump(nums,n+i))&#123;</span><br><span class="line">               <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="思路二-直推法"><a href="#思路二-直推法" class="headerlink" title="思路二:直推法"></a>思路二:直推法</h3><p>1.直接遍历当前数组，如果遇到0就停下，从当前0所在的位置向前遍历</p>
+<p>2.判断前方是否存在:  (下标 + 值)  &gt;  0所在位置的下标，如果存在则说明这个0是可以跳过的，继续上面的遍历</p>
+<p>3.如果不存在，就表示当前0是条不过去的，直接返回false</p>
+<p>4.遍历结束，返回true</p>
+<h4 id="代码实现-1"><a href="#代码实现-1" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canJump</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">           <span class="comment">//如果找到0，并且不是最后一个数，就向前遍历</span></span><br><span class="line">           <span class="keyword">if</span>(nums[i]==<span class="number">0</span> &amp;&amp; i!=nums.length-<span class="number">1</span>)&#123;</span><br><span class="line">               <span class="keyword">boolean</span> flag=<span class="keyword">false</span>;</span><br><span class="line">               <span class="keyword">for</span>(<span class="keyword">int</span> j=i-<span class="number">1</span>;j&gt;=<span class="number">0</span>;j--)&#123;</span><br><span class="line">                   <span class="comment">//说明前方有一个值可以跳过当前的0</span></span><br><span class="line">                   <span class="keyword">if</span>(nums[j]+j&gt;i)&#123;</span><br><span class="line">                       flag=<span class="keyword">true</span>;</span><br><span class="line">                       <span class="keyword">break</span>;</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">               <span class="comment">//如果没找到可以跳跃的数，就返回 false</span></span><br><span class="line">               <span class="keyword">if</span>(!flag)&#123;</span><br><span class="line">                   <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="思路三-覆盖法"><a href="#思路三-覆盖法" class="headerlink" title="思路三:覆盖法"></a>思路三:覆盖法</h3><p>1.用一个值can，表示当前最大可达下标</p>
+<p>2.遍历数组，如果当前下标小于或等于最大可达下标，说明可以继续跳越，并且不断更新 can == 》Math.max(can ,  i+nums[i])</p>
+<p>3.一旦发现当前下标大于最大可达下标，就返回false</p>
+<h4 id="代码实现-2"><a href="#代码实现-2" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canJump</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(nums==<span class="keyword">null</span> || nums.length==<span class="number">1</span>)&#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//表示最大可达的下标</span></span><br><span class="line">       <span class="keyword">int</span> can=<span class="number">0</span>;</span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">           <span class="comment">//如果最大可达下标大于当前下标，就不断更新最大可达下标，否则就返回 false</span></span><br><span class="line">           <span class="keyword">if</span>(can&gt;=i)&#123;</span><br><span class="line">               can=Math.max(can,i+nums[i]);</span><br><span class="line">           &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">               <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>over。。。</p>
+]]></content>
+      <categories>
+        <category>算法题</category>
+      </categories>
+      <tags>
+        <tag>中等</tag>
+      </tags>
   </entry>
 </search>
