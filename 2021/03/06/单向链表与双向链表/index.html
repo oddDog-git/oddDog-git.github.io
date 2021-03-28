@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://s3.ax1x.com/2021/03/06/6uwseI.png">
 <meta property="og:image" content="https://s3.ax1x.com/2021/03/06/6uwgFf.png">
 <meta property="article:published_time" content="2021-03-06T13:49:39.000Z">
-<meta property="article:modified_time" content="2021-03-06T14:44:35.572Z">
+<meta property="article:modified_time" content="2021-03-28T07:50:01.230Z">
 <meta property="article:author" content="怪狗狗">
 <meta property="article:tag" content="链表">
 <meta name="twitter:card" content="summary">
@@ -188,10 +188,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-03-06 21:49:39 / 修改时间：22:44:35" itemprop="dateCreated datePublished" datetime="2021-03-06T21:49:39+08:00">2021-03-06</time>
+              <time title="创建时间：2021-03-06 21:49:39" itemprop="dateCreated datePublished" datetime="2021-03-06T21:49:39+08:00">2021-03-06</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-28 15:50:01" itemprop="dateModified" datetime="2021-03-28T15:50:01+08:00">2021-03-28</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -261,9 +267,17 @@
 </ol>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> head 链表的头节点</span></span><br><span class="line"><span class="comment">* <span class="doctag">@return</span> 返回的就是有效节点的个数</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getLength</span><span class="params">(Node head)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(head.next==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> size=<span class="number">0</span>;</span><br><span class="line">        Node curr=head.next;</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span>(curr==<span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            curr=curr.next;<span class="comment">//循环遍历</span></span><br><span class="line">            size++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> size;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <ol start="2">
-<li>查找单链表中的倒数第 k 个结点  代码演示:</li>
+<li><p>查找单链表中的倒数第 k 个结点</p>
+<p>代码演示:</p>
+</li>
 </ol>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> head 列表头</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> index 倒数第 index 个</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 倒数第index个节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Node <span class="title">getLastIndexNode</span><span class="params">(Node head,Integer index)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(head.next==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//第一次遍历，获取该链表有效节点</span></span><br><span class="line">        Integer size=getLength(head);</span><br><span class="line">        <span class="keyword">if</span>(index&lt;<span class="number">1</span> || index&gt;size)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//第二次遍历，遍历 (size-index)次</span></span><br><span class="line">        Node curr=head.next;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;(size-index);i++)&#123;</span><br><span class="line">            curr=curr.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> curr;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h5 id="方法二-快慢指针法"><a href="#方法二-快慢指针法" class="headerlink" title="方法二:快慢指针法"></a>方法二:快慢指针法</h5><h6 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析:"></a>思路分析:</h6><p>1.快指针从头开始走，慢指针从头的前一个地方开始走</p>
+<p>2.快指针先走，走n次，然后快指针与慢指针一起走</p>
+<p>3.直到快指针走到尾部，这时慢指针指向的下一个节点就是要删除的节点</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">removeNthFromEnd</span><span class="params">(ListNode head, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">       <span class="comment">//快慢指针法</span></span><br><span class="line">       ListNode temp=<span class="keyword">new</span> ListNode(<span class="number">0</span>,head);</span><br><span class="line">       ListNode fast=head;</span><br><span class="line">       ListNode slow=temp;</span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">           fast=fast.next;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">while</span>(fast!=<span class="keyword">null</span>)&#123;</span><br><span class="line">           fast=fast.next;</span><br><span class="line">           slow=slow.next;</span><br><span class="line">       &#125;</span><br><span class="line">       slow.next=slow.next.next;</span><br><span class="line">       <span class="keyword">return</span> temp.next;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+
 <ol start="3">
 <li>单链表的反转 采用头插法</li>
 </ol>
@@ -405,7 +419,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%B8%A6-head-%E5%A4%B4%E7%9A%84%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8%E5%AE%9E%E7%8E%B0-%E2%80%93%E5%AE%8C%E6%88%90%E6%B0%B4%E6%B5%92%E8%8B%B1%E9%9B%84%E6%8E%92%E8%A1%8C%E6%A6%9C%E7%AE%A1%E7%90%86%E5%AE%8C%E6%88%90%E5%AF%B9%E8%8B%B1%E9%9B%84%E4%BA%BA%E7%89%A9%E7%9A%84%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5%E6%93%8D%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">使用带 head 头的单向链表实现 –完成水浒英雄排行榜管理完成对英雄人物的增删改查操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%BC%94%E7%A4%BA"><span class="nav-number">1.1.</span> <span class="nav-text">代码演示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%8D%95%E9%A1%B9%E9%93%BE%E8%A1%A8%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98"><span class="nav-number">1.1.1.</span> <span class="nav-text">一些单项链表常见面试题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%B8%A6-head-%E5%A4%B4%E7%9A%84%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8%E5%AE%9E%E7%8E%B0-%E2%80%93%E6%B0%B4%E6%B5%92%E8%8B%B1%E9%9B%84%E6%8E%92%E8%A1%8C%E6%A6%9C"><span class="nav-number">2.</span> <span class="nav-text">使用带 head 头的双向链表实现 –水浒英雄排行榜</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%B8%A6-head-%E5%A4%B4%E7%9A%84%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8%E5%AE%9E%E7%8E%B0-%E2%80%93%E5%AE%8C%E6%88%90%E6%B0%B4%E6%B5%92%E8%8B%B1%E9%9B%84%E6%8E%92%E8%A1%8C%E6%A6%9C%E7%AE%A1%E7%90%86%E5%AE%8C%E6%88%90%E5%AF%B9%E8%8B%B1%E9%9B%84%E4%BA%BA%E7%89%A9%E7%9A%84%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5%E6%93%8D%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">使用带 head 头的单向链表实现 –完成水浒英雄排行榜管理完成对英雄人物的增删改查操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%BC%94%E7%A4%BA"><span class="nav-number">1.1.</span> <span class="nav-text">代码演示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%8D%95%E9%A1%B9%E9%93%BE%E8%A1%A8%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98"><span class="nav-number">1.1.1.</span> <span class="nav-text">一些单项链表常见面试题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C-%E5%BF%AB%E6%85%A2%E6%8C%87%E9%92%88%E6%B3%95"><span class="nav-number">1.1.1.0.1.</span> <span class="nav-text">方法二:快慢指针法</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E5%88%86%E6%9E%90"><span class="nav-number">1.1.1.0.1.1.</span> <span class="nav-text">思路分析:</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%B8%A6-head-%E5%A4%B4%E7%9A%84%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8%E5%AE%9E%E7%8E%B0-%E2%80%93%E6%B0%B4%E6%B5%92%E8%8B%B1%E9%9B%84%E6%8E%92%E8%A1%8C%E6%A6%9C"><span class="nav-number">2.</span> <span class="nav-text">使用带 head 头的双向链表实现 –水浒英雄排行榜</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -421,20 +435,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">28</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-count">41</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
