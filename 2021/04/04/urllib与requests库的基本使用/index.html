@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-bounce.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"odddog-git.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1.urllib库   —内置urlopen函数：创建一个表示远程url的类文件对象，然后像本地文件一样操作这个类文件对象来获取远程数据。 url：请求的url。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="urllib与requests库的基本使用">
+<meta property="og:url" content="http://odddog-git.github.io/2021/04/04/urllib%E4%B8%8Erequests%E5%BA%93%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="hui&#39;s Blog">
+<meta property="og:description" content="1.urllib库   —内置urlopen函数：创建一个表示远程url的类文件对象，然后像本地文件一样操作这个类文件对象来获取远程数据。 url：请求的url。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-04T04:43:28.000Z">
+<meta property="article:modified_time" content="2021-04-04T04:46:01.799Z">
+<meta property="article:author" content="怪狗狗">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="基础">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://odddog-git.github.io/2021/04/04/urllib%E4%B8%8Erequests%E5%BA%93%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>urllib与requests库的基本使用 | hui's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://oddDog-git" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hui's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://odddog-git.github.io/2021/04/04/urllib%E4%B8%8Erequests%E5%BA%93%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/jerry.jpg">
+      <meta itemprop="name" content="怪狗狗">
+      <meta itemprop="description" content="She is fucking pretty">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hui's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          urllib与requests库的基本使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-04 12:43:28 / 修改时间：12:46:01" itemprop="dateCreated datePublished" datetime="2021-04-04T12:43:28+08:00">2021-04-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%88%AC%E8%99%AB/" itemprop="url" rel="index"><span itemprop="name">爬虫</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/04/04/urllib%E4%B8%8Erequests%E5%BA%93%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/04/04/urllib%E4%B8%8Erequests%E5%BA%93%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="1-urllib库-—内置"><a href="#1-urllib库-—内置" class="headerlink" title="1.urllib库   —内置"></a>1.urllib库   —内置</h2><h3 id="urlopen函数："><a href="#urlopen函数：" class="headerlink" title="urlopen函数："></a>urlopen函数：</h3><p>创建一个表示远程url的类文件对象，然后像本地文件一样操作这个类文件对象来获取远程数据。</p>
+<p>url：请求的url。<a id="more"></a><br>data：请求的data，如果设置了这个值，那么将变成post请求。<br>返回值：返回值是一个http.client.HTTPResponse对象，这个对象是一个类文件句柄对象。有read(size)、readline、readlines以及getcode等方法。</p>
+<h3 id="urlretrieve函数："><a href="#urlretrieve函数：" class="headerlink" title="urlretrieve函数："></a>urlretrieve函数：</h3><p>这个函数可以方便的将网页上的一个文件保存到本地。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">request.urlretrieve(url,文件名)</span><br></pre></td></tr></table></figure>
+<h3 id="urlencode函数：编码"><a href="#urlencode函数：编码" class="headerlink" title="urlencode函数：编码"></a>urlencode函数：编码</h3><p>urlencode可以把字典数据转换为URL编码的数据。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> parse</span><br><span class="line"></span><br><span class="line">data = &#123;<span class="string">&#x27;name&#x27;</span>:<span class="string">&#x27;老王&#x27;</span>,<span class="string">&#x27;age&#x27;</span>:<span class="number">18</span>,<span class="string">&#x27;greet&#x27;</span>:<span class="string">&#x27;hello world&#x27;</span>&#125;</span><br><span class="line"></span><br><span class="line">qs = parse.urlencode(data)</span><br><span class="line">print(qs)</span><br><span class="line"></span><br><span class="line"><span class="comment">#name=%E8%80%81%E7%8E%8B&amp;age=18&amp;greet=hello+world</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="parse-qs函数：解码"><a href="#parse-qs函数：解码" class="headerlink" title="parse_qs函数：解码"></a>parse_qs函数：解码</h3><p>可以将经过编码后的url参数进行解码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">print(parse.parse_qs(qs))</span><br><span class="line"><span class="comment"># &#123;&#x27;name&#x27;: [&#x27;老王&#x27;], &#x27;age&#x27;: [&#x27;18&#x27;], &#x27;greet&#x27;: [&#x27;hello world&#x27;]&#125;</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="urlparse和urlsplit函数：解析url"><a href="#urlparse和urlsplit函数：解析url" class="headerlink" title="urlparse和urlsplit函数：解析url"></a>urlparse和urlsplit函数：解析url</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> parse</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;http://www.baidu.com/index.html;user?id=S#comment&#x27;</span></span><br><span class="line"></span><br><span class="line">result = parse.urlparse(url)</span><br><span class="line"><span class="comment"># result = parse.urlsplit(url)</span></span><br><span class="line"></span><br><span class="line">print(result)</span><br><span class="line">print(result.scheme)</span><br><span class="line">print(result.netloc)</span><br><span class="line">print(result.path)</span><br><span class="line"><span class="comment">#urlparse里有params属性，而urlsplit没有这个params属性。</span></span><br><span class="line">print(result.params)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h3 id="request-Request类：网络请求-可以增加请求头"><a href="#request-Request类：网络请求-可以增加请求头" class="headerlink" title="request.Request类：网络请求  可以增加请求头"></a>request.Request类：网络请求  可以增加请求头</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> request</span><br><span class="line"></span><br><span class="line">headers = &#123;</span><br><span class="line">        <span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 			(KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">rq = request.Request(<span class="string">&#x27;https://www.baidu.com/&#x27;</span>,headers=headers)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">resp = request.urlopen(rq)</span><br><span class="line"></span><br><span class="line">print(resp.read())</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="ProxyHandler处理器（代理设置）：封ip问题"><a href="#ProxyHandler处理器（代理设置）：封ip问题" class="headerlink" title="ProxyHandler处理器（代理设置）：封ip问题"></a>ProxyHandler处理器（代理设置）：封ip问题</h3><ol>
+<li><p>代理原理：在请求目的网站之前，先请求代理服务器，然后让代理服务器去请求目的网站，代理服务器拿到目的网站的数据后，再转发给我们的代码。</p>
+</li>
+<li><p><a href="http://httpbin.org：这个网站可以方便的查看http请求的一些参数。">http://httpbin.org：这个网站可以方便的查看http请求的一些参数。</a></p>
+</li>
+<li><p>在代码中使用代理  示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用代理</span></span><br><span class="line"><span class="comment"># 步骤</span></span><br><span class="line">url = <span class="string">&#x27;http://httpbin.org/ip&#x27;</span></span><br><span class="line"><span class="comment">#1. 使用ProxyHandler,传入代理构建一个handler</span></span><br><span class="line">handler = request.ProxyHandler(&#123;<span class="string">&#x27;http&#x27;</span>:<span class="string">&#x27;122.193.244.243:9999&#x27;</span>&#125;)</span><br><span class="line"><span class="comment">#2. 使用上面创建的handler构建一个opener</span></span><br><span class="line">opener = request.build_opener(handler)</span><br><span class="line"><span class="comment">#3. 使用opener去发送一个请求</span></span><br><span class="line">resp = opener.<span class="built_in">open</span>(url)</span><br><span class="line">print(resp.read())</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<h3 id="cookie-登录"><a href="#cookie-登录" class="headerlink" title="cookie:           登录"></a>cookie:           登录</h3><ol>
+<li><p>什么是cookie：指某些网站为了辨别用户身份、进行 session 跟踪而储存在用户本地终端上的数据</p>
+</li>
+<li><p>cookie的格式：<br>Set-Cookie: NAME=VALUE；Expires/Max-age=DATE；Path=PATH；         Domain=DOMAIN_NAME；SECURE<br>参数意义：<br>NAME：cookie的名字。<br>VALUE：cookie的值。<br>Expires：cookie的过期时间。<br>Path：cookie作用的路径。<br>Domain：cookie作用的域名。<br>SECURE：是否只在https协议下起作用。</p>
+</li>
+</ol>
+<h3 id="http-cookiejar模块：提供用于存储cookie的对象"><a href="#http-cookiejar模块：提供用于存储cookie的对象" class="headerlink" title="http.cookiejar模块：提供用于存储cookie的对象"></a>http.cookiejar模块：提供用于存储cookie的对象</h3><ol>
+<li><p>CookieJar：管理HTTP cookie值、存储HTTP请求生成的cookie、向传出的HTTP请求添加cookie的对象。整个cookie都存储在内存中，对CookieJar实例进行垃圾回收后cookie也将丢失。</p>
+</li>
+<li><p>FileCookieJar (filename,delayload=None,policy=None)：从CookieJar派生而来，用来创建FileCookieJar实例，检索cookie信息并将cookie存储到文件中。filename是存储cookie的文件名。delayload为True时支持延迟访问访问文件，即只有在需要时才读取文件或在文件中存储数据。</p>
+</li>
+<li><p>MozillaCookieJar (filename,delayload=None,policy=None)：从FileCookieJar派生而来，创建与Mozilla浏览器 cookies.txt兼容的FileCookieJar实例。</p>
+</li>
+<li><p>LWPCookieJar (filename,delayload=None,policy=None)：从FileCookieJar派生而来，创建与libwww-perl标准的 Set-Cookie3 文件格式兼容的FileCookieJar实例。</p>
+</li>
+</ol>
+<p>实例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> request</span><br><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> parse</span><br><span class="line"><span class="keyword">from</span> http.cookiejar <span class="keyword">import</span>  CookieJar</span><br><span class="line"></span><br><span class="line"><span class="comment"># 登录：https://i.meishi.cc/login.php?redirect=https%3A%2F%2Fwww.meishij.net%2F</span></span><br><span class="line"><span class="comment">#个人网页https://i.meishi.cc/cook.php?id=13686422</span></span><br><span class="line"></span><br><span class="line">headers=&#123;</span><br><span class="line">    <span class="string">&#x27;User-Agent&#x27;</span>:<span class="string">&#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">#1.登录</span></span><br><span class="line"><span class="comment">#1.1 创建cookiejar对象</span></span><br><span class="line">cookiejar = CookieJar()</span><br><span class="line"><span class="comment">#1.2 使用cookiejar创建一个HTTPCookieProcess对象</span></span><br><span class="line">handler = request.HTTPCookieProcessor(cookiejar)</span><br><span class="line"><span class="comment">#1.3 使用上一步的创建的handler创建一个opener</span></span><br><span class="line">opener = request.build_opener(handler)</span><br><span class="line"><span class="comment">#1.4 使用opener发送登录请求  (账号和密码)</span></span><br><span class="line"></span><br><span class="line">post_url = <span class="string">&#x27;https://i.meishi.cc/login.php?redirect=https%3A%2F%2Fwww.meishij.net%2F&#x27;</span></span><br><span class="line">post_data = parse.urlencode(&#123;</span><br><span class="line">    <span class="string">&#x27;username&#x27;</span>:<span class="string">&#x27;1097566154@qq.com&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;password&#x27;</span>:<span class="string">&#x27;wq15290884759.&#x27;</span></span><br><span class="line">&#125;)</span><br><span class="line">req = request.Request(post_url,data=post_data.encode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">opener.<span class="built_in">open</span>(req)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#2.访问个人网页</span></span><br><span class="line">url = <span class="string">&#x27;https://i.meishi.cc/cook.php?id=13686422&#x27;</span></span><br><span class="line">rq = request.Request(url,headers=headers)</span><br><span class="line">resp = opener.<span class="built_in">open</span>(rq)</span><br><span class="line">print(resp.read().decode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<p>cookie加载与保存</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> request</span><br><span class="line"><span class="keyword">from</span> http.cookiejar <span class="keyword">import</span> MozillaCookieJar</span><br><span class="line"></span><br><span class="line"><span class="comment"># 保存</span></span><br><span class="line"><span class="comment"># cookiejar = MozillaCookieJar(&#x27;cookie.txt&#x27;)</span></span><br><span class="line"><span class="comment"># handler = request.HTTPCookieProcessor(cookiejar)</span></span><br><span class="line"><span class="comment"># opener = request.build_opener(handler)</span></span><br><span class="line"><span class="comment"># resp = opener.open(&#x27;http://www.httpbin.org/cookies/set/course/abc&#x27;)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># cookiejar.save(ignore_discard=True,ignore_expires=True)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ignore_discard=True  即使cookies即将被丢弃也要保存下来</span></span><br><span class="line"><span class="comment"># ignore_expires=True  如果cookies已经过期也将它保存并且文件已存在时将覆盖</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#加载</span></span><br><span class="line"></span><br><span class="line">cookiejar = MozillaCookieJar(<span class="string">&#x27;cookie.txt&#x27;</span>)</span><br><span class="line">cookiejar.load()</span><br><span class="line">handler = request.HTTPCookieProcessor(cookiejar)</span><br><span class="line">opener = request.build_opener(handler)</span><br><span class="line">resp = opener.<span class="built_in">open</span>(<span class="string">&#x27;http://www.httpbin.org/cookies/set/course/abc&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> cookie <span class="keyword">in</span> cookiejar:</span><br><span class="line">    print(cookie)</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="2-requests库-—第三方库"><a href="#2-requests库-—第三方库" class="headerlink" title="2.requests库   —第三方库"></a>2.requests库   —第三方库</h2><p>Requests：让HTTP服务人类</p>
+<h3 id="安装和文档地址："><a href="#安装和文档地址：" class="headerlink" title="安装和文档地址："></a>安装和文档地址：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install requests</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="发送GET请求"><a href="#发送GET请求" class="headerlink" title="发送GET请求"></a>发送GET请求</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加headers和查询参数</span></span><br><span class="line">headers = &#123;</span><br><span class="line"><span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line">kw = &#123;<span class="string">&#x27;wd&#x27;</span>:<span class="string">&#x27;中国&#x27;</span>&#125;</span><br><span class="line"><span class="comment"># params 接收一个字典或者字符串的查询参数，字典类型自动转换为url编码，不需要urlencode()</span></span><br><span class="line">response = requests.get(<span class="string">&#x27;https://www.baidu.com/s&#x27;</span>,headers=headers,params=kw)</span><br><span class="line">print(response)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 属性</span></span><br><span class="line"><span class="comment"># 查询响应内容</span></span><br><span class="line">print(response.text)  <span class="comment">#返回unicode格式的数据</span></span><br><span class="line">print(response.content) <span class="comment">#返回字节流数据</span></span><br><span class="line">print(response.url)  <span class="comment">#查看完整url地址</span></span><br><span class="line">print(response.encoding) <span class="comment"># 查看响应头部字符编码</span></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="response-text和response-content的区别："><a href="#response-text和response-content的区别：" class="headerlink" title="response.text和response.content的区别："></a>response.text和response.content的区别：</h4><ol>
+<li><code>response.content</code> ：这个是直接从网络上抓取的数据，没有经过任何的编码，所以是一个bytes类型，其实在硬盘上和网络上传输的字符串都是bytes类型</li>
+<li><code>response.text</code>：这个是str的数据类型，是requests库将response.content进行解码的字符串，解码需要指定一个编码方式，requests会根据自己的猜测来判断编码的方式，所以有时候可能会猜测错误，就会导致解码产生乱码，这时候就应该进行手动解码，比如使用<code>response.content.decode(&#39;utf-8&#39;)</code></li>
+</ol>
+<h3 id="发送POST请求："><a href="#发送POST请求：" class="headerlink" title="发送POST请求："></a>发送POST请求：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">response = requests.post(<span class="string">&quot;http://www.baidu.com/&quot;</span>,data=data)</span><br></pre></td></tr></table></figure>
+<p>POST请求方式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;https://i.meishi.cc/login.php?redirect=https%3A%2F%2Fwww.meishij.net%2F&#x27;</span></span><br><span class="line">headers=&#123;</span><br><span class="line">    <span class="string">&#x27;User-Agent&#x27;</span>:<span class="string">&#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">&#x27;redirect&#x27;</span>: <span class="string">&#x27;https://www.meishij.net/&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;username&#x27;</span>: <span class="string">&#x27;1097566154@qq.com&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;password&#x27;</span>: <span class="string">&#x27;wq15290884759.&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line">resp = requests.post(url,headers=headers,data=data)</span><br><span class="line">print(resp.text)</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="使用代理："><a href="#使用代理：" class="headerlink" title="使用代理："></a>使用代理：</h3><p>只要在请求的方法中（比如get或者post）传递proxies参数就可以了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">proxy = &#123;</span><br><span class="line">    <span class="string">&#x27;http&#x27;</span>:<span class="string">&#x27;111.77.197.127:9999&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line">url = <span class="string">&#x27;http://www.httpbin.org/ip&#x27;</span></span><br><span class="line">resp = requests.get(url,proxies=proxy)</span><br><span class="line">print(resp.text)</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="cookie："><a href="#cookie：" class="headerlink" title="cookie："></a>cookie：</h3><p>基本使用：模拟登陆</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">url = <span class="string">&#x27;https://www.zhihu.com/hot&#x27;</span></span><br><span class="line">headers = &#123;</span><br><span class="line">    <span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;cookie&#x27;</span>:<span class="string">&#x27;_zap=59cde9c3-c5c0-4baa-b756-fa16b5e72b10; d_c0=&quot;APDi1NJcuQ6PTvP9qa1EKY6nlhVHc_zYWGM=|1545737641&quot;; __gads=ID=237616e597ec37ad:T=1546339385:S=ALNI_Mbo2JturZesh38v7GzEeKjlADtQ5Q; _xsrf=pOd30ApWQ2jihUIfq94gn2UXxc0zEeay; q_c1=1767e338c3ab416692e624763646fc07|1554209209000|1545743740000; tst=h; __utma=51854390.247721793.1554359436.1554359436.1554359436.1; __utmc=51854390; __utmz=51854390.1554359436.1.1.utmcsr=zhihu.com|utmccn=(referral)|utmcmd=referral|utmcct=/hot; __utmv=51854390.100-1|2=registration_date=20180515=1^3=entry_date=20180515=1; l_n_c=1; l_cap_id=&quot;OWRiYjI0NzJhYzYwNDM3MmE2ZmIxMGIzYmQwYzgzN2I=|1554365239|875ac141458a2ebc478680d99b9219c461947071&quot;; r_cap_id=&quot;MmZmNDFkYmIyM2YwNDAxZmJhNWU1NmFjOGRkNDNjYjc=|1554365239|54372ab1797cba8c4dd224ba1845dd7d3f851802&quot;; cap_id=&quot;YzQwNGFlYWNmNjY3NDFhNGI4MGMyYjZjYjRhMzQ1ZmE=|1554365239|385cc25e3c4e3b0b68ad5747f623cf3ad2955c9f&quot;; n_c=1; capsion_ticket=&quot;2|1:0|10:1554366287|14:capsion_ticket|44:MmE5YzNkYjgzODAyNDgzNzg5MTdjNmE3NjQyODllOGE=|40d3498bedab1b7ba1a247d9fc70dc0e4f9a4f394d095b0992a4c85e32fd29be&quot;; z_c0=&quot;2|1:0|10:1554366318|4:z_c0|92:Mi4xOWpCeUNRQUFBQUFBOE9MVTBseTVEaVlBQUFCZ0FsVk5iZzJUWFFEWi1JMkxnQXlVUXh2SlhYb3NmWks3d1VwMXRB|81b45e01da4bc235c2e7e535d580a8cc07679b50dac9e02de2711e66c65460c6&quot;; tgw_l7_route=578107ff0d4b4f191be329db6089ff48&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line">resp = requests.get(url,headers=headers)</span><br><span class="line">print(resp.text)</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="session：共享cookie"><a href="#session：共享cookie" class="headerlink" title="session：共享cookie"></a>session：共享cookie</h4><p>案例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">post_url = <span class="string">&#x27;https://i.meishi.cc/login.php?redirect=https%3A%2F%2Fwww.meishij.net%2F&#x27;</span></span><br><span class="line"></span><br><span class="line">post_data = &#123;</span><br><span class="line">    <span class="string">&#x27;username&#x27;</span>:<span class="string">&#x27;1097566154@qq.com&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;password&#x27;</span>:<span class="string">&#x27;wq15290884759.&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line">headers=&#123;</span><br><span class="line">    <span class="string">&#x27;User-Agent&#x27;</span>:<span class="string">&#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 登录</span></span><br><span class="line">session = requests.session()</span><br><span class="line">session.post(post_url,headers=headers,data=post_data)</span><br><span class="line"></span><br><span class="line"><span class="comment">#访问个人页面</span></span><br><span class="line">url = <span class="string">&#x27;https://i.meishi.cc/cook.php?id=13686422&#x27;</span></span><br><span class="line">resp = session.get(url)</span><br><span class="line">print(resp.text)</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="处理不信任的SSL证书："><a href="#处理不信任的SSL证书：" class="headerlink" title="处理不信任的SSL证书："></a>处理不信任的SSL证书：</h3><p>对于那些已经被信任的SSL证书的网站，比如<a target="_blank" rel="noopener" href="https://www.baidu.com/%EF%BC%8C%E9%82%A3%E4%B9%88%E4%BD%BF%E7%94%A8requests%E7%9B%B4%E6%8E%A5%E5%B0%B1%E5%8F%AF%E4%BB%A5%E6%AD%A3%E5%B8%B8%E7%9A%84%E8%BF%94%E5%9B%9E%E5%93%8D%E5%BA%94%E3%80%82%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81%E5%A6%82%E4%B8%8B%EF%BC%9A">https://www.baidu.com/，那么使用requests直接就可以正常的返回响应。示例代码如下：</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">resp = requests.get(<span class="string">&#x27;https://inv-veri.chinatax.gov.cn/&#x27;</span>,verify=<span class="literal">False</span>)</span><br><span class="line">print(resp.content.decode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<p>over。。。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>感谢老铁们的支持!!!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/weChatPay.png" alt="怪狗狗 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/aliPay.jpg" alt="怪狗狗 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"> python</a>
+              <a href="/tags/%E5%9F%BA%E7%A1%80/" rel="tag"> 基础</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/31/%E4%B8%89%E6%95%B0%E4%B9%8B%E5%92%8C%E3%80%81%E5%9B%9B%E6%95%B0%E4%B9%8B%E5%92%8C/" rel="prev" title="三数之和、四数之和">
+      <i class="fa fa-chevron-left"></i> 三数之和、四数之和
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-urllib%E5%BA%93-%E2%80%94%E5%86%85%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">1.urllib库   —内置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#urlopen%E5%87%BD%E6%95%B0%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">urlopen函数：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#urlretrieve%E5%87%BD%E6%95%B0%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">urlretrieve函数：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#urlencode%E5%87%BD%E6%95%B0%EF%BC%9A%E7%BC%96%E7%A0%81"><span class="nav-number">1.3.</span> <span class="nav-text">urlencode函数：编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#parse-qs%E5%87%BD%E6%95%B0%EF%BC%9A%E8%A7%A3%E7%A0%81"><span class="nav-number">1.4.</span> <span class="nav-text">parse_qs函数：解码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#urlparse%E5%92%8Curlsplit%E5%87%BD%E6%95%B0%EF%BC%9A%E8%A7%A3%E6%9E%90url"><span class="nav-number">1.5.</span> <span class="nav-text">urlparse和urlsplit函数：解析url</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#request-Request%E7%B1%BB%EF%BC%9A%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82-%E5%8F%AF%E4%BB%A5%E5%A2%9E%E5%8A%A0%E8%AF%B7%E6%B1%82%E5%A4%B4"><span class="nav-number">1.6.</span> <span class="nav-text">request.Request类：网络请求  可以增加请求头</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ProxyHandler%E5%A4%84%E7%90%86%E5%99%A8%EF%BC%88%E4%BB%A3%E7%90%86%E8%AE%BE%E7%BD%AE%EF%BC%89%EF%BC%9A%E5%B0%81ip%E9%97%AE%E9%A2%98"><span class="nav-number">1.7.</span> <span class="nav-text">ProxyHandler处理器（代理设置）：封ip问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cookie-%E7%99%BB%E5%BD%95"><span class="nav-number">1.8.</span> <span class="nav-text">cookie:           登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http-cookiejar%E6%A8%A1%E5%9D%97%EF%BC%9A%E6%8F%90%E4%BE%9B%E7%94%A8%E4%BA%8E%E5%AD%98%E5%82%A8cookie%E7%9A%84%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.9.</span> <span class="nav-text">http.cookiejar模块：提供用于存储cookie的对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-requests%E5%BA%93-%E2%80%94%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93"><span class="nav-number">2.</span> <span class="nav-text">2.requests库   —第三方库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%92%8C%E6%96%87%E6%A1%A3%E5%9C%B0%E5%9D%80%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">安装和文档地址：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E9%80%81GET%E8%AF%B7%E6%B1%82"><span class="nav-number">2.2.</span> <span class="nav-text">发送GET请求</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#response-text%E5%92%8Cresponse-content%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9A"><span class="nav-number">2.2.1.</span> <span class="nav-text">response.text和response.content的区别：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E9%80%81POST%E8%AF%B7%E6%B1%82%EF%BC%9A"><span class="nav-number">2.3.</span> <span class="nav-text">发送POST请求：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%90%86%EF%BC%9A"><span class="nav-number">2.4.</span> <span class="nav-text">使用代理：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cookie%EF%BC%9A"><span class="nav-number">2.5.</span> <span class="nav-text">cookie：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#session%EF%BC%9A%E5%85%B1%E4%BA%ABcookie"><span class="nav-number">2.5.1.</span> <span class="nav-text">session：共享cookie</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E4%B8%8D%E4%BF%A1%E4%BB%BB%E7%9A%84SSL%E8%AF%81%E4%B9%A6%EF%BC%9A"><span class="nav-number">2.6.</span> <span class="nav-text">处理不信任的SSL证书：</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="怪狗狗"
+      src="/images/jerry.jpg">
+  <p class="site-author-name" itemprop="name">怪狗狗</p>
+  <div class="site-description" itemprop="description">She is fucking pretty</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/oddDog-git" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;oddDog-git" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://1764501567@qq.com/" title="E-Mail → https:&#x2F;&#x2F;1764501567@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://wpa.qq.com/msgrd?v=3&uin=1764501567&site=qq&menu=yes" title="http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;1764501567&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener" target="_blank">加我QQ</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">怪狗狗</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div> -->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'YVPmrsyUdC4uV9bapDgb8ll6-gzGzoHsz',
+      appKey     : 'MUI57EQtRoMQjLvpW68kiNyE',
+      placeholder: "快来评论吧！！！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
