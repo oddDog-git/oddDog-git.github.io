@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-bounce.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"odddog-git.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="XPath语法和lxml模块xpath（XML Path Language）是一门在XML和HTML文档中查找信息的语言，可用来在XML和HTML文档中对元素和属性进行遍历。 XPath节点在 XPath 中，有七种类型的节点：元素、属性、文本、命名空间、处理指令、注释以及文档（根）节点。XML 文档是被作为节点树来对待的。树的根被称为文档节点或者根节点。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="爬虫数据提取基础">
+<meta property="og:url" content="http://odddog-git.github.io/2021/04/05/%E7%88%AC%E8%99%AB%E6%95%B0%E6%8D%AE%E6%8F%90%E5%8F%96%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="hui&#39;s Blog">
+<meta property="og:description" content="XPath语法和lxml模块xpath（XML Path Language）是一门在XML和HTML文档中查找信息的语言，可用来在XML和HTML文档中对元素和属性进行遍历。 XPath节点在 XPath 中，有七种类型的节点：元素、属性、文本、命名空间、处理指令、注释以及文档（根）节点。XML 文档是被作为节点树来对待的。树的根被称为文档节点或者根节点。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-05T11:37:45.000Z">
+<meta property="article:modified_time" content="2021-04-05T13:35:01.808Z">
+<meta property="article:author" content="怪狗狗">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="数据提取">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://odddog-git.github.io/2021/04/05/%E7%88%AC%E8%99%AB%E6%95%B0%E6%8D%AE%E6%8F%90%E5%8F%96%E5%9F%BA%E7%A1%80/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>爬虫数据提取基础 | hui's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://oddDog-git" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hui's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://odddog-git.github.io/2021/04/05/%E7%88%AC%E8%99%AB%E6%95%B0%E6%8D%AE%E6%8F%90%E5%8F%96%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/jerry.jpg">
+      <meta itemprop="name" content="怪狗狗">
+      <meta itemprop="description" content="She is fucking pretty">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hui's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          爬虫数据提取基础
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-05 19:37:45 / 修改时间：21:35:01" itemprop="dateCreated datePublished" datetime="2021-04-05T19:37:45+08:00">2021-04-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%88%AC%E8%99%AB/" itemprop="url" rel="index"><span itemprop="name">爬虫</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/04/05/%E7%88%AC%E8%99%AB%E6%95%B0%E6%8D%AE%E6%8F%90%E5%8F%96%E5%9F%BA%E7%A1%80/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/04/05/%E7%88%AC%E8%99%AB%E6%95%B0%E6%8D%AE%E6%8F%90%E5%8F%96%E5%9F%BA%E7%A1%80/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="XPath语法和lxml模块"><a href="#XPath语法和lxml模块" class="headerlink" title="XPath语法和lxml模块"></a>XPath语法和lxml模块</h1><p>xpath（XML Path Language）是一门在XML和HTML文档中查找信息的语言，可用来在XML和HTML文档中对元素和属性进行遍历。</p>
+<h2 id="XPath节点"><a href="#XPath节点" class="headerlink" title="XPath节点"></a>XPath节点</h2><p>在 XPath 中，有七种类型的节点：元素、属性、文本、命名空间、处理指令、注释以及文档（根）节点。XML 文档是被作为节点树来对待的。树的根被称为文档节点或者根节点。</p>
+<a id="more"></a>
+
+<h2 id="XPath语法"><a href="#XPath语法" class="headerlink" title="XPath语法"></a>XPath语法</h2><h3 id="使用方式："><a href="#使用方式：" class="headerlink" title="使用方式："></a>使用方式：</h3><p>使用//获取整个页面当中的元素，然后写标签名，然后在写谓语进行提取，比如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">//title[@lang=<span class="string">&#x27;en&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="需要注意的知识点："><a href="#需要注意的知识点：" class="headerlink" title="需要注意的知识点："></a>需要注意的知识点：</h3><ol>
+<li><p>/和//的区别：/代表只获取子节点，//获取子孙节点，一般//用的比较多，当然也要视情况而定</p>
+</li>
+<li><p>contains：有时候某个属性中包含了多个值，那么可以使用contains函数，示例如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">//title[contains(@lang,<span class="string">&#x27;en&#x27;</span>)]</span><br></pre></td></tr></table></figure></li>
+<li><p>谓词中下标是从1开始的，不是从0开始的</p>
+</li>
+</ol>
+<h2 id="lxml库"><a href="#lxml库" class="headerlink" title="lxml库"></a>lxml库</h2><p>lxml 是 一个HTML/XML的解析器，主要的功能是如何解析和提取 HTML/XML 数据。</p>
+<h3 id="基本使用："><a href="#基本使用：" class="headerlink" title="基本使用："></a>基本使用：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"></span><br><span class="line">text = <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">&lt;div&gt;</span></span><br><span class="line"><span class="string">    &lt;ul&gt;</span></span><br><span class="line"><span class="string">         &lt;li class=&quot;item-0&quot;&gt;&lt;a href=&quot;link1.html&quot;&gt;first item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class=&quot;item-1&quot;&gt;&lt;a href=&quot;link2.html&quot;&gt;second item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class=&quot;item-inactive&quot;&gt;&lt;a href=&quot;link3.html&quot;&gt;third item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class=&quot;item-1&quot;&gt;&lt;a href=&quot;link4.html&quot;&gt;fourth item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class=&quot;item-0&quot;&gt;&lt;a href=&quot;link5.html&quot;&gt;fifth item&lt;/a&gt;</span></span><br><span class="line"><span class="string">     &lt;/ul&gt;</span></span><br><span class="line"><span class="string"> &lt;/div&gt;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="comment"># 将字符串解析为html文档</span></span><br><span class="line">html = etree.HTML(text)</span><br><span class="line">print(html)</span><br><span class="line"><span class="comment"># 按字符串序列化html</span></span><br><span class="line">result = etree.tostring(html).decode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">print(result)</span><br></pre></td></tr></table></figure>
+<h3 id="从文件中读取html代码："><a href="#从文件中读取html代码：" class="headerlink" title="从文件中读取html代码："></a>从文件中读取html代码：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#读取</span></span><br><span class="line">html = etree.parse(<span class="string">&#x27;hello.html&#x27;</span>)</span><br><span class="line"></span><br><span class="line">result = etree.tostring(html).decode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">print(result)</span><br></pre></td></tr></table></figure>
+<h3 id="在lxml中使用xpath语法"><a href="#在lxml中使用xpath语法" class="headerlink" title="在lxml中使用xpath语法"></a>在lxml中使用xpath语法</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- hello.html --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">&quot;item-0&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;link1.html&quot;</span>&gt;</span>first item<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">&quot;item-1&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;link2.html&quot;</span>&gt;</span>second item<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">&quot;item-inactive&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;link3.html&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;bold&quot;</span>&gt;</span>third item<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">&quot;item-1&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;link4.html&quot;</span>&gt;</span>fourth item<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">&quot;item-0&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;link5.html&quot;</span>&gt;</span>fifth item<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>语法练习</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line">html = etree.parse(<span class="string">&#x27;hello.html&#x27;</span>)</span><br><span class="line"><span class="comment"># 获取所有li标签：</span></span><br><span class="line"><span class="comment"># result = html.xpath(&#x27;//li&#x27;)</span></span><br><span class="line"><span class="comment"># print(result)</span></span><br><span class="line"><span class="comment"># for i in result:</span></span><br><span class="line"><span class="comment">#     print(etree.tostring(i))</span></span><br><span class="line"><span class="comment"># 获取所有li元素下的所有class属性的值：</span></span><br><span class="line"><span class="comment"># result = html.xpath(&#x27;//li/@class&#x27;)</span></span><br><span class="line"><span class="comment"># print(result)</span></span><br><span class="line"><span class="comment"># 获取li标签下href为www.baidu.com的a标签：</span></span><br><span class="line"><span class="comment"># result = html.xpath(&#x27;//li/a[@href=&quot;www.baidu.com&quot;]&#x27;)</span></span><br><span class="line"><span class="comment"># print(result)</span></span><br><span class="line"><span class="comment"># 获取li标签下所有span标签：</span></span><br><span class="line"><span class="comment"># result = html.xpath(&#x27;//li//span&#x27;)</span></span><br><span class="line"><span class="comment"># print(result)</span></span><br><span class="line"><span class="comment"># 获取li标签下的a标签里的所有class：</span></span><br><span class="line"><span class="comment"># result = html.xpath(&#x27;//li/a//@class&#x27;)</span></span><br><span class="line"><span class="comment"># print(result)</span></span><br><span class="line"><span class="comment"># 获取最后一个li的a的href属性对应的值：</span></span><br><span class="line"><span class="comment"># result = html.xpath(&#x27;//li[last()]/a/@href&#x27;)</span></span><br><span class="line"><span class="comment"># print(result)</span></span><br><span class="line"><span class="comment"># 获取倒数第二个li元素的内容：</span></span><br><span class="line"><span class="comment"># result = html.xpath(&#x27;//li[last()-1]/a&#x27;)</span></span><br><span class="line"><span class="comment"># print(result)</span></span><br><span class="line"><span class="comment"># print(result[0].text)</span></span><br><span class="line"><span class="comment"># 获取倒数第二个li元素的内容的第二种方式：</span></span><br><span class="line">result = html.xpath(<span class="string">&#x27;//li[last()-1]/a/text()&#x27;</span>)</span><br><span class="line">print(result)</span><br></pre></td></tr></table></figure>
+<h3 id="实战（瓜子二手车）"><a href="#实战（瓜子二手车）" class="headerlink" title="实战（瓜子二手车）"></a>实战（瓜子二手车）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line"> head = &#123;</span><br><span class="line">        <span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&#x27;Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.25 Safari/537.36 Core/1.70.3775.400 QQBrowser/10.6.4208.400&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Cookie&#x27;</span>: <span class="string">&#x27;...&#x27;</span> <span class="comment">#自己网页查找</span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment"># 根据首页获取所有详情页</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getHrefs</span>(<span class="params">indexUrl</span>):</span></span><br><span class="line">    <span class="comment"># 获取首页内容</span></span><br><span class="line">    index_url = indexUrl</span><br><span class="line">    res = requests.get(index_url, headers=head)</span><br><span class="line">    text = res.content.decode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">    <span class="comment"># 解析首页内容</span></span><br><span class="line">    html = etree.HTML(text)</span><br><span class="line">    ul = html.xpath(<span class="string">&#x27;//ul[@class=&quot;carlist clearfix js-top&quot;]&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">    hrefs = ul.xpath(<span class="string">&#x27;./li/a/@href&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> hrefs</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取详细页面所需内容，保存到字典中</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getDetail</span>(<span class="params">detail_url</span>):</span></span><br><span class="line">    url = <span class="string">&#x27;https://www.guazi.com&#x27;</span> + detail_url</span><br><span class="line">    detail = requests.get(url, headers=head).content.decode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">    html = etree.HTML(detail)</span><br><span class="line">    title = html.xpath(<span class="string">&#x27;//div[@class=&quot;product-textbox&quot;]/h1/text()&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">    title = title.replace(<span class="string">&#x27;\r\n&#x27;</span>, <span class="string">&#x27;&#x27;</span>).strip()</span><br><span class="line">    info = html.xpath(<span class="string">&#x27;//div[@class=&quot;product-textbox&quot;]/ul/li/span/text()&#x27;</span>)</span><br><span class="line">    price_now = html.xpath(<span class="string">&#x27;//div[@class=&quot;price-main&quot;]/span/text()&#x27;</span>)</span><br><span class="line">    price_origin = html.xpath(<span class="string">&#x27;//div[@class=&quot;price-main&quot;]/div/text()&#x27;</span>)</span><br><span class="line">    res = &#123;&#125;</span><br><span class="line">    res[<span class="string">&#x27;标题&#x27;</span>] = title</span><br><span class="line">    res[<span class="string">&#x27;里程表&#x27;</span>] = info[<span class="number">2</span>]</span><br><span class="line">    res[<span class="string">&#x27;排量&#x27;</span>] = info[<span class="number">3</span>]</span><br><span class="line">    res[<span class="string">&#x27;变速箱&#x27;</span>] = info[<span class="number">4</span>]</span><br><span class="line">    res[<span class="string">&#x27;价格&#x27;</span>] = price_now</span><br><span class="line">    res[<span class="string">&#x27;原价&#x27;</span>] = price_origin</span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>(<span class="params">url</span>):</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;guazhi.txt&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, encoding=<span class="string">&#x27;utf-8&#x27;</span>) <span class="keyword">as</span> f:  <span class="comment"># 写入文件</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">6</span>):  <span class="comment"># 遍历一到六页</span></span><br><span class="line">            hrefs = getHrefs(url.<span class="built_in">format</span>(i))</span><br><span class="line">            <span class="keyword">for</span> href <span class="keyword">in</span> hrefs:</span><br><span class="line">                detail = getDetail(href)</span><br><span class="line">                <span class="comment"># 开始文件写入</span></span><br><span class="line">                f.write(</span><br><span class="line">                    <span class="string">&#x27;&#123;&#125;,&#123;&#125;,&#123;&#125;,&#123;&#125;,&#123;&#125;,&#123;&#125;\n&#x27;</span>.<span class="built_in">format</span>(detail[<span class="string">&#x27;标题&#x27;</span>], detail[<span class="string">&#x27;里程表&#x27;</span>], detail[<span class="string">&#x27;排量&#x27;</span>], detail[<span class="string">&#x27;变速箱&#x27;</span>], detail[<span class="string">&#x27;价格&#x27;</span>],</span><br><span class="line">                                                 detail[<span class="string">&#x27;原价&#x27;</span>]))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    url=<span class="string">&#x27;https://www.guazi.com/nc/buy/o&#123;&#125;/#bread&#x27;</span></span><br><span class="line">    main(url)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="BeautifulSoup4库"><a href="#BeautifulSoup4库" class="headerlink" title="BeautifulSoup4库"></a>BeautifulSoup4库</h1><p>和 lxml 一样，Beautiful Soup 也是一个HTML/XML的解析器，主要的功能也是如何解析和提取 HTML/XML 数据。</p>
+<h2 id="安装和文档："><a href="#安装和文档：" class="headerlink" title="安装和文档："></a>安装和文档：</h2><p>安装：<br>pip install bs4</p>
+<p>中文文档：<a target="_blank" rel="noopener" href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/index.zh.html">https://www.crummy.com/software/BeautifulSoup/bs4/doc/index.zh.html</a></p>
+<h2 id="常见的四种对象："><a href="#常见的四种对象：" class="headerlink" title="常见的四种对象："></a>常见的四种对象：</h2><ol>
+<li>Tag：BeautifulSoup中所有的标签都是Tag类型，并且BeautifulSoup的对象其实本质上也是一个Tag类型。所以其实一些方法比如find、find_all并不是BeautifulSoup的，而是Tag的。</li>
+<li>NavigableString：继承自python中的str，用起来就跟使用python的str是一样的。</li>
+<li>BeautifulSoup：继承自Tag。用来生成BeaufifulSoup树的。对于一些查找方法，比如find、select这些，其实还是Tag的。</li>
+<li>Comment：这个也没什么好说，就是继承自NavigableString。</li>
+</ol>
+<h2 id="contents和children："><a href="#contents和children：" class="headerlink" title="contents和children："></a>contents和children：</h2><p>返回某个标签下的直接子元素，其中也包括字符串。他们两的区别是：contents返回来的是一个列表，children返回的是一个迭代器。</p>
+<h2 id="string和strings、stripped-strings属性以及get-text方法"><a href="#string和strings、stripped-strings属性以及get-text方法" class="headerlink" title="string和strings、stripped_strings属性以及get_text方法"></a>string和strings、stripped_strings属性以及get_text方法</h2><ol>
+<li>string：获取某个标签下的非标签字符串。返回来的是个字符串。如果这个标签下有多行字符，那么就不能获取到了。</li>
+<li>strings：获取某个标签下的子孙非标签字符串。返回来的是个生成器。</li>
+<li>stripped_strings：获取某个标签下的子孙非标签字符串，会去掉空白字符。返回来的是个生成器。</li>
+<li>get_text：获取某个标签下的子孙非标签字符串，以普通字符串形式返回</li>
+</ol>
+<h2 id="find-all的使用："><a href="#find-all的使用：" class="headerlink" title="find_all的使用："></a>find_all的使用：</h2><ol>
+<li>在提取标签的时候，第一个参数是标签的名字。然后如果在提取标签的时候想要使用标签属性进行过滤，那么可以在这个方法中通过关键字参数的形式，将属性的名字以及对应的值传进去。或者是使用<code>attrs</code>属性，将所有的属性以及对应的值放在一个字典中传给<code>attrs</code>属性。</li>
+<li>有些时候，在提取标签的时候，不想提取那么多，那么可以使用<code>limit</code>参数。限制提取多少个。</li>
+</ol>
+<h2 id="find与find-all的区别："><a href="#find与find-all的区别：" class="headerlink" title="find与find_all的区别："></a>find与find_all的区别：</h2><ol>
+<li>find：找到第一个满足条件的标签就返回。说白了，就是只会返回一个元素。</li>
+<li>find_all:将所有满足条件的标签都返回。说白了，会返回很多标签（以列表的形式）。</li>
+</ol>
+<h2 id="使用find和find-all的过滤条件："><a href="#使用find和find-all的过滤条件：" class="headerlink" title="使用find和find_all的过滤条件："></a>使用find和find_all的过滤条件：</h2><ol>
+<li>关键字参数：将属性的名字作为关键字参数的名字，以及属性的值作为关键字参数的值进行过滤。</li>
+<li>attrs参数：将属性条件放到一个字典中，传给attrs参数。</li>
+</ol>
+<h2 id="获取标签的属性："><a href="#获取标签的属性：" class="headerlink" title="获取标签的属性："></a>获取标签的属性：</h2><ol>
+<li><p>通过下标获取：通过标签的下标的方式。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">href = a[<span class="string">&#x27;href&#x27;</span>]</span><br></pre></td></tr></table></figure></li>
+<li><p>通过attrs属性获取：示例代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">href = a.attrs[<span class="string">&#x27;href&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<h2 id="CSS选择器："><a href="#CSS选择器：" class="headerlink" title="CSS选择器："></a>CSS选择器：</h2><h3 id="select方法："><a href="#select方法：" class="headerlink" title="select方法："></a>select方法：</h3><p>使用以上方法可以方便的找出元素。但有时候使用<code>css</code>选择器的方式可以更加的方便。使用<code>css</code>选择器的语法，应该使用<code>select</code>方法。以下列出几种常用的<code>css</code>选择器方法：</p>
+<h4 id="（1）通过标签名查找："><a href="#（1）通过标签名查找：" class="headerlink" title="（1）通过标签名查找："></a>（1）通过标签名查找：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(soup.select(<span class="string">&#x27;a&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<h4 id="（2）通过类名查找："><a href="#（2）通过类名查找：" class="headerlink" title="（2）通过类名查找："></a>（2）通过类名查找：</h4><p>通过类名，则应该在类的前面加一个<code>.</code>。比如要查找<code>class=sister</code>的标签。示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(soup.select(<span class="string">&#x27;.sister&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<h4 id="（3）通过id查找："><a href="#（3）通过id查找：" class="headerlink" title="（3）通过id查找："></a>（3）通过id查找：</h4><p>通过id查找，应该在id的名字前面加一个＃号。示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(soup.select(<span class="string">&quot;#link1&quot;</span>))</span><br></pre></td></tr></table></figure>
+<h4 id="（4）组合查找："><a href="#（4）组合查找：" class="headerlink" title="（4）组合查找："></a>（4）组合查找：</h4><p>组合查找即和写 class 文件时，标签名与类名、id名进行的组合原理是一样的，例如查找 p 标签中，id 等于 link1的内容，二者需要用空格分开：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(soup.select(<span class="string">&quot;p #link1&quot;</span>))</span><br></pre></td></tr></table></figure>
+<p>直接子标签查找，则使用 &gt; 分隔：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(soup.select(<span class="string">&quot;head &gt; title&quot;</span>))</span><br></pre></td></tr></table></figure>
+<h4 id="（5）通过属性查找："><a href="#（5）通过属性查找：" class="headerlink" title="（5）通过属性查找："></a>（5）通过属性查找：</h4><p>查找时还可以加入属性元素，属性需要用中括号括起来，注意属性和标签属于同一节点，所以中间不能加空格，否则会无法匹配到。示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(soup.select(<span class="string">&#x27;a[href=&quot;http://example.com/elsie&quot;]&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<h4 id="（6）获取内容"><a href="#（6）获取内容" class="headerlink" title="（6）获取内容"></a>（6）获取内容</h4><p>以上的 select 方法返回的结果都是列表形式，可以遍历形式输出，然后用 get_text() 方法来获取它的内容。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">soup = BeautifulSoup(html, <span class="string">&#x27;lxml&#x27;</span>)</span><br><span class="line">print(soup.select(<span class="string">&#x27;title&#x27;</span>)[<span class="number">0</span>].get_text())</span><br><span class="line"><span class="keyword">for</span> title <span class="keyword">in</span> soup.select(<span class="string">&#x27;title&#x27;</span>):</span><br><span class="line">    print(title.get_text())</span><br></pre></td></tr></table></figure>
+<h3 id="实战（豆瓣top250）"><a href="#实战（豆瓣top250）" class="headerlink" title="实战（豆瓣top250）"></a>实战（豆瓣top250）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"></span><br><span class="line">head = &#123;</span><br><span class="line">    <span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&#x27;Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.25 Safari/537.36 Core/1.70.3775.400 QQBrowser/10.6.4208.400&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据首页获取所有详细页的网址</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_detail_url</span>(<span class="params">url</span>):</span></span><br><span class="line">    html = requests.get(url, headers=head).content.decode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">    soup = BeautifulSoup(html, <span class="string">&#x27;lxml&#x27;</span>)</span><br><span class="line">    lis = soup.find(<span class="string">&#x27;ol&#x27;</span>, class_=<span class="string">&#x27;grid_view&#x27;</span>).find_all(<span class="string">&#x27;li&#x27;</span>)</span><br><span class="line">    hrefs = []</span><br><span class="line">    <span class="keyword">for</span> li <span class="keyword">in</span> lis:</span><br><span class="line">        href = li.find(<span class="string">&#x27;a&#x27;</span>)[<span class="string">&#x27;href&#x27;</span>]</span><br><span class="line">        hrefs.append(href)</span><br><span class="line">    <span class="keyword">return</span> hrefs</span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据详情页获取相关信息并写入文件f中</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write_detail</span>(<span class="params">url, f</span>):</span></span><br><span class="line">    html = requests.get(url, headers=head).content.decode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">    soup = BeautifulSoup(html, <span class="string">&#x27;lxml&#x27;</span>)</span><br><span class="line">    div = soup.find(<span class="string">&#x27;div&#x27;</span>, <span class="built_in">id</span>=<span class="string">&#x27;content&#x27;</span>)</span><br><span class="line">    <span class="comment"># 电影名</span></span><br><span class="line">    name = <span class="built_in">list</span>(div.find(<span class="string">&#x27;h1&#x27;</span>).stripped_strings)</span><br><span class="line">    div = div.find(<span class="string">&#x27;div&#x27;</span>, class_=<span class="string">&#x27;subjectwrap clearfix&#x27;</span>)</span><br><span class="line">    info = div.find(<span class="string">&#x27;div&#x27;</span>, <span class="built_in">id</span>=<span class="string">&#x27;info&#x27;</span>).find_all(<span class="string">&#x27;span&#x27;</span>, class_=<span class="string">&#x27;attrs&#x27;</span>)</span><br><span class="line">    <span class="comment"># 导演</span></span><br><span class="line">    direct = <span class="built_in">list</span>(info[<span class="number">0</span>].stripped_strings)</span><br><span class="line">    <span class="comment"># 编剧</span></span><br><span class="line">    production = <span class="built_in">list</span>(info[<span class="number">1</span>].stripped_strings)</span><br><span class="line">    <span class="comment"># 演员</span></span><br><span class="line">    actor = <span class="built_in">list</span>(info[<span class="number">2</span>].stripped_strings)</span><br><span class="line">    <span class="comment"># 评分</span></span><br><span class="line">    score = div.find(<span class="string">&#x27;strong&#x27;</span>, class_=<span class="string">&#x27;ll rating_num&#x27;</span>).string</span><br><span class="line">    f.write(</span><br><span class="line">        <span class="string">&#x27;&#123;&#125;,&#123;&#125;,&#123;&#125;,&#123;&#125;,&#123;&#125;\n&#x27;</span>.<span class="built_in">format</span>(<span class="string">&#x27;&#x27;</span>.join(name), <span class="string">&#x27;&#x27;</span>.join(direct), <span class="string">&#x27;&#x27;</span>.join(production), <span class="string">&#x27;&#x27;</span>.join(actor), <span class="string">&#x27;&#x27;</span>.join(score)))</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>.join(name) + <span class="string">&#x27;写入完毕&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    base_url = <span class="string">&#x27;https://movie.douban.com/top250?start=&#123;&#125;&amp;filter=&#x27;</span></span><br><span class="line">    <span class="keyword">for</span> page <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">26</span>, <span class="number">25</span>): <span class="comment"># 获取所有页数</span></span><br><span class="line">        url = base_url.<span class="built_in">format</span>(page)</span><br><span class="line">        hrefs = get_detail_url(url) <span class="comment"># 获取所有详情页的url</span></span><br><span class="line">        <span class="keyword">for</span> href <span class="keyword">in</span> hrefs:</span><br><span class="line">            <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;douban.txt&#x27;</span>, <span class="string">&#x27;a&#x27;</span>, encoding=<span class="string">&#x27;utf-8&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">                res = write_detail(href, f)</span><br><span class="line">                print(res)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>感谢老铁们的支持!!!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/weChatPay.png" alt="怪狗狗 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/aliPay.jpg" alt="怪狗狗 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"> python</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E6%8F%90%E5%8F%96/" rel="tag"> 数据提取</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/04/04/urllib%E4%B8%8Erequests%E5%BA%93%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" rel="prev" title="urllib与requests库的基本使用">
+      <i class="fa fa-chevron-left"></i> urllib与requests库的基本使用
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#XPath%E8%AF%AD%E6%B3%95%E5%92%8Clxml%E6%A8%A1%E5%9D%97"><span class="nav-number">1.</span> <span class="nav-text">XPath语法和lxml模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#XPath%E8%8A%82%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">XPath节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XPath%E8%AF%AD%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">XPath语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="nav-number">1.2.1.</span> <span class="nav-text">使用方式：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%9F%A5%E8%AF%86%E7%82%B9%EF%BC%9A"><span class="nav-number">1.2.2.</span> <span class="nav-text">需要注意的知识点：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lxml%E5%BA%93"><span class="nav-number">1.3.</span> <span class="nav-text">lxml库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%EF%BC%9A"><span class="nav-number">1.3.1.</span> <span class="nav-text">基本使用：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8E%E6%96%87%E4%BB%B6%E4%B8%AD%E8%AF%BB%E5%8F%96html%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="nav-number">1.3.2.</span> <span class="nav-text">从文件中读取html代码：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8lxml%E4%B8%AD%E4%BD%BF%E7%94%A8xpath%E8%AF%AD%E6%B3%95"><span class="nav-number">1.3.3.</span> <span class="nav-text">在lxml中使用xpath语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98%EF%BC%88%E7%93%9C%E5%AD%90%E4%BA%8C%E6%89%8B%E8%BD%A6%EF%BC%89"><span class="nav-number">1.3.4.</span> <span class="nav-text">实战（瓜子二手车）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#BeautifulSoup4%E5%BA%93"><span class="nav-number">2.</span> <span class="nav-text">BeautifulSoup4库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%92%8C%E6%96%87%E6%A1%A3%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">安装和文档：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9B%9B%E7%A7%8D%E5%AF%B9%E8%B1%A1%EF%BC%9A"><span class="nav-number">2.2.</span> <span class="nav-text">常见的四种对象：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#contents%E5%92%8Cchildren%EF%BC%9A"><span class="nav-number">2.3.</span> <span class="nav-text">contents和children：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#string%E5%92%8Cstrings%E3%80%81stripped-strings%E5%B1%9E%E6%80%A7%E4%BB%A5%E5%8F%8Aget-text%E6%96%B9%E6%B3%95"><span class="nav-number">2.4.</span> <span class="nav-text">string和strings、stripped_strings属性以及get_text方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#find-all%E7%9A%84%E4%BD%BF%E7%94%A8%EF%BC%9A"><span class="nav-number">2.5.</span> <span class="nav-text">find_all的使用：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#find%E4%B8%8Efind-all%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9A"><span class="nav-number">2.6.</span> <span class="nav-text">find与find_all的区别：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8find%E5%92%8Cfind-all%E7%9A%84%E8%BF%87%E6%BB%A4%E6%9D%A1%E4%BB%B6%EF%BC%9A"><span class="nav-number">2.7.</span> <span class="nav-text">使用find和find_all的过滤条件：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%A0%87%E7%AD%BE%E7%9A%84%E5%B1%9E%E6%80%A7%EF%BC%9A"><span class="nav-number">2.8.</span> <span class="nav-text">获取标签的属性：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CSS%E9%80%89%E6%8B%A9%E5%99%A8%EF%BC%9A"><span class="nav-number">2.9.</span> <span class="nav-text">CSS选择器：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#select%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-number">2.9.1.</span> <span class="nav-text">select方法：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%EF%BC%881%EF%BC%89%E9%80%9A%E8%BF%87%E6%A0%87%E7%AD%BE%E5%90%8D%E6%9F%A5%E6%89%BE%EF%BC%9A"><span class="nav-number">2.9.1.1.</span> <span class="nav-text">（1）通过标签名查找：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%EF%BC%882%EF%BC%89%E9%80%9A%E8%BF%87%E7%B1%BB%E5%90%8D%E6%9F%A5%E6%89%BE%EF%BC%9A"><span class="nav-number">2.9.1.2.</span> <span class="nav-text">（2）通过类名查找：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%EF%BC%883%EF%BC%89%E9%80%9A%E8%BF%87id%E6%9F%A5%E6%89%BE%EF%BC%9A"><span class="nav-number">2.9.1.3.</span> <span class="nav-text">（3）通过id查找：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%EF%BC%884%EF%BC%89%E7%BB%84%E5%90%88%E6%9F%A5%E6%89%BE%EF%BC%9A"><span class="nav-number">2.9.1.4.</span> <span class="nav-text">（4）组合查找：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%EF%BC%885%EF%BC%89%E9%80%9A%E8%BF%87%E5%B1%9E%E6%80%A7%E6%9F%A5%E6%89%BE%EF%BC%9A"><span class="nav-number">2.9.1.5.</span> <span class="nav-text">（5）通过属性查找：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%EF%BC%886%EF%BC%89%E8%8E%B7%E5%8F%96%E5%86%85%E5%AE%B9"><span class="nav-number">2.9.1.6.</span> <span class="nav-text">（6）获取内容</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98%EF%BC%88%E8%B1%86%E7%93%A3top250%EF%BC%89"><span class="nav-number">2.9.2.</span> <span class="nav-text">实战（豆瓣top250）</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="怪狗狗"
+      src="/images/jerry.jpg">
+  <p class="site-author-name" itemprop="name">怪狗狗</p>
+  <div class="site-description" itemprop="description">She is fucking pretty</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/oddDog-git" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;oddDog-git" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://1764501567@qq.com/" title="E-Mail → https:&#x2F;&#x2F;1764501567@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://wpa.qq.com/msgrd?v=3&uin=1764501567&site=qq&menu=yes" title="http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;1764501567&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener" target="_blank">加我QQ</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">怪狗狗</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div> -->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'YVPmrsyUdC4uV9bapDgb8ll6-gzGzoHsz',
+      appKey     : 'MUI57EQtRoMQjLvpW68kiNyE',
+      placeholder: "快来评论吧！！！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
