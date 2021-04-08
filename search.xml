@@ -1803,6 +1803,8 @@
 <p>机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。</p>
 <p>问总共有多少条不同的路径？</p>
 <p><a href="https://imgtu.com/i/cG2ODP"><img src="https://z3.ax1x.com/2021/04/07/cG2ODP.png" alt="cG2ODP.png"></a></p>
+<a id="more"></a>
+
 <h3 id="示例-1"><a href="#示例-1" class="headerlink" title="示例 1"></a>示例 1</h3><p>输入：m = 3, n = 7<br>输出：28</p>
 <h3 id="示例-2："><a href="#示例-2：" class="headerlink" title="示例 2："></a>示例 2：</h3><p>输入：m = 3, n = 2<br>输出：3<br>解释：<br>从左上角开始，总共有 3 条路径可以到达右下角。</p>
 <ol>
