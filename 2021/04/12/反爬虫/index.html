@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-bounce.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"odddog-git.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="图片验证码识别平台 1.云打码     2.斐斐打码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="反爬虫">
+<meta property="og:url" content="http://odddog-git.github.io/2021/04/12/%E5%8F%8D%E7%88%AC%E8%99%AB/index.html">
+<meta property="og:site_name" content="hui&#39;s Blog">
+<meta property="og:description" content="图片验证码识别平台 1.云打码     2.斐斐打码">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://z3.ax1x.com/2021/04/12/cD7ZDA.png">
+<meta property="article:published_time" content="2021-04-12T08:58:59.000Z">
+<meta property="article:modified_time" content="2021-04-12T14:05:44.661Z">
+<meta property="article:author" content="怪狗狗">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="图片验证码识别">
+<meta property="article:tag" content="字体识别">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://z3.ax1x.com/2021/04/12/cD7ZDA.png">
+
+<link rel="canonical" href="http://odddog-git.github.io/2021/04/12/%E5%8F%8D%E7%88%AC%E8%99%AB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>反爬虫 | hui's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://oddDog-git" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hui's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://odddog-git.github.io/2021/04/12/%E5%8F%8D%E7%88%AC%E8%99%AB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/jerry.jpg">
+      <meta itemprop="name" content="怪狗狗">
+      <meta itemprop="description" content="She is fucking pretty">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hui's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          反爬虫
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-12 16:58:59 / 修改时间：22:05:44" itemprop="dateCreated datePublished" datetime="2021-04-12T16:58:59+08:00">2021-04-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%88%AC%E8%99%AB/" itemprop="url" rel="index"><span itemprop="name">爬虫</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/04/12/%E5%8F%8D%E7%88%AC%E8%99%AB/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/04/12/%E5%8F%8D%E7%88%AC%E8%99%AB/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="图片验证码识别"><a href="#图片验证码识别" class="headerlink" title="图片验证码识别"></a>图片验证码识别</h3><p>平台</p>
+<p>1.云打码     2.斐斐打码 <a id="more"></a></p>
+<p>这里主要介绍斐斐打码</p>
+<p>官网 <a target="_blank" rel="noopener" href="http://www.fateadm.com/login.html%E4%B8%AD%E6%89%BE%E5%88%B0python3">http://www.fateadm.com/login.html中找到python3</a> demo的下载链接</p>
+<p><a target="_blank" rel="noopener" href="http://www.fateadm.com/download/demo/python3.zip">http://www.fateadm.com/download/demo/python3.zip</a></p>
+<p>下载该文件</p>
+<p>该文件的使用案例在TestFunc方法中，可以复制该方法，模仿着写，并识别验证码:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> fateadm_api <span class="keyword">import</span> FateadmApi</span><br><span class="line"></span><br><span class="line">pd_id = <span class="string">&quot;129281&quot;</span>  <span class="comment"># 用户中心页可以查询到pd信息</span></span><br><span class="line">pd_key = <span class="string">&quot;GmNxNIU5XL4N+A49UFNtC7G0nsn456yQ&quot;</span></span><br><span class="line">app_id = <span class="string">&quot;329281&quot;</span>  <span class="comment"># 开发者分成用的账号，在开发者中心可以查询到</span></span><br><span class="line">app_key = <span class="string">&quot;Cawup44zVSJTGukiJaT3MysZs4ITe3xQ&quot;</span></span><br><span class="line">api = FateadmApi(app_id, app_key, pd_id, pd_key)</span><br><span class="line"><span class="comment"># 识别类型，</span></span><br><span class="line">pred_type = <span class="string">&quot;20500&quot;</span></span><br><span class="line"><span class="comment"># 通过文件形式识别：</span></span><br><span class="line">file_name = <span class="string">&quot;img.png&quot;</span></span><br><span class="line">res = api.PredictFromFileExtend(pred_type, file_name)</span><br><span class="line">print(<span class="string">&quot;识别后的内容为:&quot;</span>+res)</span><br></pre></td></tr></table></figure>
+<h3 id="字体识别"><a href="#字体识别" class="headerlink" title="字体识别"></a>字体识别</h3><h4 id="基本介绍"><a href="#基本介绍" class="headerlink" title="基本介绍"></a>基本介绍</h4><p>1.网页开发者自己创造一种字体，因为在字体中每个文字都有其代号，那么以后在网页中不会 直接显示这个文字的最终的效果，而是显示他的代号，因此即使获取到了网页中的文本内 容，也只是获取到文字的代号，而不是文字本身。 </p>
+<p>2.因为创造字体费时费力，并且如果把中国3000多常用汉字都实现，那么这个字体将达到几十 兆，也会影响网页的加载。一般情况下为了反爬虫，仅会针对0-9以及少数汉字进行自己单独 创建，其他的还是使用用户系统中自带的字体。</p>
+<h4 id="情况分析"><a href="#情况分析" class="headerlink" title="情况分析"></a>情况分析</h4><p>1.一般情况下为了考虑网页渲染性能，通常网页开发者会把字体编码成base64的方式，因此我 们可以到网页中找到@font-face属性，然后获取里面的base64代码，再用Python代码进行 解码，然后再保存本地。</p>
+<p>2.如果没有使用base64，还有另外一种方式，就是直接把字体文件放到服务器上，然后前端通 过@font-face中的url函数进行加载。</p>
+<h4 id="基本分析"><a href="#基本分析" class="headerlink" title="基本分析"></a>基本分析</h4><p>1.分析字体需要将字体转换成xml文件，然后查看其中的cmap和glyf中的属性。其中cmap存储 的是code和name的映射，而glyf下存储的是每个name下的字体绘制规则。 </p>
+<p>2.从第1步中我们知道了name对应的字体的绘制规则，但是还是不知道字体是长什么样子，那 么可以通过一款叫做FontCreator的软件来打开.tff的字体文件，这样就可以看到每个name对 应的字体最终的呈现效果。</p>
+<p>3.在网页中，直接显示的是字体的code，而不是name。并且网页开发者为了增加爬虫的难 度，有可能在多次请求之间</p>
+<p>code-&gt;name-&gt;最终字体的映射    会发生改变。但是最终字体的形 状是不会改变的，因此我们可以通过形状对比来进行判断。</p>
+<p>4.我们可以通过分析字体，得出每个字体形状对应的文字，然后保存到一个字典中。以后再请 求网页的时候，就进行反向解析，先获取字体的形状，再通过字体形状反向获取代号所对应 的具体文字内容</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/cD7ZDA"><img src="https://z3.ax1x.com/2021/04/12/cD7ZDA.png" alt="cD7ZDA.png"></a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> fontTools.ttLib <span class="keyword">import</span> TTFont</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">import</span> io</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实习僧小案例 ，只爬取一个详情页的数据</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ==================获取xml文件和ttf文件，先分析name与形状之间的关系，保存到base_font_map中=============================</span></span><br><span class="line"><span class="comment"># 保存font-face</span></span><br><span class="line">font_face = <span class="string">&#x27;。。。&#x27;</span></span><br><span class="line">binary = base64.b64decode(font_face)</span><br><span class="line"><span class="comment"># 第一次执行该代码，保存 ttf 文件，以便后面的分析</span></span><br><span class="line"><span class="comment"># with open(&quot;实习僧.ttf&quot;, &#x27;wb&#x27;) as fb:</span></span><br><span class="line"><span class="comment">#     fb.write(binary)</span></span><br><span class="line">base_font = TTFont(<span class="string">&quot;实习僧.ttf&quot;</span>)</span><br><span class="line"><span class="comment"># 第一次执行该代码，保存 xml 文件，以便后面的分析保存为xml文件</span></span><br><span class="line"><span class="comment"># base_font.saveXML(&quot;实习僧.xml&quot;)</span></span><br><span class="line"><span class="comment"># 获取形状映射关系</span></span><br><span class="line">glyf = base_font[<span class="string">&#x27;glyf&#x27;</span>]</span><br><span class="line"><span class="comment"># 存放正确字体与形状</span></span><br><span class="line">shape_name_map = &#123;</span><br><span class="line">    <span class="number">0</span>: glyf[<span class="string">&quot;uni30&quot;</span>],</span><br><span class="line">    <span class="number">1</span>: glyf[<span class="string">&quot;uni31&quot;</span>],</span><br><span class="line">    <span class="number">2</span>: glyf[<span class="string">&quot;uni32&quot;</span>],</span><br><span class="line">    <span class="number">3</span>: glyf[<span class="string">&quot;uni33&quot;</span>],</span><br><span class="line">    <span class="number">4</span>: glyf[<span class="string">&quot;uni34&quot;</span>],</span><br><span class="line">    <span class="number">5</span>: glyf[<span class="string">&quot;uni35&quot;</span>],</span><br><span class="line">    <span class="number">6</span>: glyf[<span class="string">&quot;uni36&quot;</span>],</span><br><span class="line">    <span class="number">7</span>: glyf[<span class="string">&quot;uni37&quot;</span>],</span><br><span class="line">    <span class="number">8</span>: glyf[<span class="string">&quot;uni38&quot;</span>],</span><br><span class="line">    <span class="number">8</span>: glyf[<span class="string">&quot;uni38&quot;</span>],</span><br><span class="line">    <span class="number">9</span>: glyf[<span class="string">&quot;uni39&quot;</span>],</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ====================开始爬取网页，目的:将网页的源代码中乱的字体替换成正确字体:=================================</span></span><br><span class="line">head = &#123;</span><br><span class="line">    <span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&#x27;Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.25 Safari/537.36 Core/1.70.3775.400 QQBrowser/10.6.4208.400&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line">text = requests.get(<span class="string">&quot;https://m.shixiseng.com/intern/inn_sxjh0abyyqxf&quot;</span>, headers=head).text</span><br><span class="line"><span class="comment"># 获取font-face</span></span><br><span class="line">fontFace = re.search(<span class="string">r&#x27;font-family:myFont; src: url\(&quot;data:application/octet-stream;base64,(.+?)&quot;\)&#x27;</span>, text).group(<span class="number">1</span>)</span><br><span class="line">b = base64.b64decode(fontFace)</span><br><span class="line"><span class="comment"># 这里直接放入到管道内，不动用磁盘空间</span></span><br><span class="line">baseFont = TTFont(io.BytesIO(b))</span><br><span class="line">shapes = baseFont[<span class="string">&#x27;glyf&#x27;</span>]  <span class="comment"># 所有形状</span></span><br><span class="line">cmap = baseFont.getBestCmap()  <span class="comment"># code 与 name 的映射</span></span><br><span class="line"><span class="keyword">for</span> code, name <span class="keyword">in</span> cmap.items():  <span class="comment"># code == 0xe06e</span></span><br><span class="line">    <span class="comment"># 通过名字获取形状</span></span><br><span class="line">    shape = shapes[name]</span><br><span class="line">    <span class="comment"># 遍历之前获取的shape_name_map，如果形状相等，就将code替换成正确的字体 k</span></span><br><span class="line">    <span class="keyword">for</span> k, v <span class="keyword">in</span> shape_name_map.items():</span><br><span class="line">        <span class="keyword">if</span> shape == v:</span><br><span class="line">            code = <span class="built_in">hex</span>(code)  <span class="comment"># 先把code替换成16进制  57454 ==》 0xe06e</span></span><br><span class="line">            <span class="comment"># 把code替换成网页的code形式  0xe06e ==》 &amp;#xe06e</span></span><br><span class="line">            webCode = <span class="built_in">str</span>(code).replace(<span class="string">&#x27;0&#x27;</span>, <span class="string">&#x27;&amp;#&#x27;</span>, <span class="number">1</span>)</span><br><span class="line">            <span class="comment"># 把网页的code替换成正确的字体</span></span><br><span class="line">            text = re.sub(webCode, <span class="built_in">str</span>(k),text)</span><br><span class="line">print(text)</span><br></pre></td></tr></table></figure>
+<p>over。。。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>感谢老铁们的支持!!!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/weChatPay.png" alt="怪狗狗 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/aliPay.jpg" alt="怪狗狗 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"> python</a>
+              <a href="/tags/%E5%9B%BE%E7%89%87%E9%AA%8C%E8%AF%81%E7%A0%81%E8%AF%86%E5%88%AB/" rel="tag"> 图片验证码识别</a>
+              <a href="/tags/%E5%AD%97%E4%BD%93%E8%AF%86%E5%88%AB/" rel="tag"> 字体识别</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/04/10/%E5%8A%A8%E6%80%81%E7%88%AC%E8%99%AB/" rel="prev" title="动态爬虫">
+      <i class="fa fa-chevron-left"></i> 动态爬虫
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%89%87%E9%AA%8C%E8%AF%81%E7%A0%81%E8%AF%86%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">图片验证码识别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E4%BD%93%E8%AF%86%E5%88%AB"><span class="nav-number">2.</span> <span class="nav-text">字体识别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.1.</span> <span class="nav-text">基本介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%83%85%E5%86%B5%E5%88%86%E6%9E%90"><span class="nav-number">2.2.</span> <span class="nav-text">情况分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E6%9E%90"><span class="nav-number">2.3.</span> <span class="nav-text">基本分析</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="怪狗狗"
+      src="/images/jerry.jpg">
+  <p class="site-author-name" itemprop="name">怪狗狗</p>
+  <div class="site-description" itemprop="description">She is fucking pretty</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">55</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/oddDog-git" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;oddDog-git" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://1764501567@qq.com/" title="E-Mail → https:&#x2F;&#x2F;1764501567@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://wpa.qq.com/msgrd?v=3&uin=1764501567&site=qq&menu=yes" title="http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;1764501567&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener" target="_blank">加我QQ</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">怪狗狗</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div> -->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'YVPmrsyUdC4uV9bapDgb8ll6-gzGzoHsz',
+      appKey     : 'MUI57EQtRoMQjLvpW68kiNyE',
+      placeholder: "快来评论吧！！！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
