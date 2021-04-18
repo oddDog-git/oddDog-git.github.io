@@ -2084,6 +2084,9 @@
     <title>scrapy框架</title>
     <url>/2021/04/16/scrapy%E6%A1%86%E6%9E%B6/</url>
     <content><![CDATA[<h1 id="Scrapy框架："><a href="#Scrapy框架：" class="headerlink" title="Scrapy框架："></a>Scrapy框架：</h1><p>写一个爬虫，需要做很多的事情。比如：发送网络请求、数据解析、数据存储、反反爬虫机制（更换ip代理、设置请求头等）、异步请求等。这些工作如果每次都要自己从零开始写的话，比较浪费时间。因此Scrapy把一些基础的东西封装好了，在他上面写爬虫可以变的更加的高效（爬取效率和开发效率）。因此真正在公司里，一些上了量的爬虫，都是使用Scrapy框架来解决。</p>
+<a id="more"></a>
+
+
 <h2 id="安装Scrapy框架："><a href="#安装Scrapy框架：" class="headerlink" title="安装Scrapy框架："></a>安装Scrapy框架：</h2><ol>
 <li>pip install scrapy</li>
 </ol>
@@ -2230,7 +2233,18 @@
 <h6 id="上面的两个参数只对字符串起作⽤，并要一整列要么全部变要么全部不变"><a href="#上面的两个参数只对字符串起作⽤，并要一整列要么全部变要么全部不变" class="headerlink" title="上面的两个参数只对字符串起作⽤，并要一整列要么全部变要么全部不变"></a>上面的两个参数只对字符串起作⽤，并要一整列要么全部变要么全部不变</h6><h4 id="mangle-dupe-cols-True-列名是否重复"><a href="#mangle-dupe-cols-True-列名是否重复" class="headerlink" title="mangle_dupe_cols=True   列名是否重复"></a>mangle_dupe_cols=True   列名是否重复</h4><p>如果重复命名,会自动修改 :   a    b     b   -&gt;  a   b    b.1</p>
 <p>mangle_dupe_cols=False  如果出现重复命名将会报错:</p>
 <p>ValueError: Setting mangle_dupe_cols=False is not supported yet</p>
-<h2 id="pandas写excel文件-DataFrame-to-excel-的参数"><a href="#pandas写excel文件-DataFrame-to-excel-的参数" class="headerlink" title="pandas写excel文件:DataFrame.to_excel()的参数"></a>pandas写excel文件:DataFrame.to_excel()的参数</h2>]]></content>
+<h2 id="pandas写excel文件"><a href="#pandas写excel文件" class="headerlink" title="pandas写excel文件:"></a>pandas写excel文件:</h2><h4 id="DataFrame写入excel"><a href="#DataFrame写入excel" class="headerlink" title="DataFrame写入excel"></a>DataFrame写入excel</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">DataFrame.to_excel(</span><br><span class="line"> self,</span><br><span class="line"> excel_writer, <span class="comment"># ⽂件路径/ExcelWriter</span></span><br><span class="line"> sheet_name=<span class="string">&#x27;Sheet1&#x27;</span>, <span class="comment"># sheet名字</span></span><br><span class="line"> index=<span class="literal">True</span>, <span class="comment"># 是否输出index</span></span><br><span class="line"> float_format=<span class="literal">None</span>, <span class="comment"># 浮点数输出格式, 如: &quot;%.2f&quot;</span></span><br><span class="line"> na_rep=<span class="string">&#x27;&#x27;</span> <span class="comment"># 缺失值输出的表示形式</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h4 id="用pandas-ExcelWriter类写入"><a href="#用pandas-ExcelWriter类写入" class="headerlink" title="用pandas.ExcelWriter类写入"></a>用pandas.ExcelWriter类写入</h4><p>1: 设置datatime输出格式       2: 输出多个sheet</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> pd.ExcelWriter(<span class="string">&#x27;tb.xlsx&#x27;</span>,datetime_format=<span class="string">&quot;YYYY-MM-DD&quot;</span>) <span class="keyword">as</span> writer:</span><br><span class="line"> df1.to_excel(writer, sheet_name=<span class="string">&#x27;AAA&#x27;</span>)</span><br><span class="line"> df2.to_excel(writer, sheet_name=<span class="string">&#x27;BBB&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="pandas写-读csv"><a href="#pandas写-读csv" class="headerlink" title="pandas写/读csv"></a>pandas写/读csv</h2><h4 id="read-csv"><a href="#read-csv" class="headerlink" title="read_csv()"></a>read_csv()</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pd.read_csv(</span><br><span class="line"> filepath, <span class="comment"># 路径</span></span><br><span class="line"> sep=<span class="string">&#x27;,&#x27;</span>, <span class="comment"># 分隔符</span></span><br><span class="line"> index=<span class="literal">False</span>,    <span class="comment"># 是否输出行下标</span></span><br><span class="line"> encoding=<span class="string">&#x27;utf8&#x27;</span> <span class="comment"># gbk, gb2312, gb18030</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h4 id="to-csv"><a href="#to-csv" class="headerlink" title="to_csv()"></a>to_csv()</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">df.to_csv(</span><br><span class="line"> path_or_buf, <span class="comment"># 路径</span></span><br><span class="line"> sep=<span class="string">&#x27;,&#x27;</span>, <span class="comment"># 分隔符</span></span><br><span class="line"> index=<span class="literal">False</span>,   <span class="comment"># 是否输出行下标</span></span><br><span class="line"> encoding=<span class="string">&#x27;utf8&#x27;</span> <span class="comment"># gbk, gb2312, gb18030</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h2 id="pandas选择数据"><a href="#pandas选择数据" class="headerlink" title="pandas选择数据"></a>pandas选择数据</h2><p>可以使用切片方式，也可以使用loc与iloc方式</p>
+<h4 id="df-loc-row-indexer-column-indexer"><a href="#df-loc-row-indexer-column-indexer" class="headerlink" title="df.loc[row_indexer, column_indexer]"></a>df.loc[row_indexer, column_indexer]</h4><h6 id="传入标签索引"><a href="#传入标签索引" class="headerlink" title="传入标签索引"></a>传入标签索引</h6><p>• df.loc[‘X’], df.loc[‘X’, ‘B’]     </p>
+<p>• df.loc[[‘X’, ‘Y’], [‘B’, ‘D’]] </p>
+<p>• df.loc[‘X’:’Y’, ‘B’:’D’]      </p>
+<p>• df.loc[[True, False, True], [True, True, True, False]]     掩码方式</p>
+<p>• df.loc[callable1, callable2]     传递两个函数，相当于掩码的方式</p>
+<h4 id="df-iloc-row-indexer-column-indexer"><a href="#df-iloc-row-indexer-column-indexer" class="headerlink" title="df.iloc[row_indexer, column_indexer]"></a>df.iloc[row_indexer, column_indexer]</h4><h6 id="与loc方法用法一样，这里传入的数据是数字索引"><a href="#与loc方法用法一样，这里传入的数据是数字索引" class="headerlink" title="与loc方法用法一样，这里传入的数据是数字索引"></a>与loc方法用法一样，这里传入的数据是数字索引</h6>]]></content>
       <categories>
         <category>数据清洗</category>
       </categories>
