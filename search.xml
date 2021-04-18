@@ -2081,11 +2081,6 @@
       </tags>
   </entry>
   <entry>
-    <title>pandas的使用</title>
-    <url>/2021/04/17/pandas%E7%9A%84%E4%BD%BF%E7%94%A8/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>scrapy框架</title>
     <url>/2021/04/16/scrapy%E6%A1%86%E6%9E%B6/</url>
     <content><![CDATA[<h1 id="Scrapy框架："><a href="#Scrapy框架：" class="headerlink" title="Scrapy框架："></a>Scrapy框架：</h1><p>写一个爬虫，需要做很多的事情。比如：发送网络请求、数据解析、数据存储、反反爬虫机制（更换ip代理、设置请求头等）、异步请求等。这些工作如果每次都要自己从零开始写的话，比较浪费时间。因此Scrapy把一些基础的东西封装好了，在他上面写爬虫可以变的更加的高效（爬取效率和开发效率）。因此真正在公司里，一些上了量的爬虫，都是使用Scrapy框架来解决。</p>
@@ -2187,6 +2182,62 @@
       <tags>
         <tag>python</tag>
         <tag>scrapy</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>pandas库</title>
+    <url>/2021/04/18/pandas%E5%BA%93/</url>
+    <content><![CDATA[<p>pandas的基本使用</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+<h2 id="创建Series"><a href="#创建Series" class="headerlink" title="创建Series"></a>创建Series</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">s = pandas.Series(</span><br><span class="line"> data = <span class="literal">None</span>,</span><br><span class="line"> index = <span class="literal">None</span>,</span><br><span class="line"> dtype = <span class="literal">None</span>,</span><br><span class="line"> name = <span class="literal">None</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="Serires的dtype"><a href="#Serires的dtype" class="headerlink" title="Serires的dtype"></a>Serires的dtype</h3><p>• int8/int16/int32/int64(默认): 整型 </p>
+<p>• float16/float32/float64(默认): 浮点型 </p>
+<p>• str/string: 字符串 • bool: 布尔 </p>
+<p>• category: 分类 • datetime64[ns]: 时间戳(纳秒) </p>
+<p>• period[Y/M/D]: 时间周期(年/月/日) </p>
+<p>• object: python对象混合类型</p>
+<h2 id="创建DataFrame"><a href="#创建DataFrame" class="headerlink" title="创建DataFrame"></a>创建DataFrame</h2><h4 id="通过2维的list-like创建"><a href="#通过2维的list-like创建" class="headerlink" title="通过2维的list-like创建"></a>通过2维的list-like创建</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pd.DataFrame([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], [<span class="number">6</span>, <span class="number">8</span>, <span class="number">7</span>]], columns=[<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;c&#x27;</span>], index=[<span class="string">&#x27;x&#x27;</span>, <span class="string">&#x27;y&#x27;</span>])</span><br></pre></td></tr></table></figure>
+<h4 id="通过字典创建"><a href="#通过字典创建" class="headerlink" title="通过字典创建"></a>通过字典创建</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pd.DataFrame(&#123;<span class="string">&#x27;a&#x27;</span>: [<span class="number">1</span>, <span class="number">6</span>], <span class="string">&#x27;b&#x27;</span>: [<span class="number">2</span>, <span class="number">8</span>], <span class="string">&#x27;c&#x27;</span>: [<span class="number">3</span>, <span class="number">7</span>]&#125;, index=[<span class="string">&#x27;x&#x27;</span>, <span class="string">&#x27;y&#x27;</span>])</span><br></pre></td></tr></table></figure>
+<h4 id="通过读取Excel表-最常用"><a href="#通过读取Excel表-最常用" class="headerlink" title="通过读取Excel表(最常用)"></a>通过读取Excel表(最常用)</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pd.read_excel(<span class="string">&quot;xxx.xlsx&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="pandas读excel文件-pandas-read-excel-的参数"><a href="#pandas读excel文件-pandas-read-excel-的参数" class="headerlink" title="pandas读excel文件:pandas.read_excel()的参数"></a>pandas读excel文件:pandas.read_excel()的参数</h2><h4 id="io-路径-StringIO-URL"><a href="#io-路径-StringIO-URL" class="headerlink" title="io    路径, StringIO, URL"></a>io    路径, StringIO, URL</h4><p>可以使用os.chdir(“….”)来切换当前路径</p>
+<h4 id="sheet-name-0-选择子表-sheet"><a href="#sheet-name-0-选择子表-sheet" class="headerlink" title="sheet_name=0    选择子表(sheet)"></a>sheet_name=0    选择子表(sheet)</h4><p>• int: 选第几个sheet, 下标从0开始    • str: sheet名字     • list: [0, “2月”], 返回字典    • None: 全部sheet, 返回字典</p>
+<h4 id="sheet-header-0-指定作为’列索引’的行"><a href="#sheet-header-0-指定作为’列索引’的行" class="headerlink" title="sheet header=0    指定作为’列索引’的行"></a>sheet header=0    指定作为’列索引’的行</h4><p>header=[0, 1]   将第一行与第二行作为列索引，也可以   header=[‘姓名’,’年龄’]模式</p>
+<h4 id="nrows-None-要解析的行数"><a href="#nrows-None-要解析的行数" class="headerlink" title="nrows=None    要解析的行数"></a>nrows=None    要解析的行数</h4><p>norws=3   只解析当前表格的前3行，不包括表头</p>
+<h4 id="index-col-None-指定作为’行索引’的列"><a href="#index-col-None-指定作为’行索引’的列" class="headerlink" title="index_col=None     指定作为’行索引’的列"></a>index_col=None     指定作为’行索引’的列</h4><p>index_col=[0, 1]    将第一列与第二列作为行索引，注意不可以  index_col=[‘姓名’,’年龄’]   模式</p>
+<h4 id="usecols-None-指定只使用哪些列"><a href="#usecols-None-指定只使用哪些列" class="headerlink" title="usecols=None    指定只使用哪些列"></a>usecols=None    指定只使用哪些列</h4><p>• int-list: [0, 2]    •str-list: [‘AAA’, ‘CCC’]   • str: ‘A,C’, ‘A,C:E’     • 函数: lambda x: x == ‘CCC’ </p>
+<h4 id="skiprows-None-跳过⾏"><a href="#skiprows-None-跳过⾏" class="headerlink" title="skiprows=None  跳过⾏"></a>skiprows=None  跳过⾏</h4><p>skiprows=1  跳过第一行   ；   skiprows=[0, 2]  跳过0和2行</p>
+<h4 id="dtype-None-设置列的类型"><a href="#dtype-None-设置列的类型" class="headerlink" title="dtype=None   设置列的类型"></a>dtype=None   设置列的类型</h4><p>dtype = {‘a’: ‘float64’, ‘b’: ‘int32’}</p>
+<h4 id="names-None-设置要使用的列表的列名-。-如果文件不包含标题行，则应显式传递-header-None。"><a href="#names-None-设置要使用的列表的列名-。-如果文件不包含标题行，则应显式传递-header-None。" class="headerlink" title="names=None  设置要使用的列表的列名 。 如果文件不包含标题行，则应显式传递 header=None。"></a>names=None  设置要使用的列表的列名 。 如果文件不包含标题行，则应显式传递 header=None。</h4><p>header=None    </p>
+<p>names=[‘⽉份’ , ‘销量’ , ‘销售额’]</p>
+<h4 id="parse-dates-False-指定解析成⽇期格式的列-只有默认格式会被解析-默认格式为为-2020-1-12"><a href="#parse-dates-False-指定解析成⽇期格式的列-只有默认格式会被解析-默认格式为为-2020-1-12" class="headerlink" title="parse_dates=False    指定解析成⽇期格式的列,只有默认格式会被解析,默认格式为为 2020/1/12"></a>parse_dates=False    指定解析成⽇期格式的列,只有默认格式会被解析,默认格式为为 2020/1/12</h4><p>• True -&gt; 尝试解析index的格式</p>
+<p>• [0, 1] 或 [‘a’, ‘b’] -&gt; 尝试解析指定列作为一个单独的日期列 </p>
+<p>• [[0, 1, 2]] -&gt; 结合多列解析为单个日期列 ，如果年月日不在一起，可以这样使用将他们结合</p>
+<p>• {‘日期’: [0, 1, 2]} -&gt; 同上, 结果的列名改为’日期’ •</p>
+<h4 id="date-parser-None-function-解析⽇期格式的函数"><a href="#date-parser-None-function-解析⽇期格式的函数" class="headerlink" title="date_parser=None    function, 解析⽇期格式的函数"></a>date_parser=None    function, 解析⽇期格式的函数</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">date_parser=<span class="keyword">lambda</span> x: pd.to_datetime(x, <span class="built_in">format</span>=<span class="string">&quot;%Y年%m月%d日&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="na-values-None-识别为-NaN-缺失值-的其他字符串"><a href="#na-values-None-识别为-NaN-缺失值-的其他字符串" class="headerlink" title="na_values=None    识别为 NaN(缺失值) 的其他字符串"></a>na_values=None    识别为 NaN(缺失值) 的其他字符串</h4><p>missing data (缺失值) (NaN)    Not a Number </p>
+<p>默认情况下，以下值被解析为NaN</p>
+<p> ‘-1.#IND’     ‘1.#IND’      ‘NA’     ‘#N/A’   ‘-1.#QNAN’     ‘1.#QNAN’     ‘NULL’     ‘#NA’     ‘-NaN’     ‘NaN’     ‘#N/A N/A’     ‘-nan’     ‘N/A’     ‘n/a’</p>
+<p>na_values=[‘空值’, 0]   将’空值‘字符串和0变成NaN</p>
+<p>na_values={1: [‘空值’, 0]}    将第二列中的’空值‘字符串和0变成NaN</p>
+<h4 id="converters-None-值转换函数，注意传递的是dict"><a href="#converters-None-值转换函数，注意传递的是dict" class="headerlink" title="converters=None      值转换函数，注意传递的是dict"></a>converters=None      值转换函数，注意传递的是dict</h4><p>converters={ </p>
+<p>“a”: lambda x: x +1, # 将 列’a‘中的值 + 1 </p>
+<p>“b”: lambda x: x * 2, #  将列’b‘中的值 * 2</p>
+<p>}</p>
+<h4 id="true-values-None-变成-True-的值"><a href="#true-values-None-变成-True-的值" class="headerlink" title="true_values=None    变成 True 的值"></a>true_values=None    变成 True 的值</h4><p>true_values=[‘a’, ‘b’]     将’a‘与’b‘变成布尔类型TRUE</p>
+<h4 id="false-values-None-变成-False-的值"><a href="#false-values-None-变成-False-的值" class="headerlink" title="false_values=None   变成 False 的值"></a>false_values=None   变成 False 的值</h4><p> false_values=[‘c’, ‘d’]     将’c‘与’d‘变成布尔类型FALSE</p>
+<h6 id="上面的两个参数只对字符串起作⽤，并要一整列要么全部变要么全部不变"><a href="#上面的两个参数只对字符串起作⽤，并要一整列要么全部变要么全部不变" class="headerlink" title="上面的两个参数只对字符串起作⽤，并要一整列要么全部变要么全部不变"></a>上面的两个参数只对字符串起作⽤，并要一整列要么全部变要么全部不变</h6><h4 id="mangle-dupe-cols-True-列名是否重复"><a href="#mangle-dupe-cols-True-列名是否重复" class="headerlink" title="mangle_dupe_cols=True   列名是否重复"></a>mangle_dupe_cols=True   列名是否重复</h4><p>如果重复命名,会自动修改 :   a    b     b   -&gt;  a   b    b.1</p>
+<p>mangle_dupe_cols=False  如果出现重复命名将会报错:</p>
+<p>ValueError: Setting mangle_dupe_cols=False is not supported yet</p>
+<h2 id="pandas写excel文件-DataFrame-to-excel-的参数"><a href="#pandas写excel文件-DataFrame-to-excel-的参数" class="headerlink" title="pandas写excel文件:DataFrame.to_excel()的参数"></a>pandas写excel文件:DataFrame.to_excel()的参数</h2>]]></content>
+      <categories>
+        <category>数据清洗</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>pandas</tag>
+        <tag>excel</tag>
       </tags>
   </entry>
 </search>
