@@ -2214,11 +2214,11 @@
 <h4 id="dtype-None-设置列的类型"><a href="#dtype-None-设置列的类型" class="headerlink" title="dtype=None   设置列的类型"></a>dtype=None   设置列的类型</h4><p>dtype = {‘a’: ‘float64’, ‘b’: ‘int32’}</p>
 <h4 id="names-None-设置要使用的列表的列名-。-如果文件不包含标题行，则应显式传递-header-None。"><a href="#names-None-设置要使用的列表的列名-。-如果文件不包含标题行，则应显式传递-header-None。" class="headerlink" title="names=None  设置要使用的列表的列名 。 如果文件不包含标题行，则应显式传递 header=None。"></a>names=None  设置要使用的列表的列名 。 如果文件不包含标题行，则应显式传递 header=None。</h4><p>header=None    </p>
 <p>names=[‘⽉份’ , ‘销量’ , ‘销售额’]</p>
-<h4 id="parse-dates-False-指定解析成⽇期格式的列-只有默认格式会被解析-默认格式为为-2020-1-12"><a href="#parse-dates-False-指定解析成⽇期格式的列-只有默认格式会被解析-默认格式为为-2020-1-12" class="headerlink" title="parse_dates=False    指定解析成⽇期格式的列,只有默认格式会被解析,默认格式为为 2020/1/12"></a>parse_dates=False    指定解析成⽇期格式的列,只有默认格式会被解析,默认格式为为 2020/1/12</h4><p>• True -&gt; 尝试解析index的格式</p>
+<h4 id="parse-dates-False-指定解析成日期格式的列-只有默认格式会被解析-默认格式为为-2020-1-12"><a href="#parse-dates-False-指定解析成日期格式的列-只有默认格式会被解析-默认格式为为-2020-1-12" class="headerlink" title="parse_dates=False    指定解析成日期格式的列,只有默认格式会被解析,默认格式为为 2020/1/12"></a>parse_dates=False    指定解析成日期格式的列,只有默认格式会被解析,默认格式为为 2020/1/12</h4><p>• True -&gt; 尝试解析index的格式</p>
 <p>• [0, 1] 或 [‘a’, ‘b’] -&gt; 尝试解析指定列作为一个单独的日期列 </p>
 <p>• [[0, 1, 2]] -&gt; 结合多列解析为单个日期列 ，如果年月日不在一起，可以这样使用将他们结合</p>
 <p>• {‘日期’: [0, 1, 2]} -&gt; 同上, 结果的列名改为’日期’ •</p>
-<h4 id="date-parser-None-function-解析⽇期格式的函数"><a href="#date-parser-None-function-解析⽇期格式的函数" class="headerlink" title="date_parser=None    function, 解析⽇期格式的函数"></a>date_parser=None    function, 解析⽇期格式的函数</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">date_parser=<span class="keyword">lambda</span> x: pd.to_datetime(x, <span class="built_in">format</span>=<span class="string">&quot;%Y年%m月%d日&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="date-parser-None-function-解析日期格式的函数"><a href="#date-parser-None-function-解析日期格式的函数" class="headerlink" title="date_parser=None    function, 解析日期格式的函数"></a>date_parser=None    function, 解析日期格式的函数</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">date_parser=<span class="keyword">lambda</span> x: pd.to_datetime(x, <span class="built_in">format</span>=<span class="string">&quot;%Y年%m月%d日&quot;</span>)</span><br></pre></td></tr></table></figure>
 <h4 id="na-values-None-识别为-NaN-缺失值-的其他字符串"><a href="#na-values-None-识别为-NaN-缺失值-的其他字符串" class="headerlink" title="na_values=None    识别为 NaN(缺失值) 的其他字符串"></a>na_values=None    识别为 NaN(缺失值) 的其他字符串</h4><p>missing data (缺失值) (NaN)    Not a Number </p>
 <p>默认情况下，以下值被解析为NaN</p>
 <p> ‘-1.#IND’     ‘1.#IND’      ‘NA’     ‘#N/A’   ‘-1.#QNAN’     ‘1.#QNAN’     ‘NULL’     ‘#NA’     ‘-NaN’     ‘NaN’     ‘#N/A N/A’     ‘-nan’     ‘N/A’     ‘n/a’</p>
