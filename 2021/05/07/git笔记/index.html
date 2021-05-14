@@ -30,7 +30,7 @@
 <meta property="og:description" content="git命令行操作 初始化git">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-05-07T14:40:47.000Z">
-<meta property="article:modified_time" content="2021-05-07T14:41:48.968Z">
+<meta property="article:modified_time" content="2021-05-14T03:19:52.118Z">
 <meta property="article:author" content="怪狗狗">
 <meta property="article:tag" content="git">
 <meta name="twitter:card" content="summary">
@@ -185,10 +185,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-05-07 22:40:47 / 修改时间：22:41:48" itemprop="dateCreated datePublished" datetime="2021-05-07T22:40:47+08:00">2021-05-07</time>
+              <time title="创建时间：2021-05-07 22:40:47" itemprop="dateCreated datePublished" datetime="2021-05-07T22:40:47+08:00">2021-05-07</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-14 11:19:52" itemprop="dateModified" datetime="2021-05-14T11:19:52+08:00">2021-05-14</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -234,10 +240,10 @@
         <p>git命令行操作</p>
 <h4 id="初始化git"><a href="#初始化git" class="headerlink" title="初始化git"></a>初始化git<a id="more"></a></h4><p>git init</p>
 <h4 id="设置签名"><a href="#设置签名" class="headerlink" title="设置签名"></a>设置签名</h4><h5 id="项目级别-仓库级别：仅在当前本地库范围内有效"><a href="#项目级别-仓库级别：仅在当前本地库范围内有效" class="headerlink" title="项目级别/仓库级别：仅在当前本地库范围内有效"></a>项目级别/仓库级别：仅在当前本地库范围内有效</h5><p>git config user.name hui</p>
-<p>git config user.email <a href="mailto:&#x31;&#x37;&#54;&#x34;&#53;&#x30;&#49;&#x35;&#x36;&#55;&#64;&#113;&#x71;&#46;&#x63;&#x6f;&#109;">&#x31;&#x37;&#54;&#x34;&#53;&#x30;&#49;&#x35;&#x36;&#55;&#64;&#113;&#x71;&#46;&#x63;&#x6f;&#109;</a> </p>
+<p>git config user.email <a href="mailto:&#x31;&#x37;&#x36;&#52;&#x35;&#48;&#x31;&#53;&#54;&#55;&#x40;&#113;&#x71;&#x2e;&#x63;&#x6f;&#109;">&#x31;&#x37;&#x36;&#52;&#x35;&#48;&#x31;&#53;&#54;&#55;&#x40;&#113;&#x71;&#x2e;&#x63;&#x6f;&#109;</a> </p>
 <p>信息保存位置：./.git/config 文件</p>
 <h5 id="系统用户级别：登录当前操作系统的用户范围"><a href="#系统用户级别：登录当前操作系统的用户范围" class="headerlink" title="系统用户级别：登录当前操作系统的用户范围"></a>系统用户级别：登录当前操作系统的用户范围</h5><p>git config –global user.name hui </p>
-<p>git config –global <a href="mailto:&#49;&#x37;&#54;&#52;&#53;&#48;&#x31;&#x35;&#x36;&#x37;&#x40;&#113;&#113;&#x2e;&#99;&#x6f;&#x6d;">&#49;&#x37;&#54;&#52;&#53;&#48;&#x31;&#x35;&#x36;&#x37;&#x40;&#113;&#113;&#x2e;&#99;&#x6f;&#x6d;</a> </p>
+<p>git config –global <a href="mailto:&#x31;&#55;&#54;&#52;&#x35;&#48;&#49;&#x35;&#54;&#x37;&#x40;&#x71;&#x71;&#x2e;&#99;&#x6f;&#109;">&#x31;&#55;&#54;&#52;&#x35;&#48;&#49;&#x35;&#54;&#x37;&#x40;&#x71;&#x71;&#x2e;&#99;&#x6f;&#109;</a> </p>
 <p>信息保存位置：~/.gitconfig 文件 </p>
 <h5 id="注-就近原则-项目级别优先于系统用户级别"><a href="#注-就近原则-项目级别优先于系统用户级别" class="headerlink" title="注: 就近原则,项目级别优先于系统用户级别"></a>注: 就近原则,项目级别优先于系统用户级别</h5><h4 id="其他常规操作"><a href="#其他常规操作" class="headerlink" title="其他常规操作"></a>其他常规操作</h4><p><font size='4'>状态查看   git status </font></p>
 <p><font size='4'>添加  git add[file name] </font></p>
@@ -281,10 +287,10 @@
 <p>git push [别名] [分支名]     推送</p>
 <h5 id="拉取"><a href="#拉取" class="headerlink" title="拉取"></a>拉取</h5><p>pull=fetch+merge </p>
 <p>git fetch [远程库地址别名] [远程分支名] </p>
-<p>git merge [远程库地址别名/远程分支名] </p>
+<p>git merge [远程库地址别名] [远程分支名] </p>
 <p>git pull [远程库地址别名] [远程分支名]</p>
-<h4 id="冲突解决"><a href="#冲突解决" class="headerlink" title="冲突解决"></a>冲突解决</h4><p>如果不是基于GitHub远程库的最新版本所做的修改，不能推送，必须先拉取</p>
-<p>拉取下来后如果进入冲突状态，则安装“分支冲突解决”操作解决即可</p>
+<h5 id="冲突解决"><a href="#冲突解决" class="headerlink" title="冲突解决"></a>冲突解决</h5><p>如果不是基于GitHub远程库的最新版本所做的修改，不能推送，必须先拉取</p>
+<p>拉取下来后如果进入冲突状态，则按照“分支冲突解决”操作解决即可</p>
 <p>续。。。</p>
 
     </div>
@@ -390,7 +396,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96git"><span class="nav-number">1.</span> <span class="nav-text">初始化git</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%AD%BE%E5%90%8D"><span class="nav-number">2.</span> <span class="nav-text">设置签名</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%BA%A7%E5%88%AB-%E4%BB%93%E5%BA%93%E7%BA%A7%E5%88%AB%EF%BC%9A%E4%BB%85%E5%9C%A8%E5%BD%93%E5%89%8D%E6%9C%AC%E5%9C%B0%E5%BA%93%E8%8C%83%E5%9B%B4%E5%86%85%E6%9C%89%E6%95%88"><span class="nav-number">2.1.</span> <span class="nav-text">项目级别&#x2F;仓库级别：仅在当前本地库范围内有效</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E7%94%A8%E6%88%B7%E7%BA%A7%E5%88%AB%EF%BC%9A%E7%99%BB%E5%BD%95%E5%BD%93%E5%89%8D%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%94%A8%E6%88%B7%E8%8C%83%E5%9B%B4"><span class="nav-number">2.2.</span> <span class="nav-text">系统用户级别：登录当前操作系统的用户范围</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B3%A8-%E5%B0%B1%E8%BF%91%E5%8E%9F%E5%88%99-%E9%A1%B9%E7%9B%AE%E7%BA%A7%E5%88%AB%E4%BC%98%E5%85%88%E4%BA%8E%E7%B3%BB%E7%BB%9F%E7%94%A8%E6%88%B7%E7%BA%A7%E5%88%AB"><span class="nav-number">2.3.</span> <span class="nav-text">注: 就近原则,项目级别优先于系统用户级别</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%B8%B8%E8%A7%84%E6%93%8D%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">其他常规操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%8E%86%E5%8F%B2%E6%8F%90%E4%BA%A4%E8%AE%B0%E5%BD%95"><span class="nav-number">4.</span> <span class="nav-text">查看历史提交记录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%BF%9B%E5%90%8E%E9%80%80%E7%89%88%E6%9C%AC"><span class="nav-number">5.</span> <span class="nav-text">前进后退版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reset-%E5%91%BD%E4%BB%A4%E7%9A%84%E4%B8%89%E4%B8%AA%E5%8F%82%E6%95%B0%E5%AF%B9%E6%AF%94"><span class="nav-number">6.</span> <span class="nav-text">reset 命令的三个参数对比</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AF%94%E8%BE%83%E6%96%87%E4%BB%B6%E5%B7%AE%E5%BC%82"><span class="nav-number">7.</span> <span class="nav-text">比较文件差异</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86"><span class="nav-number">8.</span> <span class="nav-text">分支管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#github%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4"><span class="nav-number">9.</span> <span class="nav-text">github基本命令</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8B%89%E5%8F%96"><span class="nav-number">9.1.</span> <span class="nav-text">拉取</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3"><span class="nav-number">10.</span> <span class="nav-text">冲突解决</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96git"><span class="nav-number">1.</span> <span class="nav-text">初始化git</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%AD%BE%E5%90%8D"><span class="nav-number">2.</span> <span class="nav-text">设置签名</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%BA%A7%E5%88%AB-%E4%BB%93%E5%BA%93%E7%BA%A7%E5%88%AB%EF%BC%9A%E4%BB%85%E5%9C%A8%E5%BD%93%E5%89%8D%E6%9C%AC%E5%9C%B0%E5%BA%93%E8%8C%83%E5%9B%B4%E5%86%85%E6%9C%89%E6%95%88"><span class="nav-number">2.1.</span> <span class="nav-text">项目级别&#x2F;仓库级别：仅在当前本地库范围内有效</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E7%94%A8%E6%88%B7%E7%BA%A7%E5%88%AB%EF%BC%9A%E7%99%BB%E5%BD%95%E5%BD%93%E5%89%8D%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%94%A8%E6%88%B7%E8%8C%83%E5%9B%B4"><span class="nav-number">2.2.</span> <span class="nav-text">系统用户级别：登录当前操作系统的用户范围</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B3%A8-%E5%B0%B1%E8%BF%91%E5%8E%9F%E5%88%99-%E9%A1%B9%E7%9B%AE%E7%BA%A7%E5%88%AB%E4%BC%98%E5%85%88%E4%BA%8E%E7%B3%BB%E7%BB%9F%E7%94%A8%E6%88%B7%E7%BA%A7%E5%88%AB"><span class="nav-number">2.3.</span> <span class="nav-text">注: 就近原则,项目级别优先于系统用户级别</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%B8%B8%E8%A7%84%E6%93%8D%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">其他常规操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%8E%86%E5%8F%B2%E6%8F%90%E4%BA%A4%E8%AE%B0%E5%BD%95"><span class="nav-number">4.</span> <span class="nav-text">查看历史提交记录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%BF%9B%E5%90%8E%E9%80%80%E7%89%88%E6%9C%AC"><span class="nav-number">5.</span> <span class="nav-text">前进后退版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reset-%E5%91%BD%E4%BB%A4%E7%9A%84%E4%B8%89%E4%B8%AA%E5%8F%82%E6%95%B0%E5%AF%B9%E6%AF%94"><span class="nav-number">6.</span> <span class="nav-text">reset 命令的三个参数对比</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AF%94%E8%BE%83%E6%96%87%E4%BB%B6%E5%B7%AE%E5%BC%82"><span class="nav-number">7.</span> <span class="nav-text">比较文件差异</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86"><span class="nav-number">8.</span> <span class="nav-text">分支管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#github%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4"><span class="nav-number">9.</span> <span class="nav-text">github基本命令</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8B%89%E5%8F%96"><span class="nav-number">9.1.</span> <span class="nav-text">拉取</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3"><span class="nav-number">9.2.</span> <span class="nav-text">冲突解决</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
