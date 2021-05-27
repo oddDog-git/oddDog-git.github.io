@@ -2600,4 +2600,158 @@
         <tag>ES6</tag>
       </tags>
   </entry>
+  <entry>
+    <title>java面向对象笔记</title>
+    <url>/2021/05/26/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<h1 id="普通类"><a href="#普通类" class="headerlink" title="普通类"></a>普通类</h1><h2 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h2><p>基本概念 : 构造方法名与类名完全相同并且没有返回值类型，连void都不许有。</p>
+<p>默认构造方法 : 当一个类中没有定义任何构造方法时，编译器会自动添加一个无参空构 造构造方法，叫做默认/缺省构造方法， 若类中出现了构造方法，则编译器不再提供任何形式的构造方法</p>
+<p>作用 : 使用new关键字创建对象时会自动调用构造方法实现成员变量初始化工作</p>
+<h2 id="方法重载（OverLoad）"><a href="#方法重载（OverLoad）" class="headerlink" title="方法重载（OverLoad）"></a>方法重载（OverLoad）</h2><p>基本概念 : 方法名称相同，参数列表不同，这样的方法之间构成重载关系</p>
+<p>体现形式 : 方法重载的主要形式体现在：参数的个数不同、参数的类型不同、参数 的顺序不同，与返回值类型和形参变量名无关，但建议返回值类型最好 相同</p>
+<h2 id="this关键字"><a href="#this关键字" class="headerlink" title="this关键字"></a>this关键字</h2><p>基本概念 :</p>
+<p>​    1.若在构造方法中出现了this关键字，则代表当前正在构造的对象</p>
+<p>​    2.若在成员方法中出现了this关键字，则代表当前正在调用的对象</p>
+<p>​    3.this关键字本质上就是当前类类型的引用变量</p>
+<p>使用方式:</p>
+<p>​    1. 当局部变量名与成员变量名相同时，在方法体中会优先使用局部变量(就 近原则)，若希望使用成员变量，则需要在成员变量的前面加上this.的前 缀，明确要求该变量是成员变量</p>
+<p>​    2. this关键字除了可以通过this.的方式调用成员变量和成员方法外，还可以 作为方法的返回值</p>
+<p>​    3. 再构造方法的第一行可以使用this()的方式来调用本类中的其他构造方法</p>
+<h2 id="static关键字"><a href="#static关键字" class="headerlink" title="static关键字"></a>static关键字</h2><p>基本概念 : 使用static关键字修饰成员变量表示静态的含义，此时成员变量由对象层 级提升为类层级，也就是整个类只有一份并被所有对象共享，该成员变 量随着类的加载准备就绪，与是否创建对象无关。  </p>
+<p>注意事项 : </p>
+<p>​        1.static关键字修饰的成员可以使用引用.的方式访问，但推荐类名.的方式</p>
+<p>​        2. 在非静态成员方法中既能访问非静态的成员又能访问静态的成员</p>
+<p>​        3. 在静态成员方法中只能访问静态成员不能访问非静态成员</p>
+<h2 id="构造快和静态代码块"><a href="#构造快和静态代码块" class="headerlink" title="构造快和静态代码块"></a>构造快和静态代码块</h2><p>构造块：在类体中直接使用{}括起来的代码块。 每创建一个对象都会执行一次构造块。 </p>
+<p>静态代码块：使用static关键字修饰的构造块 static{} 。  静态代码块随着类加载时执行一次。</p>
+<p>执行顺序 ：静态代码块  =》 构造快 =》 构造方法</p>
+<h2 id="单例设计模式的概念"><a href="#单例设计模式的概念" class="headerlink" title="单例设计模式的概念"></a>单例设计模式的概念</h2><p>在某些特殊场合中，一个类对外提供且只提供一个对象时，这样的类叫 做单例类，而设计单例的流程和思想叫做单例设计模式。单例设计模式的实现方式有两种：饿汉式 和 懒汉式。在以后的开发中推荐 饿汉式。</p>
+<p>单例设计模式的实现流程 ：</p>
+<pre><code>1. 私有化构造方法，使用private关键字修饰。 
+2. 声明本类类型的引用指向本类类型的对象，并使用private static关键字共 同修饰。 
+3.  提供公有的get方法负责将对象返回出去，并使用public static关键字共同 修饰。
+</code></pre>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 单例模型</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span></span>&#123;</span><br><span class="line">	<span class="comment">// 创建示例对象，保存到静态成员中，并且私有化，不允许被修改</span></span><br><span class="line">	<span class="comment">//private static Singleton sin = new Singleton();  // 饿汉式	</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> Singleton sin = <span class="keyword">null</span>;	   <span class="comment">// 懒汉式</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 私有化构造方法 </span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="title">Singleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 获取实例，将实例对象暴露出去</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="comment">// 懒汉式需加此判断</span></span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span>==sin)&#123;</span><br><span class="line">			sin = <span class="keyword">new</span> Singleton();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> sin;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="继承-extends"><a href="#继承-extends" class="headerlink" title="继承(extends)"></a>继承(extends)</h2><p>概念  :  当多个类之间有相同的特征和行为时，可以将相同的内容提取出来组成 一个公共类，让多个类吸收公共类中已有特征和行为,而在多个类型只需 要编写自己独有特征和行为的机制，叫做继承。</p>
+<p>特点:</p>
+<p>1.子类不能继承父类的构造方法和私有方法，但私有成员变量可以被继承 只是不能直接访问。</p>
+<p>2.无论使用何种方式构造子类的对象时都会自动调用父类的无参构造方法， 来初始化从父类中继承的成员变量，相当于在构造方法的第一行增加代 码   super()   的效果,也可以手动调用 super(arguments) 来调用父类的其他构造方法</p>
+<p>重写(Override):</p>
+<ol>
+<li>要求方法名相同、参数列表相同以及返回值类型相同，从Java5开始允许 返回子类类型。 </li>
+<li> 要求方法的访问权限不能变小，可以相同或者变大。 </li>
+<li> 要求方法不能抛出更大的异常(异常机制)。</li>
+</ol>
+<h2 id="访问控制"><a href="#访问控制" class="headerlink" title="访问控制"></a>访问控制</h2><p>常用的访问控制符</p>
+<p><a href="https://imgtu.com/i/2CAd58"><img src="https://z3.ax1x.com/2021/05/26/2CAd58.png" alt="2CAd58.png" style="zoom:50%;" /></a></p>
+<h2 id="final关键字"><a href="#final关键字" class="headerlink" title="final关键字"></a>final关键字</h2><p>基本概念 : final本意为”最终的、不可改变的”，可以修饰类、成员方法以及成员变量</p>
+<p>使用方式:</p>
+<p>​    1.final关键字修饰类体现在该类不能被继承</p>
+<p>​    2.final关键字修饰成员方法体现在该方法不能被重写但可以被继承。</p>
+<p>​    3.final关键字修饰成员变量体现在该变量必须初始化且不能改变。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span>  String AB = <span class="string">&quot;AB&quot;</span>;</span><br><span class="line"><span class="comment">// 也可以在代码块中定义常量,当然在构造函数中也行</span></span><br><span class="line"><span class="keyword">final</span> String CD;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">this</span>.CD = <span class="string">&quot;&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>常量（constant）：在以后的开发中很少单独使用final关键字来修饰成员变量，通常使用 public static final关键字共同修饰成员变量来表达常量的含义，命名字母一般大写且下划线分开</p>
+<h2 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h2><p>多态的语法格式： 父类类型 引用变量名 = new 子类类型() ；</p>
+<p>特点:</p>
+<p>​    1.当父类类型的引用指向子类类型的对象时，父类类型的引用可以直接调 用父类独有的方法。</p>
+<p>​    2.当父类类型的引用指向子类类型的对象时，父类类型的引用不可以直接 调用子类独有的方法。</p>
+<p>​    3.对于父子类都有的非静态方法来说，编译阶段调用父类版本，运行阶段 调用子类重写的版本（动态绑定）</p>
+<p>​    4.对于父子类都有的静态方法来说，编译和运行阶段都调用父类版本</p>
+<p>对于第二点，如果要调用子类独有的方法，可强制类型转换(向下转型)，将父类型转换成子类型，若强转目标类型不是该引用类型的真正指向的类型，编译会通过，但是运行阶段会发生类型转换异常ClassCastException。为了避免这种情况发生，可以在转换之前判断： if(引用变量 instanceof 数据类型) </p>
+<p>多态的实际意义 :  在于屏蔽不同子类的差异性实现通用的编程带来不同的 效果。</p>
+<h1 id="特殊类"><a href="#特殊类" class="headerlink" title="特殊类"></a>特殊类</h1><h2 id="抽象类（abstract）"><a href="#抽象类（abstract）" class="headerlink" title="抽象类（abstract）"></a>抽象类（abstract）</h2><p>抽象方法: 主要指不能具体实现的方法并且使用abstract关键字修饰，也就 是没有方法体。</p>
+<p>抽象类 : 类主要指不能具体实例化的类并且使用abstract关键字修饰，也就是 不能创建对象.</p>
+<p>抽象类与抽象方法的关系:</p>
+<p>​    1.抽象类中可以有成员变量、构造方法、成员方法； </p>
+<p>​    2.抽象类中可以没有抽象方法，也可以有抽象方法； </p>
+<p>​    3.拥有抽象方法的类必须是抽象类，因此真正意义上的抽象类应该是具有 抽象方法并且使用abstract关键字修饰的类。</p>
+<p>实际意义 : </p>
+<p>​    1.抽象类的实际意义不在于创建对象而在于被继承。 </p>
+<p>​    2.当一个类继承抽象类后必须重写抽象方法，否则该类也变成抽象类，也 就是抽象类对子类具有强制性和规范性，因此叫做模板设计模式。</p>
+<h2 id="接口-interface"><a href="#接口-interface" class="headerlink" title="接口(interface)"></a>接口(interface)</h2><p>接口是一种比抽象类还抽象的类，体现在所有方法都为抽象方法。</p>
+<p>接口与抽象类之间的关系:</p>
+<p><a href="https://imgtu.com/i/2CaZMd"><img src="https://z3.ax1x.com/2021/05/27/2CaZMd.png" alt="2CaZMd.png" style="zoom:50%;" /></a></p>
+<p>接口与类的主要区别:</p>
+<p>1.定义抽象类的关键字是abstract class，而定义接口的关键字是interface。 </p>
+<p>2.继承抽象类的关键字是extends，而实现接口的关键字是implements。 </p>
+<p>3.继承抽象类支持单继承，而实现接口支持多实现。 </p>
+<p>4.抽象类中可以有构造方法，成员变量，成员方法，而接口中只能有抽象方法与常量。  </p>
+<p>5.抽象类中增加方法时子类可以不用重写，而接口中增加方法时实现类需 要重写（Java8以前的版本）。 </p>
+<p>6.从Java8开始增加新特性，接口中允许出现非抽象方法和静态方法，但非 抽象方法需要使用default关键字修饰。 </p>
+<p>7.从Java9开始增加新特性，接口中允许出现私有方法。</p>
+<h2 id="内部类"><a href="#内部类" class="headerlink" title="内部类"></a>内部类</h2><p>当一个类的定义出现在另外一个类的类体中时，那么这个类叫做内部类 （Inner），而这个内部类所在的类叫做外部类（Outer）</p>
+<h3 id="普通内部类"><a href="#普通内部类" class="headerlink" title="普通内部类"></a>普通内部类</h3><p>-直接将一个类的定义放在另外一个类的类体中。</p>
+<p>使用方式:</p>
+<p>​    1.普通内部类和普通类一样可以定义成员变量、成员方法以及构造方法等</p>
+<p>​    2.如果内部类访问外部类中与本类内部同名的成员变量或方法时，需要使 用this关键字。</p>
+<p>​    3. 普通内部类需要使用外部类对象来创建对象</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 先创建外部类</span></span><br><span class="line">Outer outer = <span class="keyword">new</span> Outer();</span><br><span class="line"><span class="comment">// 根据外部类创建内部类</span></span><br><span class="line">Inner inner = outer.<span class="function">new <span class="title">Inner</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+<h3 id="静态内部类"><a href="#静态内部类" class="headerlink" title="静态内部类"></a>静态内部类</h3><p>- 使用static关键字修饰的内部类，隶属于类层级</p>
+<p>使用方式:</p>
+<p>​    1.静态内部类不能直接访问外部类的非静态成员。</p>
+<p>​    2.如果静态内部类访问外部类中与本类内同名的成员变量或方法时，需要 使用类名.的方式访问 </p>
+<p>​    3. 静态内部类可以直接创建对象。 </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Inner inner = <span class="keyword">new</span>  Outer.Inner();</span><br></pre></td></tr></table></figure>
+<h3 id="局部内部类"><a href="#局部内部类" class="headerlink" title="局部内部类"></a>局部内部类</h3><ul>
+<li>直接将一个类的定义放在方法体的内部时</li>
+</ul>
+<p>使用方式:</p>
+<p>​    1.局部内部类只能在该方法的内部可以使用。 </p>
+<p>​    2.局部内部类可以在方法体内部直接创建对象。 </p>
+<p>​    3.局部内部类不能使用访问控制符和static关键字修饰符,直接 class 类名{ … } 即可</p>
+<p>​    4.局部内部类可以使用外部方法的局部变量，但是必须是final的。由局部内 部类和局部变量的声明周期不同所致</p>
+<h3 id="匿名内部类"><a href="#匿名内部类" class="headerlink" title="匿名内部类"></a>匿名内部类</h3><p> - 就是指没有名字的内部类</p>
+<p>语法格式 : 接口/父类类型 引用变量名 = new 接口/父类类型() { 方法的重写 }；</p>
+<h2 id="枚举类（enum）"><a href="#枚举类（enum）" class="headerlink" title="枚举类（enum）"></a>枚举类（enum）</h2><p>在日常生活中这些事物的取值只有明确的几个固定值，此时描述这些事 物的所有值都可以一一列举出来，而这个列举出来的类型就叫做枚举类 型。</p>
+<p>用class模拟写一个枚举类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//定义一个方向类枚举类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Direction</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String desc;</span><br><span class="line">	<span class="comment">// 对外暴露4个类型</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Direction UP = <span class="keyword">new</span> Direction(<span class="string">&quot;向上&quot;</span>);</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Direction DOWN = <span class="keyword">new</span> Direction(<span class="string">&quot;向下&quot;</span>);</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Direction LEFT = <span class="keyword">new</span> Direction(<span class="string">&quot;向左&quot;</span>);</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Direction RIGHT = <span class="keyword">new</span> Direction(<span class="string">&quot;向右&quot;</span>);</span><br><span class="line">	<span class="comment">// 构造方法(必须是私有的)</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Direction</span><span class="params">(String desc)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.desc = desc;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getDesc</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.desc;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>枚举类的定义:</p>
+<p>​    1.使用public static final表示的常量描述较为繁琐，使用enum关键字来定 义枚举类型取代常量，枚举类型是从Java5开始增加的一种引用数据类型。 </p>
+<p>​    2.枚举值就是当前类的类型，也就是指向本类的对象，默认使用public static final关键字共同修饰，因此采用 枚举类型. 的方式调用。 </p>
+<p>​    3.枚举类可以自定义构造方法，但是构造方法的修饰符必须是private，默 认也是私有的。</p>
+<p>定义一个枚举类:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">DirectionEnum</span> <span class="keyword">implements</span> <span class="title">Dir</span></span>&#123;</span><br><span class="line">    <span class="comment">// 定义枚举类暴露的类型个数,必须放在第一行</span></span><br><span class="line">    UP(<span class="string">&quot;向上&quot;</span>), DOWN(<span class="string">&quot;向下&quot;</span>), LEFT(<span class="string">&quot;向左&quot;</span>), RIGHT(<span class="string">&quot;向右&quot;</span>) ;</span><br><span class="line">	<span class="comment">// 构造方法</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">DirectionEnum</span><span class="params">(String desc)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.desc = desc;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String desc;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getDesc</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.desc;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所有的枚举类都继承自java.lang.Enum类，常用方法如下:</p>
+<p><a href="https://imgtu.com/i/2CBb38"><img src="https://z3.ax1x.com/2021/05/27/2CBb38.png" alt="2CBb38.png" style="zoom:50%;" /></a></p>
+<p>枚举类实现接口后需要重写抽象方法，而重写方法的方式有两种：</p>
+<p>​    1.重写 一个</p>
+<p>​    2.每个枚举对象都重写。(匿名内部类)</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">UP(<span class="string">&quot;向上&quot;</span>)&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;向上移动！！！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, DOWN(<span class="string">&quot;向下&quot;</span>)&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;向下移动！！！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="注解（annotation）"><a href="#注解（annotation）" class="headerlink" title="注解（annotation）"></a>注解（annotation）</h2><p>又叫标注,从Java5开始增加的一种引用数据类型。注解本质上就是代码中的特殊标记，通过这些标记可以在编译、类加载、 以及运行时执行指定的处理。自动继承java.lang.annotation.Annotation接口</p>
+<p>注解的使用方式:</p>
+<p>参数成员类型只能是八 种基本数据类型、String类型、Class类型、enum类型及Annotation类型.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// default表示默认值</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> MyAnnotation &#123;</span><br><span class="line">    <span class="function">String <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> &quot;hui&quot;</span>;</span><br><span class="line">    <span class="function">String <span class="title">value2</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="元注解"><a href="#元注解" class="headerlink" title="元注解"></a>元注解</h3><p>可以注解到注解上的注解，或者说元注解是一种基本注解</p>
+<h4 id="Retentio"><a href="#Retentio" class="headerlink" title="@Retentio"></a>@Retentio</h4><p>说明该注解的生命周期，取值如下:</p>
+<p>RetentionPolicy.SOURCE：注解只在源码阶段保留，在编译器进行编译时 它将被丢弃忽视。</p>
+<p>RetentionPolicy.CLASS： 注解只被保留到编译进行的时候，它并不会被加 载到 JVM 中，默认方式。</p>
+<p>RetentionPolicy.RUNTIME: 注解可以保留到程序运行的时候，它会被加载 进入到 JVM 中，所以在程序运行时可以获取到它们</p>
+<h4 id="Documente"><a href="#Documente" class="headerlink" title="@Documente"></a>@Documente</h4><p>用于指定被该注解将被javadoc工具提取成文档。 </p>
+<p>定义为@Documented的注解必须设置Retention值为RUNTIME</p>
+<h4 id="Target"><a href="#Target" class="headerlink" title="@Target"></a>@Target</h4><p>用于指定被修饰的注解能用于哪些元素的修饰</p>
+<p><a href="https://imgtu.com/i/2CrTl8"><img src="https://z3.ax1x.com/2021/05/27/2CrTl8.png" alt="2CrTl8.png" style="zoom:67%;" /></a></p>
+<p>从Java8开始参数类型ElementType枚举值增加了两个：</p>
+<p>ElementType.TYPE_PARAMETER ：该注解能写在类型变量的声明 语句中，如：泛型。</p>
+<p>ElementType.TYPE_USE : 该注解能写在使用类型的任何语句中。</p>
+<h4 id="Inherited"><a href="#Inherited" class="headerlink" title="@Inherited"></a>@Inherited</h4><p>如果一个超类被该注解标记，子类没有被任何注解应用时，则子类就继承超类的注解。</p>
+<h4 id="Repeatable"><a href="#Repeatable" class="headerlink" title="@Repeatable"></a>@Repeatable</h4><p>表示自然可重复使用的含义，从Java8开始增加的新特性</p>
+<p>java8之前如果要重复使用一个注解，需要这样定义:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 需要重复使用的注解</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> MyAnnotation &#123;</span><br><span class="line">    <span class="function">String <span class="title">value</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 定义另一个注解，成员参数为上面的注解的数组类型</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> MyAnnotations &#123;</span><br><span class="line">    MyAnnotation[] value();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 通过数组的方式使用重复注解</span></span><br><span class="line"><span class="meta">@MyAnnotations(</span></span><br><span class="line"><span class="meta">    &#123;</span></span><br><span class="line"><span class="meta">        @MyAnnotation(value=&quot;怪狗狗&quot;),</span></span><br><span class="line"><span class="meta">        @MyAnnotation(value=&quot;oddDog&quot;)</span></span><br><span class="line"><span class="meta">    &#125;</span></span><br><span class="line"><span class="meta">)</span> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>java8有了@Repeatable元注解使用方式：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 需要重复使用的注解添加该元注解,参数为数组注解的class文件</span></span><br><span class="line"><span class="meta">@Repeatable(value = MyAnnotations.class)</span> </span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> MyAnnotation &#123;</span><br><span class="line">    <span class="function">String <span class="title">value</span><span class="params">()</span> </span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 使用重复注解，注解调用两次即可</span></span><br><span class="line"><span class="meta">@MyAnnotation(value = &quot;怪狗狗&quot;)</span></span><br><span class="line"><span class="meta">@MyAnnotation(value = &quot;oddDog&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="常见的预制注解"><a href="#常见的预制注解" class="headerlink" title="常见的预制注解"></a>常见的预制注解</h3><p>​    预制注解就是Java语言自身提供的注解，具体如下:</p>
+<p><a href="https://imgtu.com/i/2C6Mod"><img src="https://z3.ax1x.com/2021/05/27/2C6Mod.png" alt="2C6Mod.png" style="zoom:50%;" /></a></p>
+<p><a href="https://imgtu.com/i/2C6GSP"><img src="https://z3.ax1x.com/2021/05/27/2C6GSP.png" alt="2C6GSP.png" style="zoom:50%;" /></a></p>
+<p>over 。。。</p>
+]]></content>
+      <categories>
+        <category>java</category>
+      </categories>
+      <tags>
+        <tag>基础</tag>
+        <tag>面向对象</tag>
+      </tags>
+  </entry>
 </search>
