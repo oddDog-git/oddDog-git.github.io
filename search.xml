@@ -2754,4 +2754,920 @@
         <tag>面向对象</tag>
       </tags>
   </entry>
+  <entry>
+    <title>java核心类库</title>
+    <url>/2021/05/30/java%E6%A0%B8%E5%BF%83%E7%B1%BB%E5%BA%93/</url>
+    <content><![CDATA[<h1 id="Object-类"><a href="#Object-类" class="headerlink" title="Object 类"></a>Object 类</h1><p><strong>基本概念</strong> : java.lang.Object类是Java语言中类层次结构的根类，也就是说任何一个类都是该类的直接或者间 接子类。 如果定义一个Java类时没有使用extends关键字声明其父类，则其父类为 java.lang.Object 类。 Object类定义了“对象”的基本行为, 被子类默认继承。</p>
+<p><strong>常用方法</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> <table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th align="left">功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Object()</td>
+<td align="left">使用无参方式构造对象</td>
+</tr>
+<tr>
+<td>boolean equals(Object obj)</td>
+<td align="left">用于判断调用对象是否与参数对象相等。 该方法默认比较两个对象的地址是否相等，与 == 运算符的结果一致 若希望比较两个对象的内容，则需要重写该方法。 若该方法被重写后，则应该重写hashCode方法来保证结果的一致 性。</td>
+</tr>
+<tr>
+<td>int hashCode()</td>
+<td align="left">用于获取调用对象的哈希码值(内存地址的编号)。 若两个对象调用equals方法相等，则各自调用该方法的结果必须相 同 若两个调用对象equals方法不相等，则各自调用该方法的结果应该 不相同。 为了使得该方法与equals方法保持一致，需要重写该方法。</td>
+</tr>
+<tr>
+<td>String toString()</td>
+<td align="left">用于获取调用对象的字符串形式 该方法默认返回的字符串为：包名.类名@哈希码值的十六进制 为了返回更有意义的数据，需要重写该方法 使用print或println打印引用或字符串拼接引用都会自动调用该方法</td>
+</tr>
+<tr>
+<td>Class getClass()</td>
+<td align="left">用于返回调用对象执行时的Class实例，反射机制使用</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<p>重写 equals()与hashCode() 方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span> == obj) <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> == obj) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (obj <span class="keyword">instanceof</span> Student) &#123;</span><br><span class="line">        <span class="comment">// 通过 id 判断两类型是否相等</span></span><br><span class="line">        <span class="comment">// return this.getId() == ((Student) obj).getId();</span></span><br><span class="line">        <span class="comment">// 通过 name 判断两类型是否相等</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.getName().equals(((Student) obj).getName());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 重写hashCode,返回当前对象的name的哈希值并加上一些别的计算</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//return 12 * 30 * this.getId();</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">12</span> * <span class="number">30</span> * <span class="keyword">this</span>.getName().hashCode();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="包装类"><a href="#包装类" class="headerlink" title="包装类"></a>包装类</h1><p><strong>概念</strong>  : 通常情况下基本数据类型的变量不是对象，为了满足万物皆对象的理念就需要对基本数据类型的变 量进行打包封装处理变成对象，而负责将这些变量声明为成员变量进行对象化处理的相关类，叫做包装 类。</p>
+<p><strong>分类</strong> :  Byte , Short , Integer , Long , Float , Double , Character , Boolean</p>
+<p>包装类的常用常量 :</p>
+<table>
+<thead>
+<tr>
+<th>常量类型和名称</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>public static final T  SIZE</td>
+<td>表示 T 类型采用二进制补码形式的位数</td>
+</tr>
+<tr>
+<td>public static final T BYTES</td>
+<td>表示 T 类型所占的字节个数</td>
+</tr>
+<tr>
+<td>public static final Class TYPE</td>
+<td>表示 T 类型的Class实例</td>
+</tr>
+</tbody></table>
+<p>包装类的常用方法</p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>static Integer valueOf (xx i)</td>
+<td>根据参数指定基本数据类型得到包装类xx的对象</td>
+</tr>
+<tr>
+<td>xx xxValue()</td>
+<td>将包装类xx转变成相对应的基本数据类型</td>
+</tr>
+<tr>
+<td>boolean equals(Object obj)</td>
+<td>比较调用对象与参数指定的对象是否相等</td>
+</tr>
+<tr>
+<td>String toString()</td>
+<td>返回描述调用对象数值的字符串形式</td>
+</tr>
+<tr>
+<td>static xxx parsexxx(String s)</td>
+<td>将字符串类型转换为xxx基本数据类型并返回</td>
+</tr>
+<tr>
+<td>static String toString(xxx i)</td>
+<td>获取包装类的字符串的形式</td>
+</tr>
+</tbody></table>
+<p><strong>装箱和拆箱的概念</strong></p>
+<p>在Java5发布之前使用包装类对象进行运算时，需要较为繁琐的“拆箱”和“装箱”操作；即运算前先将 包装类对象拆分为基本类型数据，运算后再将结果封装成包装类对象。 从Java5开始增加了自动拆箱和自动装箱的功能。</p>
+<h2 id="Integer-类的基本使用"><a href="#Integer-类的基本使用" class="headerlink" title="Integer 类的基本使用"></a>Integer 类的基本使用</h2><p>常用方法</p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>static String toBinaryString(int i)</td>
+<td>获取参数指定整数的二进制字符串形式</td>
+</tr>
+<tr>
+<td>static String toHexString(int i)</td>
+<td>获取参数指定整数的十六进制字符串形式</td>
+</tr>
+<tr>
+<td>static String toOctalString(int i)</td>
+<td>获取参数指定整数的八进制字符串形式</td>
+</tr>
+</tbody></table>
+<p><strong>自动装箱池</strong> </p>
+<p>在Integer类的内部提供了自动装箱池技术，将-128到127之间的整数已经装箱完毕，当程序中使用 该范围之间的整数时，无需装箱直接取用自动装箱池中的对象即可，从而提高效率</p>
+<h2 id="Character-类的基本使用"><a href="#Character-类的基本使用" class="headerlink" title="Character 类的基本使用"></a>Character 类的基本使用</h2><p>常用方法</p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>static boolean isUpperCase(char ch)</td>
+<td>判断参数指定字符是否为大写字符</td>
+</tr>
+<tr>
+<td>static boolean isLowerCase(char ch)</td>
+<td>判断参数指定字符是否为小写字符</td>
+</tr>
+<tr>
+<td>static boolean isDigit(char ch)</td>
+<td>判断参数指定字符是否为数字字符</td>
+</tr>
+<tr>
+<td>static char toUpperCase(char ch)</td>
+<td>将参数指定的字符转换为大写字符</td>
+</tr>
+<tr>
+<td>static char toLowerCase(char ch)</td>
+<td>将参数指定的字符转换为小写字符</td>
+</tr>
+</tbody></table>
+<p>（其他包装类的用法跟Integer的用法基本相同，这里就不过多描述了）</p>
+<h1 id="数学处理类"><a href="#数学处理类" class="headerlink" title="数学处理类"></a>数学处理类</h1><h2 id="Math-类"><a href="#Math-类" class="headerlink" title="Math 类"></a>Math 类</h2><p> java.lang.Math类主要用于提供执行数学运算的方法，如：对数，平方根</p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>static int max(int a, int b)</td>
+<td>返回两个参数中的最大值</td>
+</tr>
+<tr>
+<td>static int min(int a, int b)</td>
+<td>返回两个参数中的最小值</td>
+</tr>
+<tr>
+<td>static double pow(double a, double b)</td>
+<td>返回第一个参数的幂</td>
+</tr>
+<tr>
+<td>static int abs(int a)</td>
+<td>返回参数指定数值的绝对值</td>
+</tr>
+<tr>
+<td>static long round(double a)</td>
+<td>返回参数四舍五入的结果</td>
+</tr>
+<tr>
+<td>static double sqrt(double a)</td>
+<td>返回参数的平方根</td>
+</tr>
+<tr>
+<td>static double random()</td>
+<td>返回0.0到1.0的随机数</td>
+</tr>
+</tbody></table>
+<h2 id="BigDecimal类"><a href="#BigDecimal类" class="headerlink" title="BigDecimal类"></a>BigDecimal类</h2><p>由于float类型和double类型在运算时可能会有误差，若希望实现精确运算则借助 java.math.BigDecimal类型加以描述。</p>
+<p>BigDecimal(String val) 根据参数指定的字符串来构造对象</p>
+<p>add 、 subtract 、 multiply 、 divide 分别实现加减乘除</p>
+<h2 id="BigInteger类"><a href="#BigInteger类" class="headerlink" title="BigInteger类"></a>BigInteger类</h2><p>若希望表示比long类型范围还大的整数数据，则需要借助java.math.BigInteger类型描述。</p>
+<p>BigInteger(String val) 根据参数指定的字符串来构造对象</p>
+<p>add 、subtract 、multiply 、 divide 、remainder 、divideAndRemainder分别实现加减乘除、取余、取商和余数</p>
+<h1 id="String类"><a href="#String类" class="headerlink" title="String类"></a>String类</h1><p><strong>概述</strong> ：</p>
+<ul>
+<li><p>java.lang.String类用于描述字符串，Java程序中所有的字符串字面值都可以使用该类的对象加以描 述。</p>
+</li>
+<li><p>该类由final关键字修饰，表示该类不能被继承。 </p>
+</li>
+<li><p>从jdk1.9开始该类的底层不使用char[]来存储数据，而是改成 byte[]加上编码标记，从而节约了一 些空间。 </p>
+</li>
+<li><p>该类描述的字符串内容是个<strong>常量</strong>不可更改，因此可以被共享使用。</p>
+</li>
+<li><p>*常量池的概念（原理）**</p>
+<p>由于String类型描述的字符串内容是常量不可改变，因此Java虚拟机将首次出现的字符串放入常量 池中，若后续代码中出现了相同字符串内容则直接使用池中已有的字符串对象而无需申请内存及创建对 象，从而提高了性能。（方法区）</p>
+</li>
+</ul>
+<p><strong>构造方法使用</strong></p>
+<p>可传递 byte[] 与 char[] 数组 ，也能指定数组的起始位置与结束位置</p>
+<p>也能传递String  xx ，根据参数指定的字符串内容来构造对象，新创建对象为参 数对象的副本。</p>
+<p>这时在方法区有一个字符串 xx ，而栈区中也有一个 String对象 并指向方法区的xx。</p>
+<p><strong>常用方法</strong> </p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>String toString()</td>
+<td>返回字符串本身</td>
+</tr>
+<tr>
+<td>byte[] getBytes()</td>
+<td>将当前字符串内容转换为byte数组并返回</td>
+</tr>
+<tr>
+<td>char[] toCharArray()</td>
+<td>用于将当前字符串内容转换为char数组并返回</td>
+</tr>
+<tr>
+<td>int length()</td>
+<td>返回字符串字符序列的长度</td>
+</tr>
+<tr>
+<td>boolean isEmpty()</td>
+<td>判断字符串是否为空</td>
+</tr>
+<tr>
+<td>int compareTo(String anotherString)</td>
+<td>用于比较调用对象和参数对象的大小关系</td>
+</tr>
+<tr>
+<td>boolean contains(CharSequence s)</td>
+<td>用于判断当前字符串是否包含参数指定的内容</td>
+</tr>
+<tr>
+<td>String toLowerCase()</td>
+<td>返回字符串的小写形式</td>
+</tr>
+<tr>
+<td>String toUpperCase()</td>
+<td>返回字符串的大写形式</td>
+</tr>
+<tr>
+<td>String trim()</td>
+<td>返回去掉前导和后继空白的字符串</td>
+</tr>
+<tr>
+<td>boolean startsWith(String prefix)</td>
+<td>判断字符串是否以参数字符串开头</td>
+</tr>
+<tr>
+<td>boolean endsWith(String suffix)</td>
+<td>判断字符串是否以参数字符串结尾</td>
+</tr>
+</tbody></table>
+<p><strong>有关查找的方法</strong></p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>char charAt(int index)</td>
+<td>方法charAt用于返回字符串指定位置的字符</td>
+</tr>
+<tr>
+<td>int indexOf(String str)</td>
+<td>在字符串中检索str返回其第一次出现的位置，若找不到返回-1</td>
+</tr>
+<tr>
+<td>int indexOf(String str, int fromIndex)</td>
+<td>表示从字符串的fromIndex位置开始检索str第一次出现的位置</td>
+</tr>
+<tr>
+<td>int lastIndexOf(String str)</td>
+<td>返回str指定字符串最后一次出现的下标</td>
+</tr>
+<tr>
+<td>int lastIndexOf(String str, int fromIndex)</td>
+<td>用于从fromIndex位置开始反向搜索的第一次出现的下标。</td>
+</tr>
+<tr>
+<td>String substring(int a, int b)</td>
+<td>截取 a 到 b 下标的字符串</td>
+</tr>
+<tr>
+<td>String substring(int  index)</td>
+<td>从index开始截取到最后</td>
+</tr>
+</tbody></table>
+<p><strong>正则表达式相关方法</strong></p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>boolean matches(String regex)</td>
+<td>判断当前正在调用的字符串是否匹配参数指定的正则表达式规则</td>
+</tr>
+<tr>
+<td>String[] split(String regex)</td>
+<td>参数regex为正则表达式，以regex所表示的字符串为分隔符，将字符串拆分成字符串数组</td>
+</tr>
+<tr>
+<td>String replace(char oldChar, char newChar)</td>
+<td>使用参数newChar替换此字符串中出现的所有参数oldChar</td>
+</tr>
+<tr>
+<td>String replaceFirst(String regex,String replacement)</td>
+<td>替换此字符串匹配给定的正则表达式的第一个子字符串</td>
+</tr>
+<tr>
+<td>String replaceAll(String regex,String replacement)</td>
+<td>将字符串中匹配正则表达式regex的字符串替换成replacement</td>
+</tr>
+</tbody></table>
+<h1 id="StringBuilder类"><a href="#StringBuilder类" class="headerlink" title="StringBuilder类"></a>StringBuilder类</h1><p><strong>基本概念</strong></p>
+<ul>
+<li><p>由于String类描述的字符串内容是个常量不可改变，当需要在Java代码中描述大量类似的字符串 时，只能单独申请和存储，此时会造成内存空间的浪费。 </p>
+</li>
+<li><p>为了解决上述问题，可以使用java.lang.StringBuilder类和java.lang.StringBuffer类来描述字符序 列可以改变的字符串</p>
+</li>
+<li><p>StringBuffer类是从jdk1.0开始存在，属于线程安全的类，因此效率比较低。 StringBuilder类是从jdk1.5开始存在，属于非线程安全的类，效率比较高</p>
+</li>
+</ul>
+<p><strong>构造方法</strong></p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>StringBuilder()</td>
+<td>使用无参方式构造对象，容量为16</td>
+</tr>
+<tr>
+<td>StringBuilder(int capacity)</td>
+<td>根据参数指定的容量来构造对象，容量为参数指定大小</td>
+</tr>
+<tr>
+<td>StringBuilder(String str)</td>
+<td>根据参数指定的字符串来构造对象，容量为：16+字符串长度</td>
+</tr>
+</tbody></table>
+<p><strong>成员方法</strong></p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>int capacity()</td>
+<td>用于返回调用对象的容量</td>
+</tr>
+<tr>
+<td>int length()</td>
+<td>用于返回字符串的长度，也就是字符的个数</td>
+</tr>
+<tr>
+<td>StringBuilder insert(int offset, String str)</td>
+<td>插入字符串并返回调用对象的引用，就是自己。</td>
+</tr>
+<tr>
+<td>StringBuilder append(String str)</td>
+<td>追加字符串</td>
+</tr>
+<tr>
+<td>StringBuilder deleteCharAt(int index)</td>
+<td>将当前字符串中下标为index位置的单个字符删除</td>
+</tr>
+<tr>
+<td>StringBuilder delete(int start，int end)</td>
+<td>删除字符串</td>
+</tr>
+<tr>
+<td>StringBuilder replace(int start，int end，String str)</td>
+<td>替换字符串</td>
+</tr>
+<tr>
+<td>StringBuilder reverse()</td>
+<td>字符串反转</td>
+</tr>
+</tbody></table>
+<p><strong>注意</strong> ：</p>
+<ul>
+<li><p>作为参数传递的话，方法内部String不会改变其值，StringBuffer和StringBuilder会改变其值</p>
+</li>
+<li><p>StringBuilder的很多方法的返回值均为StringBuilder类型。这些方法的返回语句均为：return this。 由此可见，这些方法在对StringBuilder所封装的字符序列进行改变后又返回了该对象的引用。基 于这样设计的目的在于可以连续调用。</p>
+</li>
+</ul>
+<h1 id="日期类"><a href="#日期类" class="headerlink" title="日期类"></a>日期类</h1><p>System中的  currentTimeMillis()    返回当前时间与1970年1月1日0时0分0秒之间以毫秒为单位的时间差</p>
+<h2 id="java8-之前的日期类型"><a href="#java8-之前的日期类型" class="headerlink" title="java8 之前的日期类型"></a>java8 之前的日期类型</h2><h3 id="Date类"><a href="#Date类" class="headerlink" title="Date类"></a>Date类</h3><p>java.util.Date类主要用于描述特定的瞬间，也就是年月日时分秒，可以精确到毫秒</p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Date()</td>
+<td>使用无参的方式构造对象，也就是当前系统时间</td>
+</tr>
+<tr>
+<td>Date(long date)</td>
+<td>根据参数指定毫秒数构造对象， 参数为距离1970年1月1日0时0分0秒的毫秒数</td>
+</tr>
+<tr>
+<td>long getTime()</td>
+<td>获取调用对象距离1970年1月1日0时0分0秒的毫秒数</td>
+</tr>
+<tr>
+<td>void setTime(long time)</td>
+<td>设置调用对象为距离基准时间time毫秒的时间点</td>
+</tr>
+</tbody></table>
+<h3 id="SimpleDateFormat类"><a href="#SimpleDateFormat类" class="headerlink" title="SimpleDateFormat类"></a>SimpleDateFormat类</h3><p>搭配Date类的使用，将日期格式化</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 创建  SimpleDateFormat  对象并指定格式</span></span><br><span class="line">SimpleDateFormat sdf = <span class="keyword">new</span> SimpleDateFormat(<span class="string">&quot;yyyy-MM-dd hh:mm:ss&quot;</span>);</span><br><span class="line"><span class="comment">// 格式化日期</span></span><br><span class="line">String time = sdf.format(date);</span><br><span class="line"><span class="comment">// 将String格式的日期变成Date类型</span></span><br><span class="line">Date date = sdf.parse(time);</span><br></pre></td></tr></table></figure>
+<h3 id="Calendar类"><a href="#Calendar类" class="headerlink" title="Calendar类"></a>Calendar类</h3><ul>
+<li>java.util.Calender类主要用于描述特定的瞬间，取代Date类中的过时方法实现全球化。</li>
+<li> 该类是个抽象类，因此不能实例化对象，其具体子类针对不同国家的日历系统，其中应用最广泛的 是GregorianCalendar（格里高利历），对应世界上绝大多数国家/地区使用的标准日历系统</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>static Calendar getInstance()</td>
+<td>用于获取Calendar类型的引用</td>
+</tr>
+<tr>
+<td>void set(int year, int month, int date, int hourOfDay, intminute, int second)</td>
+<td>用于设置年月日时分秒信息</td>
+</tr>
+<tr>
+<td>Date getTime()</td>
+<td>用于将Calendar类型转换为Date类型</td>
+</tr>
+<tr>
+<td>void set(int field, int value)</td>
+<td>设置指定字段 (例如Calendar.YEAR) 的数值</td>
+</tr>
+<tr>
+<td>void add(int field, int amount)</td>
+<td>向指定字段增加数值</td>
+</tr>
+</tbody></table>
+<h2 id="java8-中的日期类型"><a href="#java8-中的日期类型" class="headerlink" title="java8 中的日期类型"></a>java8 中的日期类型</h2><h3 id="LocalDateTime类"><a href="#LocalDateTime类" class="headerlink" title="LocalDateTime类"></a>LocalDateTime类</h3><p>LocalDate() + “T” + LocalTime()</p>
+<p><strong>常用方法</strong> </p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>static LocalDateTime now()</td>
+<td>从默认时区的系统时间中获取当前日期时间</td>
+</tr>
+<tr>
+<td>static LocalDateTime of(int year, int month, intdayOfMonth, int hour, int minute, int second)</td>
+<td>根据参数指定的年月日时分秒信息来设置日期时间</td>
+</tr>
+<tr>
+<td>int getYear()</td>
+<td>获取年份字段的数值</td>
+</tr>
+<tr>
+<td>LocalDateTime withYear(int year)</td>
+<td>设置为参数指定的年</td>
+</tr>
+<tr>
+<td>LocalDateTime plusYears(long years)</td>
+<td>加上参数指定的年</td>
+</tr>
+<tr>
+<td>LocalDateTime minusYears(long years)</td>
+<td>减去参数指定的年</td>
+</tr>
+</tbody></table>
+<p><strong>注</strong>：后面4个方法，对于月日时分秒方法也一样</p>
+<h3 id="Instant类"><a href="#Instant类" class="headerlink" title="Instant类"></a>Instant类</h3><p>java.time.Instant类主要用于描述瞬间的时间点信息，不会自动添加时区</p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>static Instant now()</td>
+<td>从系统时钟上获取当前时间OffsetDateTime</td>
+</tr>
+<tr>
+<td>atOffset(ZoneOffset offset)</td>
+<td>将此瞬间与偏移量组合以创建偏移日期时间</td>
+</tr>
+<tr>
+<td>static Instant ofEpochMilli(long epochMilli)</td>
+<td>根据参数指定的毫秒数来构造对象，参数为距离1970年1月1</td>
+</tr>
+<tr>
+<td>long toEpochMilli()</td>
+<td>获取距离1970年1月1日0时0分0秒的毫秒数</td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 获取当前时间，不添加时区</span></span><br><span class="line">Instant instant = Instant.now();</span><br><span class="line"><span class="comment">// 添加8小时时区</span></span><br><span class="line">OffsetDateTime offsetDateTime = instant.atOffset(ZoneOffset.ofHours(<span class="number">8</span>));</span><br><span class="line"><span class="comment">// 变成毫秒数</span></span><br><span class="line"><span class="keyword">long</span> l = instant.toEpochMilli();</span><br><span class="line"><span class="comment">// 根据毫秒数获取 instant对象，参数为距离1970年1月1</span></span><br><span class="line">Instant instant2 = Instant.ofEpochMilli(<span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="DateTimeFormatter类"><a href="#DateTimeFormatter类" class="headerlink" title="DateTimeFormatter类"></a>DateTimeFormatter类</h3><p>java.time.format.DateTimeFormatter类主要用于格式化和解析日期</p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>static DateTimeFormatter ofPattern(String pattern)</td>
+<td>根据参数指定的模式来获取对象</td>
+</tr>
+<tr>
+<td>String format(TemporalAccessor temporal)</td>
+<td>将参数指定日期时间转换为字符串</td>
+</tr>
+<tr>
+<td>TemporalAccessor parse(CharSequence text)</td>
+<td>将参数指定字符串转换为日期时间</td>
+</tr>
+</tbody></table>
+<h1 id="集合类"><a href="#集合类" class="headerlink" title="集合类"></a>集合类</h1><h2 id="Collection"><a href="#Collection" class="headerlink" title="Collection"></a>Collection</h2><p>java.util.Collection接口是List接口、Queue 接口以及Set接口的父接口，因此该接口里定义的方法 既可用于操作List集合，也可用于操作Queue集合和Set集合</p>
+<p><a href="https://imgtu.com/i/2VhVyD"><img src="https://z3.ax1x.com/2021/05/30/2VhVyD.png" alt="2VhVyD.png" style="zoom: 67%;" /></a></p>
+<p><strong>常用方法</strong></p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>boolean add(E e)</td>
+<td>向集合中添加对象</td>
+</tr>
+<tr>
+<td>boolean addAll(Collection&lt;? extends E&gt; c)</td>
+<td>用于将参数指定集合c中的所有元素添加到当前集合中</td>
+</tr>
+<tr>
+<td>boolean contains(Object o)</td>
+<td>判断是否包含指定对象</td>
+</tr>
+<tr>
+<td>boolean containsAll(Collection&lt;?&gt; c)</td>
+<td>判断是否包含参数指定的所有对象</td>
+</tr>
+<tr>
+<td>boolean retainAll(Collection&lt;?&gt; c)</td>
+<td>保留当前集合中存在且参数集合中存在的所有对象（并集）</td>
+</tr>
+<tr>
+<td>boolean remove(Object o)</td>
+<td>从集合中删除对象</td>
+</tr>
+<tr>
+<td>boolean removeAll(Collection&lt;?&gt; c)</td>
+<td>从集合中删除参数指定的所有对象</td>
+</tr>
+<tr>
+<td>List subList(int fromIndex, int toIndex)</td>
+<td>用于获取子List</td>
+</tr>
+<tr>
+<td>void clear()</td>
+<td>清空集合</td>
+</tr>
+<tr>
+<td>int size()</td>
+<td>返回包含对象的个数</td>
+</tr>
+<tr>
+<td>boolean isEmpty()</td>
+<td>判断是否为空</td>
+</tr>
+<tr>
+<td>boolean equals(Object o)</td>
+<td>判断是否相等</td>
+</tr>
+<tr>
+<td>int hashCode()</td>
+<td>获取当前集合的哈希码值</td>
+</tr>
+<tr>
+<td>Object[] toArray()</td>
+<td>将集合转换为数组</td>
+</tr>
+<tr>
+<td>Iterator iterator()</td>
+<td>获取当前集合的迭代器</td>
+</tr>
+</tbody></table>
+<h3 id="Iterator接口"><a href="#Iterator接口" class="headerlink" title="Iterator接口"></a>Iterator接口</h3><p><strong>概念</strong> </p>
+<ul>
+<li>java.util.Iterator接口主要用于描述迭代器对象，可以遍历Collection集合中的所有元素。</li>
+<li> java.util.Collection接口继承Iterator接口，因此所有实现Collection接口的实现类都可以使用该迭 代器对象。</li>
+</ul>
+<p><strong>常用方法</strong></p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>boolean hasNext()</td>
+<td>判断集合中是否有可以迭代/访问的元素</td>
+</tr>
+<tr>
+<td>E next()</td>
+<td>用于取出一个元素并指向下一个元素</td>
+</tr>
+<tr>
+<td>void remove()</td>
+<td>用于删除访问到的最后一个元素</td>
+</tr>
+</tbody></table>
+<ul>
+<li>用迭代器打印 <strong>toString()</strong>  小案例</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 集合的toString()写法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">MyToString</span><span class="params">(Iterator iterator)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!iterator.hasNext())</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;[]&quot;</span>;</span><br><span class="line">    StringBuilder s = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    s.append(<span class="string">&quot;[&quot;</span>);</span><br><span class="line">    <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">        Object next = iterator.next();</span><br><span class="line">        <span class="keyword">if</span>(!iterator.hasNext())</span><br><span class="line">            <span class="keyword">return</span> s.append(next+<span class="string">&quot;]&quot;</span>).toString();</span><br><span class="line">        s.append(next+<span class="string">&quot;, &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>foreach 为增强版的for循环，也是经典迭代的“简化版”。</li>
+</ul>
+<h3 id="List集合"><a href="#List集合" class="headerlink" title="List集合"></a>List集合</h3><p><strong><em>基本概念</em></strong></p>
+<ul>
+<li><p>java.util.List集合是Collection集合的子集合，该集合中允许有重复的元素并且有先后放入次序。 </p>
+</li>
+<li><p>该集合的主要实现类有：ArrayList类、LinkedList类、Stack类、Vector类。 </p>
+</li>
+<li><p><strong><em>ArrayList</em></strong>类的底层是采用动态数组进行数据管理的，支持下标访问，增删元素不方便。 </p>
+</li>
+<li><p><strong><em>LinkedList</em></strong>类的底层是采用双向链表进行数据管理的，访问不方便，增删元素方便。 </p>
+</li>
+<li><p>可以认为ArrayList和LinkedList的方法在逻辑上完全一样，只是在性能上有一定的差别，ArrayList 更适合于随 机访问而LinkedList更适合于插入和删除；在性能要求不是特别苛刻的情形下可以忽略这个差别。 </p>
+</li>
+<li><p><strong><em>Stack</em></strong>类的底层是采用动态数组进行数据管理的，该类主要用于描述一种具有后进先出特征的 数据结构，叫做栈(last in first out LIFO)。 </p>
+</li>
+<li><p><strong><em>Vector</em></strong>类的底层是采用动态数组进行数据管理的，该类与ArrayList类相比属于线程安全的 类，效率比较低，以后开发中基本不用。</p>
+<p>Arrays.asList()     可快速获取一个List集合</p>
+</li>
+</ul>
+<h3 id="Queue集合"><a href="#Queue集合" class="headerlink" title="Queue集合"></a>Queue集合</h3><p><strong><em>基本概念</em></strong></p>
+<ul>
+<li>java.util.Queue集合是Collection集合的子集合，与List集合属于平级关系。 </li>
+<li>该集合的主要用于描述具有先进先出特征的数据结构，叫做队列(first in first out FIFO)。 </li>
+<li>该集合的主要实现类是<strong>LinkedList</strong>类，因为该类在增删方面比较有优势。</li>
+</ul>
+<p><strong><em>常用方法</em></strong></p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>boolean offer(E e)</td>
+<td>将一个对象添加至队尾，若添加成功则返回true</td>
+</tr>
+<tr>
+<td>E poll()</td>
+<td>从队首删除并返回一个元素</td>
+</tr>
+<tr>
+<td>E peek()</td>
+<td>返回队首的元素（但并不删除）</td>
+</tr>
+</tbody></table>
+<h3 id="Set集合"><a href="#Set集合" class="headerlink" title="Set集合"></a>Set集合</h3><p><strong><em>基本概念</em></strong></p>
+<ul>
+<li><p>java.util.Set集合是Collection集合的子集合，与List集合平级。 </p>
+</li>
+<li><p>该集合中元素没有先后放入次序，且不允许重复。 </p>
+</li>
+<li><p>该集合的主要实现类是：HashSet类 和 TreeSet类以及LinkedHashSet类。 </p>
+</li>
+<li><p><strong>HashSet</strong>类的底层是采用哈希表进行数据管理的。 </p>
+</li>
+<li><p><strong>TreeSet</strong>类的底层是采用红黑树进行数据管理的。 </p>
+</li>
+<li><p><strong>LinkedHashSet</strong>类与HashSet类的不同之处在于内部维护了一个双向链表，链表中记录了元 素的迭代顺序，也就是元素插入集合中的先后顺序，因此便于迭代。</p>
+</li>
+<li><p>*<em>元素放入HashSet集合的原理**</em> </p>
+</li>
+<li><p>使用元素调用hashCode方法获取对应的哈希码值，再由某种哈希算法计算出该元素在数组中的索 引位置。 </p>
+</li>
+<li><p>若该位置没有元素，则将该元素直接放入即可。 </p>
+</li>
+<li><p>若该位置有元素，则使用新元素与已有元素依次比较哈希值，若哈希值不相同，则将该元素直接放 入末尾。 </p>
+</li>
+<li><p>若新元素与已有元素的哈希值相同，则使用新元素调用equals方法与已有元素依次比较。 </p>
+</li>
+<li><p>若相等则添加元素失败，否则将元素直接放入即可。</p>
+</li>
+</ul>
+<p><strong><em>思考</em></strong>   :  为什么要求重写equals方法后要重写hashCode方法呢?</p>
+<p>当两个元素调用equals方法相等时证明这两个元素相同，重写hashCode方法后保证这两个元 素得到的哈希码值相同，由同一个哈希算法生成的索引位置相同，此时只需要与该索引位置已有元 素比较即可，从而提高效率并避免重复元素的出现。</p>
+<p><strong><em>TreeSet集合的概念</em></strong></p>
+<p>由于TreeSet集合的底层采用红黑树进行数据的管理，当有新元素插入到TreeSet集合时，需要使 用新元素与集合中已有的元素依次比较来确定新元素的合理位置。 </p>
+<p>比较元素大小的规则有两种方式： </p>
+<ul>
+<li>使用元素的自然排序规则进行比较并排序，让元素类型实现java.lang.Comparable接口； </li>
+<li>使用比较器规则进行比较并排序，构造TreeSet集合时传入java.util.Comparator接口； </li>
+<li>自然排序的规则比较单一，而比较器的规则比较多元化，而且比较器优先于自然排序；</li>
+</ul>
+<p><strong><em>自然排序规则</em></strong> 让一个Student类实现Comparable接口案例:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">implements</span> <span class="title">Comparable</span>&lt;<span class="title">Student</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="comment">// 重写比较的方法，返回正数表示当前对象大，负数表示小，0表示一样大小</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(Student o)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 名称一样的情况比较id(升序)</span></span><br><span class="line">        <span class="keyword">int</span> i = <span class="keyword">this</span>.getName().compareTo(o.getName());</span><br><span class="line">        <span class="keyword">return</span> i == <span class="number">0</span> ? <span class="keyword">this</span>.getId() - o.getId() : i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong><em>比较器规则</em></strong>   使用匿名内部类，也可以用lambda表达式</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Set set = <span class="keyword">new</span> TreeSet(<span class="keyword">new</span> Comparator&lt;Student&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Student o1, Student o2)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 名称一样的情况比较id(升序)</span></span><br><span class="line">        <span class="keyword">int</span> i = o1.getName().compareTo(o2.getName());</span><br><span class="line">        <span class="keyword">return</span> i == <span class="number">0</span> ? o1.getId() - o2.getId() : i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="泛型机制"><a href="#泛型机制" class="headerlink" title="泛型机制"></a>泛型机制</h3><p><strong><em>基本概念</em></strong></p>
+<ul>
+<li>通常情况下集合中可以存放不同类型的对象，是因为将所有对象都看做Object类型放入的，因此 从集合中取出元素时也是Object类型，为了表达该元素真实的数据类型，则需要强制类型转换， 而强制类型转换可能会引发类型转换异常。 </li>
+<li>为了避免上述错误的发生，从Java5开始增加泛型机制，也就是在集合名称的右侧使用&lt;数据类型&gt; 的方式来明确要求该集合中可以存放的元素类型，若放入其它类型的元素则编译报错。</li>
+<li> 泛型只在编译时期有效，在运行时期不区分是什么类型。</li>
+</ul>
+<p><strong><em>自定义泛型类</em></strong></p>
+<p><strong><em>注</em></strong> :如果一个方法中使用了泛型的类型，则该方法不能用static修饰，因为泛型是创建对象时才能确定的，所以不能使用静态方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// E 表示泛型，可以传基本数据类型除外传任何类型 </span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> E gender;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong><em>继承该泛型类</em></strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 没指定泛型类型，不继承泛型，父类泛型为Object类型</span></span><br><span class="line"><span class="comment">//public class SubPerson extends Person &#123;</span></span><br><span class="line"><span class="comment">// 指定泛型类型，不继承泛型，父类泛型为指定的类型，这里是Boolean类型</span></span><br><span class="line"><span class="comment">//public class SubPerson extends  Person&lt;Boolean&gt;&#123;</span></span><br><span class="line"><span class="comment">// 继承了该泛型，当然也可以有自己的泛型</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SubPerson</span>&lt;<span class="title">T</span>,<span class="title">E</span>&gt; <span class="keyword">extends</span>  <span class="title">Person</span>&lt;<span class="title">T</span>&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    <span class="comment">// 使用自己的泛型</span></span><br><span class="line">    <span class="keyword">private</span> E type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong><em>创建泛型对象</em></strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 不指定泛型，表示Object类型</span></span><br><span class="line">Person p1 = <span class="keyword">new</span> Person();</span><br><span class="line"><span class="comment">// 左边传入需要的类型，右边可以省略不写</span></span><br><span class="line">Person&lt;Integer&gt; p2 = <span class="keyword">new</span> Person&lt;&gt;();</span><br><span class="line">SubPerson&lt;String,Boolean&gt; s= <span class="keyword">new</span> SubPerson();</span><br></pre></td></tr></table></figure>
+<p><strong><em>自定义泛型方法</em></strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 定义一个泛型方法,该泛型方法与类中的泛型没有关系，使用该方法时，实参是什么类型该泛型就是什么类型</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;X&gt; <span class="function"><span class="keyword">void</span> <span class="title">fan</span><span class="params">(X param)</span></span>&#123;</span><br><span class="line">    System.out.println(param);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong><em>通配符的使用</em></strong>      （了解即可）</p>
+<p>有时候我们希望传入的类型在一个指定的范围内，此时就可以使用泛型通配符了。 如：之前传入的类型要求为Integer类型，但是后来业务需要Integer的父类Number类也可以传 入。 </p>
+<p>泛型中有三种通配符形式： </p>
+<ul>
+<li><?>无限制通配符：表示我们可以传入任意类型的参数。 
+</li>
+<li><? extends E>表示类型的上界是E，只能是E或者是E的子类。 
+</li>
+<li><? super E>表示类型的下界是E，只能是E或者是E的父类。
+
+</li>
+</ul>
+<h2 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h2><p><a href="https://imgtu.com/i/2Vh8l8"><img src="https://z3.ax1x.com/2021/05/30/2Vh8l8.png" alt="2Vh8l8.png"></a></p>
+<p><strong><em>基本概念</em></strong></p>
+<ul>
+<li>该集合中key是不允许重复的，而且一个key只能对应一个value。 </li>
+<li>该集合的主要实现类有：HashMap类、TreeMap类、LinkedHashMap类、Hashtable类、 Properties类。 </li>
+<li><strong><em>HashMap</em></strong>类的底层是采用哈希表进行数据管理的。 </li>
+<li><strong><em>TreeMap</em></strong>类的底层是采用红黑树进行数据管理的。</li>
+<li><strong><em>LinkedHashMap</em></strong>类与HashMap类的不同之处在于内部维护了一个双向链表，链表中记录了 元素的迭代顺序，也就是元素插入集合中的先后顺序，因此便于迭代。 </li>
+<li><strong><em>Hashtable</em></strong>类是古老的HashMap实现类，与HashMap类相比属于线程安全的类，且不允许null作 为key或者value的数值。 </li>
+<li><strong><em>Properties</em></strong>类是Hashtable类的子类，该对象用于处理属性文件，key和value都是String类 型的。 </li>
+<li>Map集合是面向查询优化的数据结构, 在大数据量情况下有着优良的查询性能。 经常用于根据key检索value的业务场景。</li>
+</ul>
+<p><strong><em>常用方法</em></strong></p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>V put(K key, V value)</td>
+<td>将Key-Value对存入Map，若集合中已经包含该Key，则替换该Key所对应的Value，返回值为该Key原来所对应的</td>
+</tr>
+<tr>
+<td>V get(Object key)</td>
+<td>返回与参数Key所对应的Value对象，如果不存在则返回null</td>
+</tr>
+<tr>
+<td>V remove(Object key)</td>
+<td>根据参数指定的key进行删除</td>
+</tr>
+<tr>
+<td>boolean containsKey(Objectkey)</td>
+<td>判断集合中是否包含指定的Key</td>
+</tr>
+<tr>
+<td>boolean containsValue(Object value)</td>
+<td>判断集合中是否包含指定的Value</td>
+</tr>
+</tbody></table>
+<p><strong><em>3种遍历的方法</em></strong></p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Set keySet()</td>
+<td>返回此映射中包含的键的Set视图</td>
+</tr>
+<tr>
+<td>Collection values()</td>
+<td>返回此映射中包含的值的Set视图</td>
+</tr>
+<tr>
+<td>Set&lt;Map.Entry&lt;K,V&gt;&gt; entrySet()</td>
+<td>返回此映射中包含的映射的Set视图</td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Map&lt;Integer,String&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;(); </span><br><span class="line"><span class="comment">// 获取所有key值，并遍历</span></span><br><span class="line">Set&lt;Integer&gt; set = map.keySet();</span><br><span class="line"><span class="keyword">for</span> (Integer i :set) &#123;</span><br><span class="line">    System.out.println(i+<span class="string">&quot;=&quot;</span>+map.get(i));</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 获取所有value值，并遍历</span></span><br><span class="line">Collection&lt;String&gt; values = map.values();</span><br><span class="line"><span class="keyword">for</span> (String value : values) &#123;</span><br><span class="line">    System.out.println(value);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 获取所有的键值对，并遍历</span></span><br><span class="line">Set&lt;Map.Entry&lt;Integer,String&gt;&gt; entry = map.entrySet();</span><br><span class="line"><span class="keyword">for</span> (Map.Entry&lt;Integer,String&gt; e:entry) &#123;</span><br><span class="line">    System.out.println(e.getKey()+<span class="string">&quot;=&quot;</span>+e.getValue());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong><em>元素放入HashMap集合的原理</em></strong>     </p>
+<ul>
+<li>使用元素的key调用hashCode方法获取对应的哈希码值，再由某种哈希算法计算在数组中的索引 位置。 </li>
+<li>若该位置没有元素，则将该键值对直接放入即可。 </li>
+<li>若该位置有元素，则使用key与已有元素依次比较哈希值，若哈希值不相同，则将该元素直接放入到最后。 </li>
+<li>若key与已有元素的哈希值相同，则使用key调用equals方法与已有元素依次比较。 </li>
+<li>若相等则将对应的value修改，否则将键值对直接放入即可。</li>
+</ul>
+<p><strong><em>Map中的相关常量</em></strong></p>
+<ul>
+<li>DEFAULT_INITIAL_CAPACITY : HashMap的默认容量是16。 </li>
+<li>DEFAULT_LOAD_FACTOR：HashMap的默认加载因子是0.75。 </li>
+<li>threshold：扩容的临界值，该数值为：容量*填充因子，也就是12。 </li>
+<li>TREEIFY_THRESHOLD：若Bucket中链表长度大于该默认值则转化为红黑树存储，该数值是8。</li>
+<li>MIN_TREEIFY_CAPACITY：桶中的Node被树化时最小的hash表容量，该数值是64。</li>
+</ul>
+<h2 id="Colleciotns工具类"><a href="#Colleciotns工具类" class="headerlink" title="Colleciotns工具类"></a>Colleciotns工具类</h2><p><strong><em>概念</em></strong>  :   java.util.Collections类主要提供了对集合操作或者返回集合的静态方法。</p>
+<p><strong><em>常用方法</em></strong></p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>static &lt;T extends Object &amp; Comparable&lt;? super T&gt;&gt; T max(Collection&lt;? extends T&gt; coll)</td>
+<td>根据元素的自然顺序返回给定集合的最大元素</td>
+</tr>
+<tr>
+<td>static T max(Collection&lt;? extends T&gt; coll, Comparator&lt;? super T&gt; comp)</td>
+<td>根据指定比较器引发的顺序返回给定集合的最大元素</td>
+</tr>
+<tr>
+<td>static &lt;T extends Object &amp; Comparable&lt;?super T&gt;&gt; T min(Collection&lt;? extends T&gt; coll)</td>
+<td>根据元素的自然顺序返回给定集合的最小元素</td>
+</tr>
+<tr>
+<td>static T min(Collection&lt;? extends T&gt; coll, Comparator&lt;? super T&gt; comp)</td>
+<td>根据指定比较器引发的顺序返回给定集合的最小元素</td>
+</tr>
+<tr>
+<td>static void copy(List&lt;? super T&gt; dest, List&lt;? extends T&gt; src)</td>
+<td>将一个列表中的所有元素复制到另一个列表中</td>
+</tr>
+<tr>
+<td>static void reverse(List&lt;?&gt; list)</td>
+<td>反转指定列表中元素的顺序</td>
+</tr>
+<tr>
+<td>static void shuffle(List&lt;?&gt; list)</td>
+<td>使用默认的随机源随机置换指定的列表</td>
+</tr>
+<tr>
+<td>static &lt;T extends Comparable&lt;? super T&gt;&gt; void sort(List list)</td>
+<td>根据其元素的自然顺序将指定列表按升序排序</td>
+</tr>
+<tr>
+<td>static void sort(List list, Comparator&lt;? super T&gt; c)</td>
+<td>根据指定比较器指定的顺序对指定列表进行排序</td>
+</tr>
+<tr>
+<td>static void swap(List&lt;?&gt; list, int i, int j)</td>
+<td>交换指定列表中指定位置的元素</td>
+</tr>
+<tr>
+<td>static void fill(List&lt;?&gt; list, T value)</td>
+<td>向list中填充值value</td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// copy  将list中的值复制到list2中，</span></span><br><span class="line"><span class="comment">// 注意如果 list.size()&gt;list2.size()   会报错:IndexOutOfBoundsException  下标越界异常</span></span><br><span class="line"><span class="comment">// 所以初始化list2时，要先给定初始值，确保其 size() </span></span><br><span class="line">List&lt;Integer&gt; list = Arrays.asList(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>);</span><br><span class="line">List&lt;Integer&gt; list2 = Arrays.asList(<span class="keyword">new</span> Integer[list.size()]);</span><br><span class="line">Collections.copy(list2,list);</span><br><span class="line">System.out.println(list2);</span><br></pre></td></tr></table></figure>
+
+
+<p>over。。。</p>
+]]></content>
+      <categories>
+        <category>java</category>
+      </categories>
+      <tags>
+        <tag>基础</tag>
+        <tag>集合</tag>
+      </tags>
+  </entry>
 </search>
