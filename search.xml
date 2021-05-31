@@ -2604,7 +2604,7 @@
     <title>java面向对象笔记</title>
     <url>/2021/05/26/java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<h1 id="普通类"><a href="#普通类" class="headerlink" title="普通类"></a>普通类</h1><h2 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h2><p>基本概念 : 构造方法名与类名完全相同并且没有返回值类型，连void都不许有。</p>
-<p>默认构造方法 : 当一个类中没有定义任何构造方法时，编译器会自动添加一个无参空构 造构造方法，叫做默认/缺省构造方法， 若类中出现了构造方法，则编译器不再提供任何形式的构造方法</p>
+<p>默认构造方法 : 当一个类中没有定义任何构造方法时，编译器会自动添加一个无参空构 造构造方法，叫做默认/缺省构造方法， 若类中出现了构造方法，则编译器不再提供任何形式的构造方法 <a id="more"></a></p>
 <p>作用 : 使用new关键字创建对象时会自动调用构造方法实现成员变量初始化工作</p>
 <h2 id="方法重载（OverLoad）"><a href="#方法重载（OverLoad）" class="headerlink" title="方法重载（OverLoad）"></a>方法重载（OverLoad）</h2><p>基本概念 : 方法名称相同，参数列表不同，这样的方法之间构成重载关系</p>
 <p>体现形式 : 方法重载的主要形式体现在：参数的个数不同、参数的类型不同、参数 的顺序不同，与返回值类型和形参变量名无关，但建议返回值类型最好 相同</p>
@@ -2721,11 +2721,11 @@
 <p>参数成员类型只能是八 种基本数据类型、String类型、Class类型、enum类型及Annotation类型.</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// default表示默认值</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> MyAnnotation &#123;</span><br><span class="line">    <span class="function">String <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> &quot;hui&quot;</span>;</span><br><span class="line">    <span class="function">String <span class="title">value2</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="元注解"><a href="#元注解" class="headerlink" title="元注解"></a>元注解</h3><p>可以注解到注解上的注解，或者说元注解是一种基本注解</p>
-<h4 id="Retentio"><a href="#Retentio" class="headerlink" title="@Retentio"></a>@Retentio</h4><p>说明该注解的生命周期，取值如下:</p>
+<h4 id="Retention"><a href="#Retention" class="headerlink" title="@Retention"></a>@Retention</h4><p>说明该注解的生命周期，取值如下:</p>
 <p>RetentionPolicy.SOURCE：注解只在源码阶段保留，在编译器进行编译时 它将被丢弃忽视。</p>
 <p>RetentionPolicy.CLASS： 注解只被保留到编译进行的时候，它并不会被加 载到 JVM 中，默认方式。</p>
 <p>RetentionPolicy.RUNTIME: 注解可以保留到程序运行的时候，它会被加载 进入到 JVM 中，所以在程序运行时可以获取到它们</p>
-<h4 id="Documente"><a href="#Documente" class="headerlink" title="@Documente"></a>@Documente</h4><p>用于指定被该注解将被javadoc工具提取成文档。 </p>
+<h4 id="Documented"><a href="#Documented" class="headerlink" title="@Documented"></a>@Documented</h4><p>用于指定被该注解将被javadoc工具提取成文档。 </p>
 <p>定义为@Documented的注解必须设置Retention值为RUNTIME</p>
 <h4 id="Target"><a href="#Target" class="headerlink" title="@Target"></a>@Target</h4><p>用于指定被修饰的注解能用于哪些元素的修饰</p>
 <p><a href="https://imgtu.com/i/2CrTl8"><img src="https://z3.ax1x.com/2021/05/27/2CrTl8.png" alt="2CrTl8.png" style="zoom:67%;" /></a></p>
@@ -2758,7 +2758,7 @@
     <title>java核心类库</title>
     <url>/2021/05/30/java%E6%A0%B8%E5%BF%83%E7%B1%BB%E5%BA%93/</url>
     <content><![CDATA[<h1 id="Object-类"><a href="#Object-类" class="headerlink" title="Object 类"></a>Object 类</h1><p><strong>基本概念</strong> : java.lang.Object类是Java语言中类层次结构的根类，也就是说任何一个类都是该类的直接或者间 接子类。 如果定义一个Java类时没有使用extends关键字声明其父类，则其父类为 java.lang.Object 类。 Object类定义了“对象”的基本行为, 被子类默认继承。</p>
-<p><strong>常用方法</strong></p>
+<p><strong>常用方法</strong> <a id="more"></a></p>
 <ul>
 <li><input disabled="" type="checkbox"> <table>
 <thead>
@@ -3335,7 +3335,7 @@
 </tr>
 <tr>
 <td>boolean retainAll(Collection&lt;?&gt; c)</td>
-<td>保留当前集合中存在且参数集合中存在的所有对象（并集）</td>
+<td>保留当前集合中存在且参数集合中存在的所有对象（交集）</td>
 </tr>
 <tr>
 <td>boolean remove(Object o)</td>
@@ -3411,6 +3411,8 @@
 <ul>
 <li>foreach 为增强版的for循环，也是经典迭代的“简化版”。</li>
 </ul>
+<p><strong><em>注</em></strong> ：在迭代的过程中不能使用集合中的remove方法，否则会出现并发修改异常 :UnsupportedOperationException</p>
+<p>要使用iterator中的remove方法</p>
 <h3 id="List集合"><a href="#List集合" class="headerlink" title="List集合"></a>List集合</h3><p><strong><em>基本概念</em></strong></p>
 <ul>
 <li><p>java.util.List集合是Collection集合的子集合，该集合中允许有重复的元素并且有先后放入次序。 </p>
