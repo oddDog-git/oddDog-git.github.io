@@ -4615,4 +4615,299 @@
         <tag>基础</tag>
       </tags>
   </entry>
+  <entry>
+    <title>java新特性</title>
+    <url>/2021/06/05/java%E6%96%B0%E7%89%B9%E6%80%A7/</url>
+    <content><![CDATA[<h1 id="java8新特性"><a href="#java8新特性" class="headerlink" title="java8新特性"></a>java8新特性</h1><p><strong>概述</strong>   Java8是 Java 语言的一个重要版本，该版本于2014年3月发布，是自Java5以来最具革命性的版 本，这个版本包含语言、编译器、库、工具和JVM等方面的十多个新特性。</p>
+<h2 id="函数式接口"><a href="#函数式接口" class="headerlink" title="函数式接口"></a>函数式接口</h2><ul>
+<li><p>函数式接口主要指只包含一个抽象方法的接口，如：java.lang.Runnable、java.util.Comparator 接口等。 </p>
+</li>
+<li><p>Java8提供@FunctionalInterface注解来定义函数式接口，若定义的接口不符合函数式的规范便会 报错</p>
+</li>
+<li><p>Java8中增加了java.util.function包，该包包含了常用的函数式接口，具体如下：</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>接口名称</th>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Consumer<T></td>
+<td>void accept(T t)</td>
+<td>根据指定的参数执行操作</td>
+</tr>
+<tr>
+<td>Supplier</td>
+<td>T get()</td>
+<td>得到一个返回值</td>
+</tr>
+<tr>
+<td>Function&lt;T,R&gt;</td>
+<td>R apply(T t)</td>
+<td>根据指定的参数执行操作并返回</td>
+</tr>
+<tr>
+<td>Predicate<T></td>
+<td>boolean test(T t)</td>
+<td>判断指定的参数是否满足条件</td>
+</tr>
+</tbody></table>
+<h2 id="lambda表达式"><a href="#lambda表达式" class="headerlink" title="lambda表达式"></a>lambda表达式</h2><p>Lambda 表达式是实例化函数式接口的重要方式，使用 Lambda 表达式可以使代码变的更加简洁 紧凑。</p>
+<p>语法格式：(参数列表) -&gt; { 方法体; } - 其中()、参数类型、{} 以及return关键字 可以省略</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Runnable runnable = ()-&gt; System.out.println(<span class="string">&quot;随便写写！&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="方法引用"><a href="#方法引用" class="headerlink" title="方法引用"></a>方法引用</h2><p>方法引用主要指通过方法的名字来指向一个方法而不需要为方法引用提供方法体，该方法的调用交 给函数式接口执行。所在特定场合下lambda表达式的一种简写形式。方法中传递与返回的数据类型要与函数是接口保持一致。</p>
+<p>方法引用使用一对冒号 :: 将类或对象与方法名进行连接，通常使用方式如下：</p>
+<ul>
+<li><p>对象的非静态方法引用 ObjectName :: MethodName </p>
+</li>
+<li><p>类的静态方法引用 ClassName :: StaticMethodName </p>
+</li>
+<li><p>类的非静态方法引用 ClassName :: MethodName </p>
+</li>
+<li><p>构造器的引用 ClassName :: new </p>
+</li>
+<li><p>数组的引用 TypeName[] :: new</p>
+</li>
+</ul>
+<h2 id="Stream接口"><a href="#Stream接口" class="headerlink" title="Stream接口"></a>Stream接口</h2><p><strong>概念</strong>    java.util.stream.Stream接口是对集合功能的增强，可以对集合元素进行复杂的查找、过滤、筛选 等操作。</p>
+<p><strong>创建方式</strong></p>
+<ul>
+<li>通过调用集合的默认方法来获取流，如：default Stream stream() </li>
+<li>通过数组工具类中的静态方法来获取流，如：static IntStream stream(int[] array) </li>
+<li>通过Stream接口的静态方法来获取流，如：static Stream of(T… values) </li>
+<li>通过Stream接口的静态方法来获取流，static Stream generate(Supplier s)</li>
+</ul>
+<p><strong>中间操作</strong></p>
+<ul>
+<li>筛选与切片</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Stream filter(Predicate&lt;? super T&gt; predicate)</td>
+<td>返回一个包含匹配元素的流</td>
+</tr>
+<tr>
+<td>Stream distinct()</td>
+<td>返回不包含重复元素的流</td>
+</tr>
+<tr>
+<td>Stream limit(long maxSize)</td>
+<td>返回不超过给定元素数量的流</td>
+</tr>
+<tr>
+<td>Stream skip(long n)</td>
+<td>返回丢弃前n个元素后的流</td>
+</tr>
+</tbody></table>
+<ul>
+<li>映射</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Stream map(Function&lt;? super T,? extends R&gt; mapper)</td>
+<td>返回每个处理过元素组成的流</td>
+</tr>
+<tr>
+<td>Stream flatMap(Function&lt;? super T,? extends Stream&lt;? extends R&gt;&gt; mapper)</td>
+<td>返回每个被替换过元素组成的流，并将所有流合成一个流</td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 获取list集合中所有对象的name值，并答应出来</span></span><br><span class="line"><span class="comment">//list.stream().map(p-&gt; p.getName()).forEach(name -&gt; System.out.println(name));</span></span><br><span class="line">list.stream().map(Person.getName).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>排序</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Stream sorted()</td>
+<td>返回经过自然排序后元素组成的流</td>
+</tr>
+<tr>
+<td>Stream sorted(Comparator&lt;? super T&gt; comparator)</td>
+<td>返回经过比较器排序后元素组成的流</td>
+</tr>
+</tbody></table>
+<p><strong>终止操作</strong></p>
+<ul>
+<li>匹配与查找</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Optional findFirst()</td>
+<td>返回该流的第一个元素</td>
+</tr>
+<tr>
+<td>boolean allMatch(Predicate&lt;? super T&gt; predicate)</td>
+<td>返回所有元素是否匹配</td>
+</tr>
+<tr>
+<td>boolean noneMatch(Predicate&lt;? super T&gt; predicate)</td>
+<td>返回没有元素是否匹配</td>
+</tr>
+<tr>
+<td>Optional max(Comparator&lt;? super T&gt; comparator)</td>
+<td>根据比较器返回最大元素</td>
+</tr>
+<tr>
+<td>Optional min(Comparator&lt;? super T&gt; comparator)</td>
+<td>根据比较器返回最小元素</td>
+</tr>
+<tr>
+<td>long count()</td>
+<td>返回元素的个数</td>
+</tr>
+<tr>
+<td>void forEach(Consumer&lt;? super T&gt; action)</td>
+<td>对流中每个元素执行操作</td>
+</tr>
+</tbody></table>
+<ul>
+<li>规约</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Optional reduce(BinaryOperator accumulator)</td>
+<td>返回结合后的元素值</td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 计算list集合中的所有对象的年龄和</span></span><br><span class="line"><span class="comment">//Optional&lt;Integer&gt; reduce = list.stream().map(Person::getAge).reduce((o1, o2) -&gt; o1 + o2);</span></span><br><span class="line">Optional&lt;Integer&gt; reduce = list.stream().map(Person::getAge).reduce(Integer::sum);</span><br><span class="line">System.out.println(<span class="string">&quot;年龄和为:&quot;</span>+reduce);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>收集</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&lt;R,A&gt; R collect(Collector&lt;? super T,A,R&gt; collector)</td>
+<td>使用收集器对元素进行处理</td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 获取list中所有对象的name值，并保存到另一个集合中</span></span><br><span class="line"><span class="comment">// List&lt;String&gt; collect = list.stream().map(p -&gt; p.getName()).collect(Collectors.toList());</span></span><br><span class="line">List&lt;String&gt; collect = list.stream().map(Person::getName).collect(Collectors.toList());</span><br></pre></td></tr></table></figure>
+<h2 id="Optional类"><a href="#Optional类" class="headerlink" title="Optional类"></a>Optional类</h2><p><strong>概述</strong> java.util.Optional类可以理解为一个简单的容器，其值可能是null或者不是null，代表一个值存在 或不存在。 该类的引入很好的解决空指针异常，不用显式进行空值检测。</p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>static Optional ofNullable(T value)</td>
+<td>根据参数指定数值来得到Optional类型的对象</td>
+</tr>
+<tr>
+<td>Optional map(Function&lt;? super T,? extends U&gt; mapper)</td>
+<td>根据参数指定规则的结果来得到Optional类型的对象</td>
+</tr>
+<tr>
+<td>T orElse(T other)</td>
+<td>若该值存在就返回，否则返回other的数值。</td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//  Optional  判断字符串是否为空，若不为空则打印字符串的长度，否则打印0</span></span><br><span class="line">String str = <span class="keyword">null</span>;</span><br><span class="line">System.out.println(<span class="string">&quot;==============常规写法============================&quot;</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">null</span>==str)&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;str为null，长度为:0&quot;</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;长度为:&quot;</span>+str.length());</span><br><span class="line">&#125;</span><br><span class="line">System.out.println(<span class="string">&quot;==============Optional写法============================&quot;</span>);</span><br><span class="line"><span class="comment">// 将 str 放入Optional容器中</span></span><br><span class="line">Optional&lt;String&gt; optional = Optional.ofNullable(str);</span><br><span class="line"><span class="comment">// 建立映射,传递一个  Function&lt;T,R&gt; 接口</span></span><br><span class="line">Optional&lt;Integer&gt; integer = optional.map(String::length);</span><br><span class="line"><span class="comment">// 获取长度，如果该值不存在就返回  0</span></span><br><span class="line">Integer len = integer.orElse(<span class="number">0</span>);</span><br><span class="line">System.out.println(<span class="string">&quot;长度为:&quot;</span>+len);</span><br></pre></td></tr></table></figure>
+<h1 id="Java9新特性"><a href="#Java9新特性" class="headerlink" title="Java9新特性"></a>Java9新特性</h1><p><strong>概述</strong> :Java9发布于2017年9月发布，带来了很多新特性，其中最主要的变化是模块化系统。 模块就是代码和数据的封装体，模块的代码被组织成多个包，每个包中包含Java类和接口，模块的 数据则包括资源文件和其他静态信息。</p>
+<p><strong>模块化的使用</strong></p>
+<p>在 module-info.java 文件中，我们可以用新的关键词module来声明一个模块 , 具体如下： </p>
+<p> module 模块名称 {</p>
+<p>​     exports …         // 导出</p>
+<p>​    requires …         // 导入</p>
+<p>  }</p>
+<p><strong>钻石操作符的使用升级</strong></p>
+<p>在Java9中允许在匿名内部类的使用中使用钻石操作符。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Consumer&lt;String&gt; c = <span class="keyword">new</span> Consumer&lt;&gt;() &#123;<span class="comment">//代码块&#125;</span></span><br></pre></td></tr></table></figure>
+<p> <strong>集合工厂方法</strong></p>
+<ul>
+<li><p>Java9的List、Set和Map集合中增加了静态工厂方法of实现不可变实例的创建。 </p>
+</li>
+<li><p>不可变体现在无法添加、修改和删除它们的元素。 </p>
+</li>
+<li><p>不允许添加null元素对象</p>
+</li>
+<li><p>*InputStream的增强** </p>
+</li>
+</ul>
+<p>InputStream类中提供了transferTo方法实现将数据直接传输到OutputStream中。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 文件的复制，直接套用transferTo即可，内部封装了缓冲流</span></span><br><span class="line">InputStream in = <span class="keyword">new</span> FileInputStream(<span class="string">&quot;c://a&quot;</span>);</span><br><span class="line">OutputStream out = <span class="keyword">new</span> FileOutputStream(<span class="string">&quot;c://b&quot;</span>);</span><br><span class="line">in.transferTo(out);</span><br></pre></td></tr></table></figure>
+<h1 id="Java10新特性"><a href="#Java10新特性" class="headerlink" title="Java10新特性"></a>Java10新特性</h1><p>Java10于2018年3月发布，改进的关键点包括一个本地类型推断、一个垃圾回收的增强。</p>
+<p>Java10计划只是一个短期版本，因此公开更新将在六个月内结束，9月份发布的Java11将是Java的 长期支持（LTS）版本，LTS版本的发布每三年发布一次。</p>
+<p><strong>局部变量类型推断</strong></p>
+<ul>
+<li>Java10可以使用var作为局部变量类型推断标识符，此符号仅适用于局部变量，增强for循环的索 引，以及传统for循环的本地变量。 </li>
+<li>它不能使用于方法形式参数，构造函数形式参数，方法返回类型，字段，catch形式参数或任何其 他类型的变量声明。</li>
+</ul>
+<h1 id="Java11新特性"><a href="#Java11新特性" class="headerlink" title="Java11新特性"></a>Java11新特性</h1><p><strong>概述</strong> java11于2018年9月正式发布，这是 Java 大版本周期变化 后的第一个长期支持版本，非常值得关 注。</p>
+<p><strong>简化的编译运行操作</strong> </p>
+<ul>
+<li>在Java11中可以使用java命令一次性进行编译和运行操作。 </li>
+<li>执行源文件中的第一个类必须包含主方法。 </li>
+<li>不可以使用其它源文件中自定义的类。</li>
+</ul>
+<p><strong>String类新增方法</strong></p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>boolean isBlank()</td>
+<td>判断字符串是否为空或只包含空白代码点</td>
+</tr>
+<tr>
+<td>Optional map(Function&lt;? super T,? extends U&gt; mapper)</td>
+<td>根据参数指定规则的结果来得到Optional类型的对象</td>
+</tr>
+<tr>
+<td>T orElse(T other)</td>
+<td>若该值存在就返回，否则返回other的数值。</td>
+</tr>
+</tbody></table>
+<p>over。。。</p>
+]]></content>
+      <categories>
+        <category>java</category>
+      </categories>
+      <tags>
+        <tag>新特性</tag>
+        <tag>lambda</tag>
+      </tags>
+  </entry>
 </search>
