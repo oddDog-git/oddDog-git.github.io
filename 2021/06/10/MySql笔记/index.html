@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-bounce.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"odddog-git.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="SQL语句的分类    分类 说明    数据定义语言 简称DDL(Data Definition Language)，用来定义数据库对象：数据库，表，列等。   数据操作语言 简称DML(Data Manipulation Language)，用来对数据库中表的记录进行更新。   数据查询语言 简称DQL(Data Query Language)，用来查询数据库中表的记录。   数据控制语言 简">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySql笔记">
+<meta property="og:url" content="http://odddog-git.github.io/2021/06/10/MySql%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="hui&#39;s Blog">
+<meta property="og:description" content="SQL语句的分类    分类 说明    数据定义语言 简称DDL(Data Definition Language)，用来定义数据库对象：数据库，表，列等。   数据操作语言 简称DML(Data Manipulation Language)，用来对数据库中表的记录进行更新。   数据查询语言 简称DQL(Data Query Language)，用来查询数据库中表的记录。   数据控制语言 简">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://z3.ax1x.com/2021/06/10/2g7dFU.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/06/11/2WkO4U.png">
+<meta property="article:published_time" content="2021-06-10T03:28:57.000Z">
+<meta property="article:modified_time" content="2021-06-11T03:03:39.354Z">
+<meta property="article:author" content="怪狗狗">
+<meta property="article:tag" content="MySql">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://z3.ax1x.com/2021/06/10/2g7dFU.png">
+
+<link rel="canonical" href="http://odddog-git.github.io/2021/06/10/MySql%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>MySql笔记 | hui's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://oddDog-git" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hui's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://odddog-git.github.io/2021/06/10/MySql%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/jerry.jpg">
+      <meta itemprop="name" content="怪狗狗">
+      <meta itemprop="description" content="踏上新征程----go！！！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hui's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MySql笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-10 11:28:57" itemprop="dateCreated datePublished" datetime="2021-06-10T11:28:57+08:00">2021-06-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-11 11:03:39" itemprop="dateModified" datetime="2021-06-11T11:03:39+08:00">2021-06-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/06/10/MySql%E7%AC%94%E8%AE%B0/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/06/10/MySql%E7%AC%94%E8%AE%B0/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>SQL语句的分类</strong></p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据定义语言</td>
+<td>简称DDL(Data Definition Language)，用来定义数据库对象：数据库，表，列等。</td>
+</tr>
+<tr>
+<td>数据操作语言</td>
+<td>简称DML(Data Manipulation Language)，用来对数据库中表的记录进行更新。</td>
+</tr>
+<tr>
+<td>数据查询语言</td>
+<td>简称DQL(Data Query Language)，用来查询数据库中表的记录。</td>
+</tr>
+<tr>
+<td>数据控制语言</td>
+<td>简称DCL(Date Control Language)，用来定义数据库的访问权限和安全级别，及创建用户。(了解)</td>
+</tr>
+</tbody></table>
+<a id="more"></a>
+
+<h1 id="DDL操作"><a href="#DDL操作" class="headerlink" title="DDL操作"></a>DDL操作</h1><h2 id="对数据库的操作"><a href="#对数据库的操作" class="headerlink" title="对数据库的操作"></a>对数据库的操作</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>create database 数据库名</td>
+<td>创建指定名称的数据库。</td>
+</tr>
+<tr>
+<td>create database 数据库名 character set字符集</td>
+<td>创建指定名称的数据库，并且指定字符集（一般都指定utf-8）</td>
+</tr>
+<tr>
+<td>alter database 数据库名 character set 字符集</td>
+<td>数据库的字符集修改操作</td>
+</tr>
+<tr>
+<td>drop database 数据库名</td>
+<td>从MySql中永久的删除某个数据库</td>
+</tr>
+</tbody></table>
+<p><strong>查看/选择数据库</strong></p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>use 数据库</td>
+<td>切换数据库</td>
+</tr>
+<tr>
+<td>select database()</td>
+<td>查看当前正在使用的数据库</td>
+</tr>
+<tr>
+<td>show databases</td>
+<td>查看Mysql中 都有哪些数据库</td>
+</tr>
+<tr>
+<td>show create database 数据库名；</td>
+<td>查看一个数据库的定义信息</td>
+</tr>
+</tbody></table>
+<h2 id="对表的操作"><a href="#对表的操作" class="headerlink" title="对表的操作"></a>对表的操作</h2><p><strong>创建表</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE 表名(</span><br><span class="line">    字段名称1 字段类型（长度），</span><br><span class="line">    字段名称2 字段类型 -- 注意 最后一列不要加逗号</span><br><span class="line">)；</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>查看表</strong></p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>show tables</td>
+<td>查看当前数据库中的所有表名</td>
+</tr>
+<tr>
+<td>desc 表名</td>
+<td>查看数据表的结构</td>
+</tr>
+</tbody></table>
+<p><strong>删除表</strong></p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>drop table 表名</td>
+<td>删除表（从数据库中永久删除某一张表）</td>
+</tr>
+<tr>
+<td>drop table if exists 表名</td>
+<td>判断表是否存在， 存在的话就删除,不存在就不执行删除</td>
+</tr>
+</tbody></table>
+<p><strong>修改表</strong></p>
+<ul>
+<li><p>修改表名</p>
+<ul>
+<li>```mysql<br>RENAME TABLE category TO category1;<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">*  修改表的字符集</span><br><span class="line"></span><br><span class="line">  * &#96;&#96;&#96;mysql</span><br><span class="line">    alter table category character set gbk;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>向表中添加列， 关键字 ADD</p>
+<ul>
+<li>```mysql<br>ALTER TABLE category ADD cdesc VARCHAR(20);<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* 修改表中列的 数据类型或长度 ， 关键字 MODIFY</span><br><span class="line"></span><br><span class="line">  * &#96;&#96;&#96;mysql</span><br><span class="line">    ALTER TABLE category MODIFY cdesc VARCHAR(50)</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>修改列名称 , 关键字 CHANGE</p>
+<ul>
+<li>```mysql<br>ALTER TABLE category CHANGE cdesc description VARCHAR(30);<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* 删除列 ，关键字 DROP</span><br><span class="line"></span><br><span class="line">  * &#96;&#96;&#96;mysql</span><br><span class="line">    ALTER TABLE category DROP description;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>*数据类型**</p>
+</li>
+</ul>
+<p>常用的有 varchar  、int 、double 、 date</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/2g7dFU"><img src="https://z3.ax1x.com/2021/06/10/2g7dFU.png" alt="2g7dFU.png"></a></p>
+<h1 id="DML操作"><a href="#DML操作" class="headerlink" title="DML操作"></a>DML操作</h1><p><strong>insert</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">insert into 表名 （字段名1，字段名2...） values(字段值1，字段值2...);</span><br><span class="line">INSERT INTO 表名 VALUES(字段值1，字段值2...);</span><br></pre></td></tr></table></figure>
+<p><strong>update</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update 表名 set 列名 &#x3D; 值 [where 字段名 &#x3D; 值 ];</span><br></pre></td></tr></table></figure>
+<p><strong>delete</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-- 逐条删除</span><br><span class="line">delete from 表名 [where 字段名 &#x3D; 值];</span><br><span class="line">-- 先删除整张表, 然后再重新创建一张一模一样的表</span><br><span class="line">truncate table student;</span><br></pre></td></tr></table></figure>
+<h1 id="DQL操作"><a href="#DQL操作" class="headerlink" title="DQL操作"></a>DQL操作</h1><h2 id="单表查询"><a href="#单表查询" class="headerlink" title="单表查询"></a>单表查询</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select [distinct] 列名 from 表名 [where 字段名 &#x3D; 值]</span><br></pre></td></tr></table></figure>
+<p><strong>比较运算符</strong></p>
+<table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&gt; &lt; &lt;= &gt;= = &lt;&gt; !=</td>
+<td>大于、小于、大于(小于)等于、不等于</td>
+</tr>
+<tr>
+<td>BETWEEN …AND…</td>
+<td>显示在某一区间的值例如: 2000-10000之间： Between 2000 and 10000</td>
+</tr>
+<tr>
+<td>IN(集合)</td>
+<td>集合表示多个值,使用逗号分隔,例如: name in (悟空，八戒)，in中的每个数据都会作为一次条件,只要满足条件就会显示</td>
+</tr>
+</tbody></table>
+<p><strong>逻辑运算符</strong></p>
+<table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>And &amp;&amp;</td>
+<td>多个条件同时成立</td>
+</tr>
+<tr>
+<td>Or  ||</td>
+<td>多个条件任一成立</td>
+</tr>
+<tr>
+<td>Not</td>
+<td>不成立，取反。</td>
+</tr>
+</tbody></table>
+<p><strong>模糊查询</strong></p>
+<table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LIKE</td>
+<td>模糊查询，通常搭配通配符，如查询 A 开头的数据:  ‘A%’</td>
+</tr>
+<tr>
+<td>IS NULL</td>
+<td>查询某一列为NULL的值, 注: 不能写 = NULL</td>
+</tr>
+<tr>
+<td>IS NOT NULL</td>
+<td>查询不为空的值</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>通配符</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>%</td>
+<td>表示匹配任意多个字符串</td>
+</tr>
+<tr>
+<td>_</td>
+<td>表示匹配 一个字符</td>
+</tr>
+</tbody></table>
+<p><strong>排序</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 字段名 FROM 表名 [WHERE 字段 &#x3D; 值] ORDER BY 字段名 [ASC &#x2F; DESC]</span><br></pre></td></tr></table></figure>
+<p>ASC  : 升序 （默认）</p>
+<p>DESC : 降序</p>
+<p>如果单个排序不能满足要求，可以组合排序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 字段名 FROM 表明 [WHERE 字段 &#x3D; 值 ] ORDER BY 字段名一 [ASC&#x2F;DESC],字段名二 [ASC&#x2F;DESC]; </span><br></pre></td></tr></table></figure>
+<p><strong>聚合函数</strong></p>
+<p>之前我们做的查询都是横向查询，而聚合函数查询是纵向 查询，它是对某一列的值进行计算，然后返回一个单一的值(另外聚合函数会忽略null空值)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 聚合函数(字段名) FROM 表名;</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>聚合函数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>count(字段)</td>
+<td>统计指定列不为NULL的记录行数</td>
+</tr>
+<tr>
+<td>sum(字段)</td>
+<td>计算指定列的数值和</td>
+</tr>
+<tr>
+<td>max(字段)</td>
+<td>计算指定列的最大值</td>
+</tr>
+<tr>
+<td>min(字段)</td>
+<td>计算指定列的最小值</td>
+</tr>
+<tr>
+<td>avg(字段)</td>
+<td>计算指定列的平均值</td>
+</tr>
+</tbody></table>
+<p><strong>分组</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 分组字段&#x2F;聚合函数 FzROM 表名 GROUP BY 分组字段 [HAVING 条件];</span><br></pre></td></tr></table></figure>
+<p>使用 GROUP BY 语句,对查询的信息进行分组,相同数据作为一组。分组如果不适用聚合函数，其结果只会显示每一组的第一行数据，没有任何意义。如果在分组后,对数据进行过滤,使用 关键字 having</p>
+<ul>
+<li>where 与 having的区别</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>过滤方式</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>where</td>
+<td>where 进行分组前的过滤<br/>where 后面不能写 聚合函数</td>
+</tr>
+<tr>
+<td>having</td>
+<td>having 是分组后的过滤<br/>having 后面可以写 聚合函数</td>
+</tr>
+</tbody></table>
+<ul>
+<li>案例 ： 查询平均薪资大于6000的部门</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT dept_name ,AVG(salary) FROM emp </span><br><span class="line">WHERE dept_name IS NOT NULL GROUP BY dept_name</span><br><span class="line">HAVING AVG(salary) &gt;6000 ;</span><br></pre></td></tr></table></figure>
+<p><strong>limit关键字</strong></p>
+<ul>
+<li>限制返回的查询结果的行数 (可以通过limit指定查询多少行数据) ,  limit 语法是 MySql的方言,用来完成分页</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM 表名 LIMIT offset [, length];</span><br></pre></td></tr></table></figure>
+<ul>
+<li>offset     起始行数, 从0开始记数, 如果省略 则默认为 0.</li>
+<li>length 返回的行数</li>
+<li>分页公式 :   起始索引 = (当前页 - 1) * 每页条数</li>
+</ul>
+<h2 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h2><h3 id="内连接查询"><a href="#内连接查询" class="headerlink" title="内连接查询"></a>内连接查询</h3><p>通过指定的条件去匹配两张表中的数据, 匹配上就显示,匹配不上就不显示</p>
+<p><strong>隐式内连接</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 字段名 FROM 左表, 右表 WHERE 连接条件;</span><br></pre></td></tr></table></figure>
+<p><strong>显式内连接   [inner] join</strong>     </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 字段名 FROM 左表 [INNER] JOIN 右表 ON 条件;</span><br></pre></td></tr></table></figure>
+<h3 id="外连接查询"><a href="#外连接查询" class="headerlink" title="外连接查询"></a>外连接查询</h3><p><strong>左外连接   left [outer] join</strong>    </p>
+<p>以左表为基准, 匹配右边表中的数据,如果匹配的上,就展示匹配到的数据 如果匹配不到, 左表中的数据正常展示, 右边的展示为null.</p>
+<p><strong>右外连接   right [outer] join</strong></p>
+<p>以右表为基准，匹配左边表中的数据，如果能匹配到，展示匹配到的数据 如果匹配不到，右表中的数据正常展示, 左边展示为null</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/2WkO4U"><img src="https://z3.ax1x.com/2021/06/11/2WkO4U.png" alt="2WkO4U.png" style="zoom: 67%;" /></a></p>
+<h2 id="子查询-SubQuery"><a href="#子查询-SubQuery" class="headerlink" title="子查询 (SubQuery)"></a>子查询 (SubQuery)</h2><p>一条select 查询语句的结果, 作为另一条 select 语句的一部分</p>
+<p><strong>分类</strong></p>
+<ul>
+<li><strong>where型</strong>  将子查询的结果, 作为父查询的比较条件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 查询字段 FROM 表 WHERE 字段&#x3D;（子查询）;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>from型</strong>  将子查询的结果, 作为 一张表,提供给父层查询使用 </li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 查询字段 FROM （子查询）表别名 WHERE 条件;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>exists型</strong>  子查询的结果是单列多行, 类似一个数组, 父层查询使用 IN 函数 ,包含子查 询的结果</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 查询字段 FROM 表 WHERE 字段 IN （子查询）;</span><br></pre></td></tr></table></figure>
+<h1 id="DCL操作"><a href="#DCL操作" class="headerlink" title="DCL操作"></a>DCL操作</h1><p>MySql默认使用的都是 root 用户，超级管理员，拥有全部的权限。除了root用户以外，我们还可以通 过DCL语言来定义一些权限较小的用户, 分配不同的权限来管理和维护数据库。</p>
+<p><strong>创建用户</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE USER &#39;用户名&#39;@&#39;主机名&#39; IDENTIFIED BY &#39;密码&#39;;</span><br></pre></td></tr></table></figure>
+<p>本地用户可用 ‘localhost’表示主机名，  如果想让该用户可以 从任意远程主机登陆，可以使用通配符 %</p>
+<p> <strong>用户授权</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GRANT 权限 1, 权限 2... ON 数据库名.表名 TO &#39;用户名&#39;@&#39;主机名&#39;;</span><br></pre></td></tr></table></figure>
+<p>权限为 ： CREATE、ALTER、SELECT、INSERT、UPDATE等，如果要赋值所有权限就使用 ‘ALL’</p>
+<p>数据库名.表名  ：写成  *.*   代表可赋予所有数据库与表的操作</p>
+<p> <strong>查看权限</strong>  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SHOW GRANTS FOR &#39;用户名&#39;@&#39;主机名&#39;;</span><br></pre></td></tr></table></figure>
+<p><strong>删除用户</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DROP USER &#39;用户名&#39;@&#39;主机名&#39;;</span><br></pre></td></tr></table></figure>
+<p> <strong>查询用户</strong></p>
+<p>用户的信息在 mysql的 数据库中的 user表,直接用 DQL语句即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM USER;</span><br></pre></td></tr></table></figure>
+<h1 id="数据库备份-amp-还原"><a href="#数据库备份-amp-还原" class="headerlink" title="数据库备份&amp;还原"></a>数据库备份&amp;还原</h1><p> <strong>SQLYog的备份与还原</strong></p>
+<p>直接使用图形化界面操作就行了，不过SQLYog的备份与还原是整个数据库的操作</p>
+<p><strong>命令行的备份与还原</strong></p>
+<p>命令行的备份与还原是将整个数据库的表全部提取出来，不会重新创建数据库</p>
+<ul>
+<li><p>备份</p>
+<ul>
+<li><p>进入到Mysql安装目录的 bin目录下, 打开DOS命令行，输入以下命令:</p>
+</li>
+<li><p>```mysql<br>mysqldump -u 用户名 -p 密码 数据库 &gt; 要保存到的文件路径</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* 还原</span><br><span class="line"></span><br><span class="line">  * 先创建一个 相同名称的数据库</span><br><span class="line"></span><br><span class="line">  * &#96;&#96;&#96;mysql</span><br><span class="line">    use 当前数据库;    --选中当前数据库   </span><br></pre></td></tr></table></figure></li>
+<li><p>```mysql<br>source sql 文件地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"># SQL约束</span><br><span class="line"></span><br><span class="line"> 约束的作用: 对表中的数据进行进一步的限制，从而保证数据的正确性、有效性、完整性. 违反约束的 不正确数据,将无法插入到表中</span><br><span class="line"></span><br><span class="line">**常见的约束**</span><br><span class="line"></span><br><span class="line">| 约束名 | 关键字      |</span><br><span class="line">| ------ | ----------- |</span><br><span class="line">| 主键   | primary key |</span><br><span class="line">| 唯一   | unique      |</span><br><span class="line">| 非空   | not null    |</span><br><span class="line">| 外键   | foreign key |</span><br><span class="line">| 默认值 | defaul      |</span><br><span class="line"></span><br><span class="line"># 事务（transaction）</span><br><span class="line"></span><br><span class="line">事务是一个整体,由一条或者多条SQL 语句组成,这些SQL语句要么都执行成功,要么都执行失败, 只要有一 条SQL出现异常,整个操作就会回滚,整个业务执行失败</span><br><span class="line"></span><br><span class="line">**手动提交事务**</span><br><span class="line"></span><br><span class="line">| 功能     | 语句                           |</span><br><span class="line">| -------- | ------------------------------ |</span><br><span class="line">| 开启事务 | start transaction; 或者 BEGIN; |</span><br><span class="line">| 提交事务 | commit;                        |</span><br><span class="line">| 回滚事务 | rollback;                      |</span><br><span class="line"></span><br><span class="line">[&lt;img src&#x3D;&quot;https:&#x2F;&#x2F;z3.ax1x.com&#x2F;2021&#x2F;06&#x2F;11&#x2F;2WFIw6.png&quot; alt&#x3D;&quot;2WFIw6.png&quot; style&#x3D;&quot;zoom:50%;&quot; &#x2F;&gt;](https:&#x2F;&#x2F;imgtu.com&#x2F;i&#x2F;2WFIw6)</span><br><span class="line"></span><br><span class="line">**自动提交事务** </span><br><span class="line"></span><br><span class="line">MySQL 默认每一条 DML(增删改)语句都是一个单独的事务，每条语句都会自动开启一个事务，语句执 行完毕 自动提交事务，MySQL 默认开始自动提交事务。</span><br><span class="line"></span><br><span class="line">**取消自动提交** </span><br><span class="line"></span><br><span class="line">MySQL默认是自动提交事务,设置为手动提交.</span><br><span class="line"></span><br><span class="line">* 登录mysql，查看autocommit状态。on ：自动提交 off : 手动提交</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;mysql</span><br><span class="line">SHOW VARIABLES LIKE &#39;autocommit&#39;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p> 把 autocommit 改成 off;</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SET @@autocommit&#x3D;off;</span><br></pre></td></tr></table></figure>
+<p><strong>事务的四大特性 ACID</strong></p>
+<ul>
+<li><p><strong>原 子 性</strong> 每个事务都是一个整体，不可再拆分，事务中所有的 SQL 语句要么都执行成功， 要么都 失败。 </p>
+</li>
+<li><p><strong>一 致 性</strong> 事务在执行前数据库的状态与执行后数据库的状态保持一致。如：转账前2个人的 总金额 是 2000，转账后 2 个人总金额也是 2000. </p>
+</li>
+<li><p><strong>隔 离 性</strong> 事务与事务之间不应该相互影响，执行时保持隔离的状态. </p>
+</li>
+<li><p><strong>持 久 性</strong> 一旦事务执行成功，对数据库的修改是持久的。就算关机，数据也是要保存下来的.</p>
+</li>
+<li><p>*并发访问会产生的问题**</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>并发访问的问题</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>脏读</td>
+<td>一个事务读取到了另一个事务中尚未提交的数据</td>
+</tr>
+<tr>
+<td>不可重复读</td>
+<td>一个事务中两次读取的数据内容不一致, 要求的是在一个事务中多次读取时数据是一致的. 这是进行 update 操作时引发的问题</td>
+</tr>
+<tr>
+<td>幻读</td>
+<td>一个事务中,某一次的 select 操作得到的结果所</td>
+</tr>
+</tbody></table>
+<p><strong>四种隔离级别</strong>       (✔ 会出现问题 ✘ 不会出现问题)</p>
+<table>
+<thead>
+<tr>
+<th>级别</th>
+<th>名字</th>
+<th>隔离级别</th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻读</th>
+<th>数据库的默认隔离级别</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>读未提交</td>
+<td>read uncommitted</td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>读已提交</td>
+<td>read committed</td>
+<td>✘</td>
+<td>✔</td>
+<td>✔</td>
+<td>Oracle和SQLServer</td>
+</tr>
+<tr>
+<td>3</td>
+<td>可重复读</td>
+<td>repeatable read</td>
+<td>✘</td>
+<td>✘</td>
+<td>✔</td>
+<td>MySql</td>
+</tr>
+<tr>
+<td>4</td>
+<td>串行化</td>
+<td>serializable</td>
+<td>✘</td>
+<td>✘</td>
+<td>✘</td>
+<td></td>
+</tr>
+</tbody></table>
+<p><strong>隔离级别相关命令</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-- 查看隔离级别</span><br><span class="line">select @@tx_isolation;</span><br><span class="line">-- 设置事务隔离级别</span><br><span class="line">set global transaction isolation level 级别名称;</span><br></pre></td></tr></table></figure>
+<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><p>在数据库表中，对字段建立索引可以大大提高查询速度。通过善用这些索引，可以令MySQL的查询和 运行更加高效。</p>
+<table>
+<thead>
+<tr>
+<th>索引名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主键索引 (primarykey)</td>
+<td>主键是一种唯一性索引,每个表只能有一个主键, 用于标识数据表中的每一条记录</td>
+</tr>
+<tr>
+<td>唯一索引 (unique)</td>
+<td>唯一索引指的是 索引列的所有值都只能出现一次, 必须唯一.</td>
+</tr>
+<tr>
+<td>普通索引 (index)</td>
+<td>最常见的索引,作用就是 加快对数据的访问速度</td>
+</tr>
+</tbody></table>
+<p><strong>索引的优点</strong> </p>
+<ul>
+<li>大大的提高查询速度 </li>
+<li>可以显著的减少查询中分组和排序的时间。 </li>
+</ul>
+<p>索引的缺点</p>
+<ul>
+<li>创建索引和维护索引需要时间，而且数据量越大时间越长 </li>
+<li>当对表中的数据进行增加，修改，删除的时候，索引也要同时进行维护，降低了数据的维护 速度</li>
+</ul>
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><h2 id="视图（view）"><a href="#视图（view）" class="headerlink" title="视图（view）"></a>视图（view）</h2><p>视图是一种虚拟表 , 建立在已有表的基础上, 视图赖以建立的这些表称为基表。</p>
+<p><strong>创建视图</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create view 视图名 [column_list] as select语句;</span><br></pre></td></tr></table></figure>
+<p>对视图的其他操作与对表的操作一模一样</p>
+<p><strong>视图与表的区别</strong></p>
+<ul>
+<li>视图是建立在表的基础上，表存储数据库中的数据，而视图只是做一个数据的展示 </li>
+<li>通过视图不能改变表中数据（一般情况下视图中的数据都是表中的列 经过计算得到的结果,不允许 更新） </li>
+<li>删除视图，表不受影响，而删除表，视图不再起作用</li>
+</ul>
+<h2 id="存储过程（procedure）"><a href="#存储过程（procedure）" class="headerlink" title="存储过程（procedure）"></a>存储过程（procedure）</h2><p> 一堆 SQL 语句的合并。中间加入了一些逻辑控制。</p>
+<p><strong>创建存储过程</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER $$ -- 声明语句结束符，可以自定义 一般使用$$</span><br><span class="line">-- 声明存储过程，形参可以有多个，返回参数只能有一个</span><br><span class="line">CREATE PROCEDURE 过程名称([IN 形参名 形参类型],[out 输出参数名 输出参数类型]) </span><br><span class="line">BEGIN -- 开始编写存储过程</span><br><span class="line">-- 要执行的操作</span><br><span class="line">END $$ -- 存储过程结束</span><br></pre></td></tr></table></figure>
+<p><strong>调用存储过程</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">call 存储过程名</span><br><span class="line">call 存储过程名(实参)</span><br><span class="line">call 存储过程名(实参,@输出数据)</span><br></pre></td></tr></table></figure>
+<p><strong>变量赋值</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SET @变量名&#x3D;值</span><br></pre></td></tr></table></figure>
+<p><strong>案例</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">-- 向订单表 插入一条数据, 返回1,表示插入成功</span><br><span class="line">DELIMITER $$</span><br><span class="line">CREATE PROCEDURE orders_proc(IN o_id INT , IN g_id INT ,IN price INT, OUT out_num INT)</span><br><span class="line">BEGIN</span><br><span class="line">    -- 执行插入操作</span><br><span class="line">    INSERT INTO orders VALUES(o_id,o_id,price);</span><br><span class="line">    -- 设置 num的值为 1</span><br><span class="line">    SET @out_num &#x3D; 1;</span><br><span class="line">    -- 返回 out_num的值</span><br><span class="line">    SELECT @out_num;</span><br><span class="line">END $$</span><br><span class="line"># 调用存储过程插入数据,获取返回值</span><br><span class="line">CALL orders_proc(1,2,30,@out_num);</span><br></pre></td></tr></table></figure>
+<h2 id="触发器（trigger）"><a href="#触发器（trigger）" class="headerlink" title="触发器（trigger）"></a>触发器（trigger）</h2><p> 当我们执行一条sql语句的时候，这条sql语句的执行会自动去触发执行其他的sql语句。</p>
+<p><strong>四要素</strong></p>
+<ul>
+<li>监视地点（table） </li>
+<li>监视事件（insert/update/delete） 3</li>
+<li>触发时间（before/after） </li>
+<li>触发事件（insert/update/delete）</li>
+</ul>
+<p><strong>创建触发器</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">delimiter $ -- 将Mysql的结束符号从 ; 改为 $,避免执行出现错误</span><br><span class="line">CREATE TRIGGER Trigger_Name -- 触发器名，在一个数据库中触发器名是唯一的</span><br><span class="line">before&#x2F;after（insert&#x2F;update&#x2F;delete） -- 触发的时机 和 监视的事件</span><br><span class="line">on table_Name -- 触发器所在的表</span><br><span class="line">for each row -- 固定写法 叫做行触发器, 每一行受影响，触发事件都执行</span><br><span class="line">begin</span><br><span class="line">-- begin和end之间写触发事件</span><br><span class="line">end $ -- 结束标记</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>案例</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> -- 在下订单的时候，对应的商品的库存量要相应的减少，卖出商品之后减少库存量</span><br><span class="line">DELIMITER $</span><br><span class="line">CREATE TRIGGER t1</span><br><span class="line">AFTER INSERT ON orders</span><br><span class="line">FOR EACH ROW</span><br><span class="line">BEGIN</span><br><span class="line">	UPDATE goods SET num &#x3D; num -1 WHERE gid &#x3D; 1;</span><br><span class="line">END$</span><br></pre></td></tr></table></figure>
+
+
+<p>over 。。。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>感谢老铁们的支持!!!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/weChatPay.png" alt="怪狗狗 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/aliPay.jpg" alt="怪狗狗 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MySql/" rel="tag"> MySql</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/07/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="prev" title="设计模式">
+      <i class="fa fa-chevron-left"></i> 设计模式
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#DDL%E6%93%8D%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">DDL操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">1.1.</span> <span class="nav-text">对数据库的操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%A1%A8%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">1.2.</span> <span class="nav-text">对表的操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DML%E6%93%8D%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">DML操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DQL%E6%93%8D%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">DQL操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E8%A1%A8%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.1.</span> <span class="nav-text">单表查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.2.</span> <span class="nav-text">多表查询</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.2.1.</span> <span class="nav-text">内连接查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%96%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.2.2.</span> <span class="nav-text">外连接查询</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%90%E6%9F%A5%E8%AF%A2-SubQuery"><span class="nav-number">3.3.</span> <span class="nav-text">子查询 (SubQuery)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DCL%E6%93%8D%E4%BD%9C"><span class="nav-number">4.</span> <span class="nav-text">DCL操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD-amp-%E8%BF%98%E5%8E%9F"><span class="nav-number">5.</span> <span class="nav-text">数据库备份&amp;还原</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95"><span class="nav-number">6.</span> <span class="nav-text">索引</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">7.</span> <span class="nav-text">其他</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E5%9B%BE%EF%BC%88view%EF%BC%89"><span class="nav-number">7.1.</span> <span class="nav-text">视图（view）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B%EF%BC%88procedure%EF%BC%89"><span class="nav-number">7.2.</span> <span class="nav-text">存储过程（procedure）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A6%E5%8F%91%E5%99%A8%EF%BC%88trigger%EF%BC%89"><span class="nav-number">7.3.</span> <span class="nav-text">触发器（trigger）</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="怪狗狗"
+      src="/images/jerry.jpg">
+  <p class="site-author-name" itemprop="name">怪狗狗</p>
+  <div class="site-description" itemprop="description">踏上新征程----go！！！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">74</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/oddDog-git" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;oddDog-git" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://1764501567@qq.com/" title="E-Mail → https:&#x2F;&#x2F;1764501567@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://wpa.qq.com/msgrd?v=3&uin=1764501567&site=qq&menu=yes" title="http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;1764501567&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener" target="_blank">加我QQ</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">怪狗狗</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div> -->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'YVPmrsyUdC4uV9bapDgb8ll6-gzGzoHsz',
+      appKey     : 'MUI57EQtRoMQjLvpW68kiNyE',
+      placeholder: "快来评论吧！！！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
