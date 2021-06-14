@@ -5662,7 +5662,151 @@
   <entry>
     <title>XML笔记</title>
     <url>/2021/06/13/XML%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p>XML即可扩展标记语言（Extensible Markup Language） 。W3C在1998年2月发布1.0版本，2004年2月又发布1.1版本，但因为1.1版本不能向下兼容1.0版 本，所以1.1没有人用。同时，在2004年2月W3C又发布了1.0版本的第三版。我们要学习的还是 1.0版本 ! <a id="more"></a></p>
+<p><strong>XML作用</strong></p>
+<ul>
+<li><ol>
+<li>储数据     2) 配置文件   3)在网络中 传输 </li>
+</ol>
+</li>
+</ul>
+<p><strong>XML语法</strong></p>
+<ul>
+<li>文档声明必写在第一行</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--versioin：指定XML文档版本。encoding：指定当前文档的编码。可选属性，默认值是utf-8；--&gt;</span></span><br><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>XML 必须有且只有一个根元素，它是所有其他元素的父元素</p>
+</li>
+<li><p>普通元素的结构开始标签、元素体、结束标签组成。类似于HTML标签</p>
+</li>
+</ul>
+<h1 id="XML约束"><a href="#XML约束" class="headerlink" title="XML约束"></a>XML约束</h1><p>在XML技术里，可以编写一个文档来约束一个XML文档的书写规范，这称之为XML约束。 </p>
+<p><strong>常见的xml约束</strong>    DTD 、 Schema</p>
+<h2 id="DTD约束"><a href="#DTD约束" class="headerlink" title="DTD约束"></a>DTD约束</h2><p>DTD（Document Type Definition），文档类型定义，用来约束XML文档。规定XML文档中元素的名 称，子元素的名称及顺序，元素的属性等。</p>
+<p><strong>创建一个约束文件student.dtd</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;!ELEMENT students (student+) &gt;</span><br><span class="line">&lt;!ELEMENT student (name,age,sex)&gt;</span><br><span class="line">&lt;!ELEMENT name (#PCDATA)&gt;</span><br><span class="line">&lt;!ELEMENT age (#PCDATA)&gt;</span><br><span class="line">&lt;!ELEMENT sex (#PCDATA)&gt;</span><br><span class="line">&lt;!ATTLIST student number ID #REQUIRED&gt;</span><br><span class="line">&lt;!--</span><br><span class="line">ELEMENT: 用来定义元素</span><br><span class="line">students (student+) : 代表根元素 必须是 &lt;students&gt;</span><br><span class="line">student+ : 根标签中至少有一个 student子元素, + 代表至少一个</span><br><span class="line">student (name,age,sex): student 标签中包含的子元素,按顺序出现</span><br><span class="line">#PCDATA: 是普通文本内容</span><br><span class="line">ATTLIST: 用来定义属性</span><br><span class="line">student number ID #REQUIRED</span><br><span class="line">student子元素中 有一个ID属性叫做 number,是必须填写的</span><br><span class="line">ID: 唯一 值只能是字母或者下划线开头</span><br><span class="line">--&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>创建student.xml文件并引入DTD约束</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">students</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">&quot;student.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">students</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">student</span> <span class="attr">number</span>=<span class="string">&quot;s1&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>王二麻子<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">age</span>&gt;</span>12<span class="tag">&lt;/<span class="name">age</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">sex</span>&gt;</span>男<span class="tag">&lt;/<span class="name">sex</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">student</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">student</span> <span class="attr">number</span>=<span class="string">&quot;s2&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>怪狗狗<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">age</span>&gt;</span>19<span class="tag">&lt;/<span class="name">age</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">sex</span>&gt;</span>男<span class="tag">&lt;/<span class="name">sex</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">student</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">students</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="Schema约束"><a href="#Schema约束" class="headerlink" title="Schema约束"></a>Schema约束</h2><p><strong>概念</strong></p>
+<ul>
+<li>Schema是新的XML文档约束, 比DTD强大很多，是DTD 替代者； </li>
+<li>Schema本身也是XML文档，但Schema文档的扩展名为xsd，而不是xml。 </li>
+<li>Schema 功能更强大，内置多种简单和复杂的数据类型 </li>
+<li>Schema 支持命名空间 (一个XML中可以引入多个约束文档)</li>
+</ul>
+<p><strong>创建一个Schema约束文件student.xsd</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">xsd:schema</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.hui.com/xml&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">xmlns:xsd</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">targetNamespace</span>=<span class="string">&quot;http://www.hui.com/xml&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">elementFormDefault</span>=<span class="string">&quot;qualified&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xsd:element</span> <span class="attr">name</span>=<span class="string">&quot;students&quot;</span> <span class="attr">type</span>=<span class="string">&quot;studentsType&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xsd:complexType</span> <span class="attr">name</span>=<span class="string">&quot;studentsType&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">xsd:sequence</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">xsd:element</span> <span class="attr">name</span>=<span class="string">&quot;student&quot;</span> <span class="attr">type</span>=<span class="string">&quot;studentType&quot;</span> <span class="attr">minOccurs</span>=<span class="string">&quot;0&quot;</span></span></span><br><span class="line"><span class="tag">                         <span class="attr">maxOccurs</span>=<span class="string">&quot;unbounded&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">xsd:sequence</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">xsd:complexType</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xsd:complexType</span> <span class="attr">name</span>=<span class="string">&quot;studentType&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">xsd:sequence</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">xsd:element</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">type</span>=<span class="string">&quot;xsd:string&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">xsd:element</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">type</span>=<span class="string">&quot;ageType&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">xsd:element</span> <span class="attr">name</span>=<span class="string">&quot;sex&quot;</span> <span class="attr">type</span>=<span class="string">&quot;sexType&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">xsd:sequence</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">xsd:attribute</span> <span class="attr">name</span>=<span class="string">&quot;number&quot;</span> <span class="attr">type</span>=<span class="string">&quot;numberType&quot;</span> <span class="attr">use</span>=<span class="string">&quot;required&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">xsd:complexType</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xsd:simpleType</span> <span class="attr">name</span>=<span class="string">&quot;sexType&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">xsd:restriction</span> <span class="attr">base</span>=<span class="string">&quot;xsd:string&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">xsd:enumeration</span> <span class="attr">value</span>=<span class="string">&quot;male&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">xsd:enumeration</span> <span class="attr">value</span>=<span class="string">&quot;female&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">xsd:restriction</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">xsd:simpleType</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xsd:simpleType</span> <span class="attr">name</span>=<span class="string">&quot;ageType&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">xsd:restriction</span> <span class="attr">base</span>=<span class="string">&quot;xsd:integer&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">xsd:minInclusive</span> <span class="attr">value</span>=<span class="string">&quot;0&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">xsd:maxInclusive</span> <span class="attr">value</span>=<span class="string">&quot;200&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">xsd:restriction</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">xsd:simpleType</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xsd:simpleType</span> <span class="attr">name</span>=<span class="string">&quot;numberType&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">xsd:restriction</span> <span class="attr">base</span>=<span class="string">&quot;xsd:string&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">xsd:pattern</span> <span class="attr">value</span>=<span class="string">&quot;hui_\d&#123;4&#125;&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">xsd:restriction</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">xsd:simpleType</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">xsd:schema</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>创建student.xml文件并引入Schema约束</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line">&lt;students</span><br><span class="line">        xmlns=&quot;http://www.hui.com/xml&quot;</span><br><span class="line">        xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span><br><span class="line">        xsi:schemaLocation=&quot;http://www.hui.com/xml student.xsd&quot;</span><br><span class="line">&gt;</span><br><span class="line">    <span class="tag">&lt;<span class="name">student</span> <span class="attr">number</span>=<span class="string">&quot;hui_1234&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>王二麻子<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">age</span>&gt;</span>12<span class="tag">&lt;/<span class="name">age</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">sex</span>&gt;</span>male<span class="tag">&lt;/<span class="name">sex</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">student</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">student</span> <span class="attr">number</span>=<span class="string">&quot;hui_5678&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>怪狗狗<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">age</span>&gt;</span>3<span class="tag">&lt;/<span class="name">age</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">sex</span>&gt;</span>male<span class="tag">&lt;/<span class="name">sex</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">student</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">students</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>xmlns</strong> 表示根元素来自哪个命名空间</p>
+<p><strong>xmlns:xsi</strong>  引入 w3c的标准命名空间</p>
+<p><strong>xsi:schemaLocation</strong>  表示引入的命名空间跟哪个xsd文件对应，第一个值为为命名空间 第二个值为xsd文件的路径</p>
+<h1 id="XML-解析"><a href="#XML-解析" class="headerlink" title="XML 解析"></a>XML 解析</h1><p><strong>XML解析方式</strong></p>
+<ul>
+<li>DOM：要求解析器把整个XML文档装载到内存，并解析成一个Document对象。 <ul>
+<li>优点：元素与元素之间保留结构关系，故可以进行增删改查操作。 </li>
+<li>缺点：XML文档过大，可能出现内存溢出显现。 </li>
+</ul>
+</li>
+<li>SAX：是一种速度更快，更有效的方法。它逐行扫描文档，一边扫描一边解析。并以事件驱动的方 式进行具体解析，每执行一行，都将触发对应的事件。<ul>
+<li>优点：占用内存少 处理速度快，可以处理大文件 </li>
+<li>缺点：只能读，逐行后将释放资源。</li>
+</ul>
+</li>
+</ul>
+<p><strong>XML常见的解析器</strong></p>
+<ul>
+<li>JAXP：sun公司提供的解析器，支持DOM和SAX两种思想 </li>
+<li>DOM4J：一款非常优秀的解析器 , Dom4j是一个易用的、开源的库，用于XML，XPath和XSLT。 它应用于Java平台，采用了Java集合框架并完全支持DOM，SAX和JAXP。</li>
+<li> Jsoup：jsoup 是一款Java 的HTML解析器 ,也可以解析XML </li>
+<li>PULL：Android内置的XML解析方式，类似SAX。</li>
+</ul>
+<h2 id="dom4j-的使用"><a href="#dom4j-的使用" class="headerlink" title="dom4j 的使用"></a>dom4j 的使用</h2><p>所需jar包   <strong>dom4j-1.6.1.jar</strong></p>
+<p>通过核心类SaxReader加载xml文档获得Document，通过Document 对象获得文档的根元素，然后就 可以操作了</p>
+<p><strong>SaxReader对象</strong>  read(…) 加载执行xml文档 </p>
+<p><strong>Document对象</strong>  getRootElement() 获得根元素 </p>
+<p><strong>Element对象</strong> </p>
+<ul>
+<li>elements(…) 获得指定名称的所有子元素。可以不指定名称 </li>
+<li>element(…) 获得指定名称的第一个子元素。可以不指定名称 </li>
+<li>getName() 获得当前元素的元素名 </li>
+<li>attributeValue(…) 获得指定属性名的属性值 </li>
+<li>elementText(…) 获得指定名称子元素的文本值 </li>
+<li>getText() 获得当前元素的文本内容</li>
+</ul>
+<p><strong>使用案例</strong></p>
+<ul>
+<li>创建一个user.xml文件</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">users</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">user</span> <span class="attr">id</span>=<span class="string">&quot;01&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>王二麻子<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">age</span>&gt;</span>24<span class="tag">&lt;/<span class="name">age</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">hobby</span>&gt;</span>抽烟<span class="tag">&lt;/<span class="name">hobby</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">user</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">user</span> <span class="attr">id</span>=<span class="string">&quot;02&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>张三<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">age</span>&gt;</span>34<span class="tag">&lt;/<span class="name">age</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">hobby</span>&gt;</span>喝酒<span class="tag">&lt;/<span class="name">hobby</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">user</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">user</span> <span class="attr">id</span>=<span class="string">&quot;03&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>怪狗狗<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">age</span>&gt;</span>20<span class="tag">&lt;/<span class="name">age</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">hobby</span>&gt;</span>烫头<span class="tag">&lt;/<span class="name">hobby</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">user</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">users</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>通过 dom4j 解析user.xml文件</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> DocumentException </span>&#123;</span><br><span class="line">    	<span class="comment">// 构造获取SAXReader对象</span></span><br><span class="line">       SAXReader saxReader = <span class="keyword">new</span> SAXReader();</span><br><span class="line">    	<span class="comment">// 指定XML文件地址获取Document对象</span></span><br><span class="line">       Document document = saxReader.read(<span class="string">&quot;C:\\project\\javaCode\\java_base\\jdbc_xml\\xml\\src\\com\\hui\\dom4j\\user.xml&quot;</span>);</span><br><span class="line">    	<span class="comment">// 获取根元素</span></span><br><span class="line">       Element root = document.getRootElement();</span><br><span class="line">    	<span class="comment">// 获取根元素的所有子元素</span></span><br><span class="line">       List&lt;Element&gt; elements = root.elements();</span><br><span class="line">       <span class="comment">// 解析第一个子元素 user</span></span><br><span class="line">       Element user = elements.get(<span class="number">0</span>);</span><br><span class="line">       String name = user.getName();      					<span class="comment">// 获取标签名</span></span><br><span class="line">       String id = user.attributeValue(<span class="string">&quot;id&quot;</span>);				<span class="comment">// 获取user的id属性</span></span><br><span class="line">       String nameText = user.elementText(<span class="string">&quot;name&quot;</span>);			<span class="comment">// 获取name子元素的文本内容</span></span><br><span class="line">       String ageText = user.elementText(<span class="string">&quot;age&quot;</span>);		    <span class="comment">// 获取age子元素的文本内容</span></span><br><span class="line">       String hobbyText = user.element(<span class="string">&quot;hobby&quot;</span>).getText(); <span class="comment">// 获取hobby子元素的文本内容</span></span><br><span class="line">       System.out.println(name + <span class="string">&quot; : &quot;</span> + id + <span class="string">&quot; &quot;</span> + nameText + <span class="string">&quot; &quot;</span> + ageText + <span class="string">&quot; &quot;</span> + hobbyText);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="xpath方式读取xml"><a href="#xpath方式读取xml" class="headerlink" title="xpath方式读取xml"></a>xpath方式读取xml</h2><p>XPath 是一门在 XML 文档中查找信息的语言。 可以是使用xpath查找xml中的内容</p>
+<p>所需jar包       <strong>jaxen-1.1-beta-6.jar</strong></p>
+<p><strong>常用方法</strong></p>
+<p><strong>Document对象</strong>   <strong>Element对象</strong>    <strong>Node对象</strong>都可应调用下面两个xpath查询的方法</p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Node selectSingleNode(String query)</td>
+<td>查找和 XPath 查询匹配的一个节点。 参数是Xpath 查询串。</td>
+</tr>
+<tr>
+<td>Node selectNodes(String query)</td>
+<td>得到的是xml根节点下的所有满足 xpath 的节点,参数是Xpath 查询串</td>
+</tr>
+</tbody></table>
+<p>返回值是Node对象，该对象的方法与Element对象的方法差不多</p>
+<table>
+<thead>
+<tr>
+<th>xpath基本语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>/AAA/DDD/BBB</td>
+<td>表示一层一层的，AAA下面 DDD下面的BBB</td>
+</tr>
+<tr>
+<td>//BBB</td>
+<td>表示和这个名称相同，表示只要名称是BBB，都得到</td>
+</tr>
+<tr>
+<td>//*</td>
+<td>所有元素</td>
+</tr>
+<tr>
+<td>BBB[1] , BBB[last()]</td>
+<td>第一种表示第一个BBB元素, 第二种表示最后一个BBB元素</td>
+</tr>
+<tr>
+<td>//BBB[@id]</td>
+<td>表示只要BBB元素上面有id属性，都得到</td>
+</tr>
+<tr>
+<td>//BBB[@id=’b1’]</td>
+<td>表示元素名称是BBB,在BBB上面有id属性，并且id的属性值是b13333</td>
+</tr>
+</tbody></table>
+<h2 id="JDBC自定义XML"><a href="#JDBC自定义XML" class="headerlink" title="JDBC自定义XML"></a>JDBC自定义XML</h2><p><strong>创建自定义xml 文件jdbc-config.xml, 保存 数据库连接信息</strong> </p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">jdbc</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;driverClass&quot;</span>&gt;</span>com.mysql.jdbc.Driver<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;jdbcUrl&quot;</span>&gt;</span>jdbc:mysql://localhost:3306/homework?characterEncoding=UTF-8<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;user&quot;</span>&gt;</span>root<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span>&gt;</span>nofuck<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">jdbc</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p> <strong>编写JDBC工具类 , 使用xpath 读取数据库信息</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.hui.dom4j.jdbc;</span><br><span class="line"><span class="keyword">import</span> org.dom4j.Document;</span><br><span class="line"><span class="keyword">import</span> org.dom4j.DocumentException;</span><br><span class="line"><span class="keyword">import</span> org.dom4j.io.SAXReader;</span><br><span class="line"><span class="keyword">import</span> java.sql.Connection;</span><br><span class="line"><span class="keyword">import</span> java.sql.DriverManager;</span><br><span class="line"><span class="keyword">import</span> java.sql.SQLException;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created with IntelliJ IDEA.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Auther</span>: 李昭辉</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 2021/06/13/12:12</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>: JDBC工具类，相关配置从 jdbc-config.xml 文件中获取</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JDBCUtil</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> String DRIVER;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> String URL;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> String USER;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> String PASSWORD;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 获取配置文件信息</span></span><br><span class="line">            SAXReader saxReader = <span class="keyword">new</span> SAXReader();</span><br><span class="line">            Document document = saxReader.read(<span class="string">&quot;C:\\project\\javaCode\\java_base\\jdbc_xml\\xml\\src\\com\\hui\\dom4j\\jdbc\\jdbc-config.xml&quot;</span>);</span><br><span class="line">            DRIVER = document.selectSingleNode(<span class="string">&quot;/jdbc/property[@name=&#x27;driverClass&#x27;]&quot;</span>).getText();</span><br><span class="line">            URL = document.selectSingleNode(<span class="string">&quot;/jdbc/property[@name=&#x27;jdbcUrl&#x27;]&quot;</span>).getText();</span><br><span class="line">            USER = document.selectSingleNode(<span class="string">&quot;/jdbc/property[@name=&#x27;user&#x27;]&quot;</span>).getText();</span><br><span class="line">            PASSWORD = document.selectSingleNode(<span class="string">&quot;/jdbc/property[@name=&#x27;password&#x27;]&quot;</span>).getText();</span><br><span class="line">            <span class="comment">// 加载驱动</span></span><br><span class="line">            Class.forName(DRIVER);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (DocumentException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Connection <span class="title">getConnection</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Connection connection = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            connection = DriverManager.getConnection(URL, USER, PASSWORD);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> connection;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<p>over 。。。</p>
+]]></content>
       <categories>
         <category>java</category>
       </categories>
