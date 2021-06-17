@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://z3.ax1x.com/2021/05/30/2VhVyD.png">
 <meta property="og:image" content="https://z3.ax1x.com/2021/05/30/2Vh8l8.png">
 <meta property="article:published_time" content="2021-05-30T06:06:33.000Z">
-<meta property="article:modified_time" content="2021-05-31T08:04:25.640Z">
+<meta property="article:modified_time" content="2021-06-17T02:43:57.348Z">
 <meta property="article:author" content="怪狗狗">
 <meta property="article:tag" content="基础">
 <meta property="article:tag" content="集合">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-31 16:04:25" itemprop="dateModified" datetime="2021-05-31T16:04:25+08:00">2021-05-31</time>
+                <time title="修改时间：2021-06-17 10:43:57" itemprop="dateModified" datetime="2021-06-17T10:43:57+08:00">2021-06-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -440,10 +440,9 @@
 </li>
 <li><p>该类描述的字符串内容是个<strong>常量</strong>不可更改，因此可以被共享使用。</p>
 </li>
-<li><p>*常量池的概念（原理）**</p>
-<p>由于String类型描述的字符串内容是常量不可改变，因此Java虚拟机将首次出现的字符串放入常量 池中，若后续代码中出现了相同字符串内容则直接使用池中已有的字符串对象而无需申请内存及创建对 象，从而提高了性能。（方法区）</p>
-</li>
 </ul>
+<p><strong>常量池的概念(原理)</strong></p>
+<p> 由于String类型描述的字符串内容是常量不可改变，因此Java虚拟机将首次出现的字符串放入常量 池中，若后续代码中出现了相同字符串内容则直接使用池中已有的字符串对象而无需申请内存及创建对 象，从而提高了性能。（方法区）</p>
 <p><strong>构造方法使用</strong></p>
 <p>可传递 byte[] 与 char[] 数组 ，也能指定数组的起始位置与结束位置</p>
 <p>也能传递String  xx ，根据参数指定的字符串内容来构造对象，新创建对象为参 数对象的副本。</p>
@@ -679,7 +678,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建  SimpleDateFormat  对象并指定格式</span></span><br><span class="line">SimpleDateFormat sdf = <span class="keyword">new</span> SimpleDateFormat(<span class="string">&quot;yyyy-MM-dd hh:mm:ss&quot;</span>);</span><br><span class="line"><span class="comment">// 格式化日期</span></span><br><span class="line">String time = sdf.format(date);</span><br><span class="line"><span class="comment">// 将String格式的日期变成Date类型</span></span><br><span class="line">Date date = sdf.parse(time);</span><br></pre></td></tr></table></figure>
 <h3 id="Calendar类"><a href="#Calendar类" class="headerlink" title="Calendar类"></a>Calendar类</h3><ul>
 <li>java.util.Calender类主要用于描述特定的瞬间，取代Date类中的过时方法实现全球化。</li>
-<li> 该类是个抽象类，因此不能实例化对象，其具体子类针对不同国家的日历系统，其中应用最广泛的 是GregorianCalendar（格里高利历），对应世界上绝大多数国家/地区使用的标准日历系统</li>
+<li> 该类是个抽象类，因此不能实例化对象，其具体子类针对不同国家的日历系统，其中应用最广泛的 是GregorianCalendar（格利高里日历），对应世界上绝大多数国家/地区使用的标准日历系统</li>
 </ul>
 <table>
 <thead>
@@ -944,30 +943,20 @@
 </tbody></table>
 <h3 id="Set集合"><a href="#Set集合" class="headerlink" title="Set集合"></a>Set集合</h3><p><strong><em>基本概念</em></strong></p>
 <ul>
-<li><p>java.util.Set集合是Collection集合的子集合，与List集合平级。 </p>
-</li>
-<li><p>该集合中元素没有先后放入次序，且不允许重复。 </p>
-</li>
-<li><p>该集合的主要实现类是：HashSet类 和 TreeSet类以及LinkedHashSet类。 </p>
-</li>
-<li><p><strong>HashSet</strong>类的底层是采用哈希表进行数据管理的。 </p>
-</li>
-<li><p><strong>TreeSet</strong>类的底层是采用红黑树进行数据管理的。 </p>
-</li>
-<li><p><strong>LinkedHashSet</strong>类与HashSet类的不同之处在于内部维护了一个双向链表，链表中记录了元 素的迭代顺序，也就是元素插入集合中的先后顺序，因此便于迭代。</p>
-</li>
-<li><p>*<em>元素放入HashSet集合的原理**</em> </p>
-</li>
-<li><p>使用元素调用hashCode方法获取对应的哈希码值，再由某种哈希算法计算出该元素在数组中的索 引位置。 </p>
-</li>
-<li><p>若该位置没有元素，则将该元素直接放入即可。 </p>
-</li>
-<li><p>若该位置有元素，则使用新元素与已有元素依次比较哈希值，若哈希值不相同，则将该元素直接放 入末尾。 </p>
-</li>
-<li><p>若新元素与已有元素的哈希值相同，则使用新元素调用equals方法与已有元素依次比较。 </p>
-</li>
-<li><p>若相等则添加元素失败，否则将元素直接放入即可。</p>
-</li>
+<li>java.util.Set集合是Collection集合的子集合，与List集合平级。 </li>
+<li>该集合中元素没有先后放入次序，且不允许重复。 </li>
+<li>该集合的主要实现类是：HashSet类 和 TreeSet类以及LinkedHashSet类。 </li>
+<li><strong>HashSet</strong>类的底层是采用哈希表进行数据管理的。 </li>
+<li><strong>TreeSet</strong>类的底层是采用红黑树进行数据管理的。 </li>
+<li><strong>LinkedHashSet</strong>类与HashSet类的不同之处在于内部维护了一个双向链表，链表中记录了元 素的迭代顺序，也就是元素插入集合中的先后顺序，因此便于迭代。</li>
+</ul>
+<p><strong>元素放入HashSet集合的原理</strong></p>
+<ul>
+<li>使用元素调用hashCode方法获取对应的哈希码值，再由某种哈希算法计算出该元素在数组中的索 引位置。 </li>
+<li>若该位置没有元素，则将该元素直接放入即可。 </li>
+<li>若该位置有元素，则使用新元素与已有元素依次比较哈希值，若哈希值不相同，则将该元素直接放 入末尾。 </li>
+<li>若新元素与已有元素的哈希值相同，则使用新元素调用equals方法与已有元素依次比较。 </li>
+<li>若相等则添加元素失败，否则将元素直接放入即可。</li>
 </ul>
 <p><strong><em>思考</em></strong>   :  为什么要求重写equals方法后要重写hashCode方法呢?</p>
 <p>当两个元素调用equals方法相等时证明这两个元素相同，重写hashCode方法后保证这两个元 素得到的哈希码值相同，由同一个哈希算法生成的索引位置相同，此时只需要与该索引位置已有元 素比较即可，从而提高效率并避免重复元素的出现。</p>
