@@ -29,14 +29,17 @@
 <meta property="og:site_name" content="hui&#39;s Blog">
 <meta property="og:description" content="JavaWeb主要指使用Java语言进行动态Web资源开发技术的统称，是解决相关Web互联网领域的技 术总和。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://z3.ax1x.com/2021/06/19/RCBNLt.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/06/19/RChX7Q.png">
 <meta property="article:published_time" content="2021-06-18T08:30:46.000Z">
-<meta property="article:modified_time" content="2021-06-19T04:38:17.844Z">
+<meta property="article:modified_time" content="2021-06-19T07:18:57.997Z">
 <meta property="article:author" content="怪狗狗">
 <meta property="article:tag" content="javaWeb">
 <meta property="article:tag" content="jsp">
 <meta property="article:tag" content="servlet">
 <meta property="article:tag" content="tomcat">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://z3.ax1x.com/2021/06/19/RCBNLt.png">
 
 <link rel="canonical" href="http://odddog-git.github.io/2021/06/18/javaWeb%E7%AC%94%E8%AE%B0/">
 
@@ -196,7 +199,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-06-19 12:38:17" itemprop="dateModified" datetime="2021-06-19T12:38:17+08:00">2021-06-19</time>
+                <time title="修改时间：2021-06-19 15:18:57" itemprop="dateModified" datetime="2021-06-19T15:18:57+08:00">2021-06-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -815,7 +818,231 @@
 <li>能够保存更多的数据，而Cookie大约保存4KB。</li>
 <li>数据保存在服务器端会占用服务器的内存空间，如果存储信息过多、用户量过大，会严重影响服务器的性能。</li>
 </ul>
-<h1 id="jsp"><a href="#jsp" class="headerlink" title="jsp"></a>jsp</h1><p>续。。。。</p>
+<h1 id="jsp"><a href="#jsp" class="headerlink" title="jsp"></a>jsp</h1><p><strong>基本概念</strong></p>
+<ul>
+<li>JSP是Java Server Pages的简称，跟Servlet一样可以动态生成HTML响应， JSP文件命名为 xxx.jsp。 </li>
+<li>与Servlet不同，JSP文件以HTML标记为主，然后内嵌Java代码段，用于处理动态内容。</li>
+</ul>
+<p><strong>JSP与Servlet的关系</strong></p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/RCBNLt"><img src="https://z3.ax1x.com/2021/06/19/RCBNLt.png" alt="RCBNLt.png" style="zoom:80%;" /></a></p>
+<p><strong>JSP语法结构</strong> </p>
+<ul>
+<li><p>声明区 </p>
+</li>
+<li><p>程序代码区 </p>
+</li>
+<li><p>表达式 </p>
+</li>
+<li><p>注释 </p>
+</li>
+<li><p>指令和动作 </p>
+</li>
+<li><p>内置对象</p>
+</li>
+</ul>
+<h2 id="声明区"><a href="#声明区" class="headerlink" title="声明区"></a>声明区</h2><p>可以定义全局变量、方法、类。</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;%!</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">()</span></span>&#123;… …&#125;</span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="程序代码区"><a href="#程序代码区" class="headerlink" title="程序代码区"></a>程序代码区</h2><p>可以定义局部变量以及放入任何的Java程序代码</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;%</span><br><span class="line">    <span class="keyword">int</span> j;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k=<span class="number">0</span>; k&lt;<span class="number">10</span>; k++) &#123;</span><br><span class="line">    	… …</span><br><span class="line">    &#125;</span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="表达式"><a href="#表达式" class="headerlink" title="表达式"></a>表达式</h2><p>可以输出一个变量或一个具体内容，但 = 后面必须是字符串变量或者可以被转换成字符串的 表达式。</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;%=“hello world”%&gt;</span><br><span class="line">&lt;%=i+<span class="number">1</span>%&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h2><figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--… …--&gt; HTML文件的注释，浏览器可以查看到</span><br><span class="line">&lt;%--… …--%&gt; JSP文件的注释，浏览器看不到</span><br><span class="line">&lt;%<span class="comment">//… …%&gt; Java语言中的单行注释，浏览器看不到</span></span><br><span class="line">&lt;%<span class="comment">/*… …*/</span>%&gt; Java语言中的多行注释，浏览器看不到</span><br></pre></td></tr></table></figure>
+<h2 id="指令和动作"><a href="#指令和动作" class="headerlink" title="指令和动作"></a>指令和动作</h2><p><strong>指令格式</strong>   &lt;%@指令 属性=“属性值”%&gt;  指令的属性可以设定多个。 </p>
+<p><strong>常用指令</strong>   page、taglib、include</p>
+<h3 id="page指令"><a href="#page指令" class="headerlink" title="page指令"></a>page指令</h3><p>page指令用于导包和设置一些页面属性，常用属性如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import 导入相应的包，惟一允许在同一文档中多次出现的属性</span><br><span class="line">contentType 设置Content-Type响应报头，标明即将发送到浏览器的文档类型</span><br><span class="line">pageEncoding 设置页面的编码</span><br><span class="line">language 指定页面使用的语言,默认java</span><br><span class="line">session 控制页面是否参与HTTP会话</span><br><span class="line">errorPage 处理当前页面中抛出但未被捕获的任何异常</span><br><span class="line">isErrorPage 当前页是否可以作为其他页面的错误处理页面</span><br></pre></td></tr></table></figure>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page contentType=<span class="string">&quot;text/html;charset=UTF-8&quot;</span> language=<span class="string">&quot;java&quot;</span>%&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="tablib指令"><a href="#tablib指令" class="headerlink" title="tablib指令"></a>tablib指令</h3><p>taglib指令用来扩展JSP程序的标签元素，引入其他功能的标签库文件。</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- prefix属性用于指定库前缀 --&gt;</span><br><span class="line">&lt;!-- uri属性用于指定库的标识 --&gt;</span><br><span class="line">&lt;%<span class="meta">@taglib</span> uri=“tagLibary” prefix=“prefix”%&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="include指令"><a href="#include指令" class="headerlink" title="include指令"></a>include指令</h3><p>include指令用于引入另一个JSP程序或HTML文件等，格式如下：</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;%<span class="meta">@include</span> file=“被包含的文件地址%&gt;</span><br></pre></td></tr></table></figure>
+<p>JSP引擎会在JSP文件的转换时期先把file属性设定的文件包含进来，然后开始执行转换及编译的工 作。</p>
+<h3 id="jsp-include动作"><a href="#jsp-include动作" class="headerlink" title="jsp:include动作"></a>jsp:include动作</h3><ul>
+<li>jsp:include动作用于引入另一个JSP程序或HTML文件等。 </li>
+<li>执行到include时，被include的文件才会被编译。 </li>
+<li>如果include的是jsp文件，那它不会被转换成Servlet文件。</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;jsp:include page=“URLSpec” flush=“<span class="keyword">true</span>”/&gt;</span><br><span class="line">&lt;jsp:include page=“URLSpec” flush=“<span class="keyword">true</span>”&gt;</span><br><span class="line">&lt;jsp:param name=“key” value=“value”/&gt;</span><br><span class="line">&lt;/jsp:include&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>include指令和include动作的区别</strong> </p>
+<ul>
+<li>include指令是在JSP程序的转换时期就将file属性所指定的程序内容嵌入再编译执行（静态包 含）。 </li>
+<li>include动作在转换时期是不会被编译的，只有在客户端请求时期被执行到才会被动态的编译载入 （动态包含，推荐）。</li>
+</ul>
+<h3 id="jsp-forward动作"><a href="#jsp-forward动作" class="headerlink" title="jsp:forward动作"></a>jsp:forward动作</h3><p>forward动作用于在JSP中实现转发，将请求转发到另一个指定的JSP程序或者Servlet中处理</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;jsp:forward page=“urlSpec” flush=“<span class="keyword">true</span>”/&gt;</span><br><span class="line">&lt;jsp:forward page=“urlSpec”&gt;</span><br><span class="line">    &lt;!-- 用于指定参数和其对应的值 --&gt;</span><br><span class="line">    &lt;jsp:param name=“key” value=“value”/&gt;</span><br><span class="line">&lt;/jsp:forward&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="JSP内置对象"><a href="#JSP内置对象" class="headerlink" title="JSP内置对象"></a>JSP内置对象</h2><p><strong>基本概念</strong> </p>
+<ul>
+<li>在JSP程序中有9个内置对象由容器为用户进行实例化，程序员可以不用定义就直接使用这些变量。 </li>
+<li>在JSP转换成Servlet后，会自动追加这些变量的定义，使用内置对象可以简化JSP的开发。</li>
+<li>内置对象的方法就是Servlet中对应类的使用</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>对象变量</th>
+<th>对象类型</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>out</td>
+<td>JSPWriter</td>
+<td>输出流</td>
+</tr>
+<tr>
+<td>request</td>
+<td>HttpServletRequest</td>
+<td>请求信息</td>
+</tr>
+<tr>
+<td>response</td>
+<td>HttpServletResponse</td>
+<td>响应信息</td>
+</tr>
+<tr>
+<td>session</td>
+<td>HttpSession</td>
+<td>会话</td>
+</tr>
+<tr>
+<td>application</td>
+<td>ServletContext</td>
+<td>全局的上下文对象</td>
+</tr>
+<tr>
+<td>pageContext</td>
+<td>PageContext</td>
+<td>JSP页面上下文</td>
+</tr>
+<tr>
+<td>page</td>
+<td>Object</td>
+<td>JSP页面本身</td>
+</tr>
+<tr>
+<td>config</td>
+<td>ServletConfig</td>
+<td>Servlet配置对象</td>
+</tr>
+<tr>
+<td>exception</td>
+<td>Throwable</td>
+<td>捕获网页异常</td>
+</tr>
+</tbody></table>
+<h3 id="out内置对象"><a href="#out内置对象" class="headerlink" title="out内置对象"></a>out内置对象</h3><p>out内置对象是一个缓冲的输出流，用来给客户端输出信息</p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>void println(String x)</td>
+<td>向客户端输出各种类型数据</td>
+</tr>
+<tr>
+<td>void newLine()</td>
+<td>输出一个换行符</td>
+</tr>
+<tr>
+<td>void close()</td>
+<td>关闭输出流</td>
+</tr>
+<tr>
+<td>int getBufferSize()</td>
+<td>返回缓冲区的大小</td>
+</tr>
+<tr>
+<td>int getRemaining()</td>
+<td>返回缓冲区中未使用的字节数</td>
+</tr>
+<tr>
+<td>void flush()</td>
+<td>输出缓冲区里的数据</td>
+</tr>
+<tr>
+<td>void clearBuffer()</td>
+<td>清除缓冲区里的数据，同时把数据输出到客户端</td>
+</tr>
+<tr>
+<td>void clear()</td>
+<td>清除缓冲区里的数据，但不把数据输出到客户端</td>
+</tr>
+</tbody></table>
+<h3 id="pageContext内置对象"><a href="#pageContext内置对象" class="headerlink" title="pageContext内置对象"></a>pageContext内置对象</h3><p>pageContext对象是PageContext类型的对象，可以使用这个对象来管理其他的隐含对象。 只在一个页面中保存数据。</p>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>功能介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>void setAttribute(String name, Object value,int scope)</td>
+<td>使用适当的作用域设置指定的名称和值</td>
+</tr>
+<tr>
+<td>Object getAttribute(String name, int scope)</td>
+<td>返回指定作用域中名称关联的对象，若找不到则返回null</td>
+</tr>
+<tr>
+<td>ServletRequest getRequest()</td>
+<td>获取请求对象</td>
+</tr>
+<tr>
+<td>ServletResponse getResponse()</td>
+<td>获取响应对象</td>
+</tr>
+<tr>
+<td>HttpSession getSession()</td>
+<td>获取会话对象</td>
+</tr>
+<tr>
+<td>ServletConfig getServletConfig()</td>
+<td>获取配置对象</td>
+</tr>
+<tr>
+<td>JspWriter getOut()</td>
+<td>获取输出对象</td>
+</tr>
+<tr>
+<td>Object getPage()</td>
+<td>获取页面对象</td>
+</tr>
+<tr>
+<td>Exception getException()</td>
+<td>获取异常对象</td>
+</tr>
+</tbody></table>
+<h3 id="exception内置对象"><a href="#exception内置对象" class="headerlink" title="exception内置对象"></a>exception内置对象</h3><p>exception 对象是Throwable的实例，表示的是JSP的异常信息。</p>
+<p>如果要使用它，必须将对应异常页面page指令的isErrorPage属性设置成true。</p>
+<ul>
+<li>单页处理方法</li>
+</ul>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;%<span class="meta">@page</span> errorPage=<span class="string">&quot;error.jsp&quot;</span> %&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在web.xml中配置统一的异常处理页面。</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">error-page</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">exception-type</span>&gt;</span>java.lang.Throwable<span class="tag">&lt;/<span class="name">exception-type</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">location</span>&gt;</span>/error.jsp<span class="tag">&lt;/<span class="name">location</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">error-page</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="javaBean组件"><a href="#javaBean组件" class="headerlink" title="javaBean组件"></a>javaBean组件</h2><p>JavaBean 是使用 Java 语言开发的一个可重用的组件，在 JSP 开发中可以使用 JavaBean 减少重复 代码，使整个 JSP 代码的开发更加简洁。</p>
+<p><strong>使用方式</strong></p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;%--创建一个JavaBean对象，scope表示范围--%&gt;</span><br><span class="line">&lt;jsp:useBean id=&quot;user&quot; scope=&quot;session&quot; class=&quot;com.hui.User&quot;&gt;&lt;/jsp:useBean&gt;</span><br><span class="line">&lt;%--set，如果是从前端获取的数据则可以使用param属性而不是value属性 --%&gt;</span><br><span class="line">&lt;jsp:setProperty name=&quot;user&quot; property=&quot;name&quot; value=&quot;怪狗狗&quot;&gt;&lt;/jsp:setProperty&gt;</span><br><span class="line">&lt;jsp:setProperty name=&quot;user&quot; property=&quot;age&quot; value=&quot;13&quot;&gt;&lt;/jsp:setProperty&gt;</span><br><span class="line">&lt;%--get--%&gt;</span><br><span class="line">姓名 : &lt;jsp:getProperty name=<span class="string">&quot;user&quot;</span> property=<span class="string">&quot;name&quot;</span>/&gt; &lt;br&gt;</span><br><span class="line">年龄 : &lt;jsp:getProperty name=<span class="string">&quot;user&quot;</span> property=<span class="string">&quot;age&quot;</span>/&gt;</span><br></pre></td></tr></table></figure>
+<p>JavaBean的保存范围scope有page、request、session以及application，默认是page范围。</p>
+<p><strong>删除方式</strong></p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;%</span><br><span class="line">	内置对象.removeAttribute(“JavaBean的名字”);</span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="MVC设计模式"><a href="#MVC设计模式" class="headerlink" title="MVC设计模式"></a>MVC设计模式</h2><p><strong>基本概念</strong></p>
+<ul>
+<li>MVC是模型(Model)和视图(View)以及控制器(Controller)的简写，是一种将数据、界面显示和业务 逻辑进行分离的组织方式，这样在改进界面及用户交互时，不需要重新编写业务逻辑，从而提高了 代码的可维护性。 <ul>
+<li>M：主要用于封装业务数据的JavaBean(Bean) 和 业务逻辑的JavaBean(Service)及访问数据库的 DAO对象。 </li>
+<li>V：主要负责数据收集 和 数据展现，通常由JSP文件完成。 </li>
+<li>C：主要负责流程控制 和 页面跳转，通常由Servlet完成。</li>
+</ul>
+</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/RChX7Q"><img src="https://z3.ax1x.com/2021/06/19/RChX7Q.png" alt="RChX7Q.png"></a></p>
+<p>over。。。</p>
 
     </div>
 
@@ -920,7 +1147,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Tomcat"><span class="nav-number">1.</span> <span class="nav-text">Tomcat</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Servlet"><span class="nav-number">2.</span> <span class="nav-text">Servlet</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Servlet%E7%9A%84%E7%BC%96%E7%A8%8B%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.1.</span> <span class="nav-text">Servlet的编程步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Servlet%E9%85%8D%E7%BD%AE"><span class="nav-number">2.1.1.</span> <span class="nav-text">Servlet配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Servlet%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.1.2.</span> <span class="nav-text">Servlet接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GenericServlet%E7%B1%BB"><span class="nav-number">2.1.3.</span> <span class="nav-text">GenericServlet类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HttpServlet%E7%B1%BB"><span class="nav-number">2.1.4.</span> <span class="nav-text">HttpServlet类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Servlet%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">2.1.5.</span> <span class="nav-text">Servlet的生命周期</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POST%E5%92%8CGET%E8%AF%B7%E6%B1%82"><span class="nav-number">2.2.</span> <span class="nav-text">POST和GET请求</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GET%E8%AF%B7%E6%B1%82"><span class="nav-number">2.2.1.</span> <span class="nav-text">GET请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#POST%E8%AF%B7%E6%B1%82"><span class="nav-number">2.2.2.</span> <span class="nav-text">POST请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ServletRequest%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.2.3.</span> <span class="nav-text">ServletRequest接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HttpServletRequest%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.2.4.</span> <span class="nav-text">HttpServletRequest接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ServletResponse%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.2.5.</span> <span class="nav-text">ServletResponse接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HttpServletResponse%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.2.6.</span> <span class="nav-text">HttpServletResponse接口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Servlet%E6%8E%A5%E6%94%B6%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81"><span class="nav-number">2.3.</span> <span class="nav-text">Servlet接收中文乱码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E6%94%B6%E4%B9%B1%E7%A0%81"><span class="nav-number">2.3.1.</span> <span class="nav-text">接收乱码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E4%B9%B1%E7%A0%81"><span class="nav-number">2.3.2.</span> <span class="nav-text">响应乱码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ServletConfig%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.4.</span> <span class="nav-text">ServletConfig接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ServletContext%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.5.</span> <span class="nav-text">ServletContext接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AC%E5%8F%91%E4%B8%8E%E9%87%8D%E5%AE%9A%E5%90%91"><span class="nav-number">2.6.</span> <span class="nav-text">转发与重定向</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E5%90%91"><span class="nav-number">2.6.1.</span> <span class="nav-text">重定向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E5%8F%91"><span class="nav-number">2.6.2.</span> <span class="nav-text">转发</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Servlet%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="nav-number">2.7.</span> <span class="nav-text">Servlet线程安全</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86"><span class="nav-number">2.8.</span> <span class="nav-text">状态管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cookie%E6%8A%80%E6%9C%AF"><span class="nav-number">2.8.1.</span> <span class="nav-text">cookie技术</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-number">2.8.1.1.</span> <span class="nav-text">基本使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cookie%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">2.8.1.2.</span> <span class="nav-text">Cookie的生命周期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cookie%E7%9A%84%E8%B7%AF%E5%BE%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.8.1.3.</span> <span class="nav-text">Cookie的路径问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cookie%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">2.8.1.4.</span> <span class="nav-text">Cookie的特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#session%E6%8A%80%E6%9C%AF"><span class="nav-number">2.8.2.</span> <span class="nav-text">session技术</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8-1"><span class="nav-number">2.8.2.1.</span> <span class="nav-text">基本使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#session%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">2.8.2.2.</span> <span class="nav-text">session的生命周期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#session%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">2.8.2.3.</span> <span class="nav-text">session的特点</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#jsp"><span class="nav-number">3.</span> <span class="nav-text">jsp</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Tomcat"><span class="nav-number">1.</span> <span class="nav-text">Tomcat</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Servlet"><span class="nav-number">2.</span> <span class="nav-text">Servlet</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Servlet%E7%9A%84%E7%BC%96%E7%A8%8B%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.1.</span> <span class="nav-text">Servlet的编程步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Servlet%E9%85%8D%E7%BD%AE"><span class="nav-number">2.1.1.</span> <span class="nav-text">Servlet配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Servlet%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.1.2.</span> <span class="nav-text">Servlet接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GenericServlet%E7%B1%BB"><span class="nav-number">2.1.3.</span> <span class="nav-text">GenericServlet类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HttpServlet%E7%B1%BB"><span class="nav-number">2.1.4.</span> <span class="nav-text">HttpServlet类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Servlet%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">2.1.5.</span> <span class="nav-text">Servlet的生命周期</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POST%E5%92%8CGET%E8%AF%B7%E6%B1%82"><span class="nav-number">2.2.</span> <span class="nav-text">POST和GET请求</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GET%E8%AF%B7%E6%B1%82"><span class="nav-number">2.2.1.</span> <span class="nav-text">GET请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#POST%E8%AF%B7%E6%B1%82"><span class="nav-number">2.2.2.</span> <span class="nav-text">POST请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ServletRequest%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.2.3.</span> <span class="nav-text">ServletRequest接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HttpServletRequest%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.2.4.</span> <span class="nav-text">HttpServletRequest接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ServletResponse%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.2.5.</span> <span class="nav-text">ServletResponse接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HttpServletResponse%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.2.6.</span> <span class="nav-text">HttpServletResponse接口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Servlet%E6%8E%A5%E6%94%B6%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81"><span class="nav-number">2.3.</span> <span class="nav-text">Servlet接收中文乱码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E6%94%B6%E4%B9%B1%E7%A0%81"><span class="nav-number">2.3.1.</span> <span class="nav-text">接收乱码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E4%B9%B1%E7%A0%81"><span class="nav-number">2.3.2.</span> <span class="nav-text">响应乱码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ServletConfig%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.4.</span> <span class="nav-text">ServletConfig接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ServletContext%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.5.</span> <span class="nav-text">ServletContext接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AC%E5%8F%91%E4%B8%8E%E9%87%8D%E5%AE%9A%E5%90%91"><span class="nav-number">2.6.</span> <span class="nav-text">转发与重定向</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E5%90%91"><span class="nav-number">2.6.1.</span> <span class="nav-text">重定向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E5%8F%91"><span class="nav-number">2.6.2.</span> <span class="nav-text">转发</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Servlet%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="nav-number">2.7.</span> <span class="nav-text">Servlet线程安全</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86"><span class="nav-number">2.8.</span> <span class="nav-text">状态管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cookie%E6%8A%80%E6%9C%AF"><span class="nav-number">2.8.1.</span> <span class="nav-text">cookie技术</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-number">2.8.1.1.</span> <span class="nav-text">基本使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cookie%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">2.8.1.2.</span> <span class="nav-text">Cookie的生命周期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cookie%E7%9A%84%E8%B7%AF%E5%BE%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.8.1.3.</span> <span class="nav-text">Cookie的路径问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cookie%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">2.8.1.4.</span> <span class="nav-text">Cookie的特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#session%E6%8A%80%E6%9C%AF"><span class="nav-number">2.8.2.</span> <span class="nav-text">session技术</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8-1"><span class="nav-number">2.8.2.1.</span> <span class="nav-text">基本使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#session%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">2.8.2.2.</span> <span class="nav-text">session的生命周期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#session%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">2.8.2.3.</span> <span class="nav-text">session的特点</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#jsp"><span class="nav-number">3.</span> <span class="nav-text">jsp</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E%E5%8C%BA"><span class="nav-number">3.1.</span> <span class="nav-text">声明区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E4%BB%A3%E7%A0%81%E5%8C%BA"><span class="nav-number">3.2.</span> <span class="nav-text">程序代码区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">3.3.</span> <span class="nav-text">表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E9%87%8A"><span class="nav-number">3.4.</span> <span class="nav-text">注释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E5%92%8C%E5%8A%A8%E4%BD%9C"><span class="nav-number">3.5.</span> <span class="nav-text">指令和动作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#page%E6%8C%87%E4%BB%A4"><span class="nav-number">3.5.1.</span> <span class="nav-text">page指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tablib%E6%8C%87%E4%BB%A4"><span class="nav-number">3.5.2.</span> <span class="nav-text">tablib指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#include%E6%8C%87%E4%BB%A4"><span class="nav-number">3.5.3.</span> <span class="nav-text">include指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jsp-include%E5%8A%A8%E4%BD%9C"><span class="nav-number">3.5.4.</span> <span class="nav-text">jsp:include动作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jsp-forward%E5%8A%A8%E4%BD%9C"><span class="nav-number">3.5.5.</span> <span class="nav-text">jsp:forward动作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSP%E5%86%85%E7%BD%AE%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.6.</span> <span class="nav-text">JSP内置对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#out%E5%86%85%E7%BD%AE%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.6.1.</span> <span class="nav-text">out内置对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pageContext%E5%86%85%E7%BD%AE%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.6.2.</span> <span class="nav-text">pageContext内置对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exception%E5%86%85%E7%BD%AE%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.6.3.</span> <span class="nav-text">exception内置对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#javaBean%E7%BB%84%E4%BB%B6"><span class="nav-number">3.7.</span> <span class="nav-text">javaBean组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVC%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.8.</span> <span class="nav-text">MVC设计模式</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
