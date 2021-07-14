@@ -3970,8 +3970,9 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 创建该类的对象调用start()方法。</span></span><br><span class="line">SubThread subThread = <span class="keyword">new</span> SubThread();</span><br><span class="line">subThread.start();</span><br></pre></td></tr></table></figure></li>
 <li><p>自定义类实现Runnable接口并重写run方法，创建该类的对象作为实参来构造Thread类型的对 象，然后使用Thread类型的对象调用start方法。当然也能使用匿名内部类的方式创建</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RunnableImpl</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;方式二&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 调用Thread构造方法，传递一个Runnable接口的实现类</span></span><br><span class="line">Thread thread = <span class="keyword">new</span> Thread(<span class="keyword">new</span> RunnableImpl());</span><br><span class="line">thread.start();</span><br><span class="line"><span class="comment">// 匿名内部类方式创建线程</span></span><br><span class="line">Thread thread2 = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;方式三 : 内部类&quot;</span>);</span><br><span class="line">&#125;);</span><br><span class="line">thread2.start();</span><br></pre></td></tr></table></figure></li>
-<li><p>*线程生命周期**</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 调用Thread构造方法，传递一个Runnable接口的实现类</span></span><br><span class="line">Thread thread = <span class="keyword">new</span> Thread(<span class="keyword">new</span> RunnableImpl());</span><br><span class="line">thread.start();</span><br><span class="line"><span class="comment">// 匿名内部类方式创建线程</span></span><br><span class="line">Thread thread2 = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;方式三 : 内部类&quot;</span>);</span><br><span class="line">&#125;);</span><br><span class="line">thread2.start();</span><br></pre></td></tr></table></figure>
+
+<p><strong>线程生命周期</strong></p>
 </li>
 </ul>
 <p><a href="https://imgtu.com/i/21BBkj"><img src="https://z3.ax1x.com/2021/06/03/21BBkj.png" alt="21BBkj.png" style="zoom: 67%;" /></a></p>
@@ -4043,7 +4044,7 @@
 </tbody></table>
 <h2 id="线程同步机制"><a href="#线程同步机制" class="headerlink" title="线程同步机制"></a>线程同步机制</h2><p><strong>概念</strong></p>
 <p>当多个线程同时访问同一种共享资源时，可能会造成数据的覆盖等不一致性问题，此时就需要对线 程之间进行通信和协调，该机制就叫做线程的同步机制。</p>
-<p>**异步操作 ** :  多线程并发的操作，各自独立运行。</p>
+<p><strong>异步操作</strong> :  多线程并发的操作，各自独立运行。</p>
 <p><strong>同步操作</strong>  :  多线程串行的操作，有先后执行的顺序。</p>
 <h3 id="使用synchronized关键字来实现线程同步"><a href="#使用synchronized关键字来实现线程同步" class="headerlink" title="使用synchronized关键字来实现线程同步"></a>使用synchronized关键字来实现线程同步</h3><p>1.实现部分代码的锁定，格式如下：</p>
 <ul>
@@ -4402,10 +4403,12 @@
 <li><p>Class.forName()    获取参数指定类型的Class对象（常用）。</p>
 </li>
 <li><p>使用类加载器ClassLoader的方式获取指定类型的Class对象。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ClassLoader classLoader = String.class.getClassLoader(); <span class="comment">// 获取类加载器，随便哪个类的加载器都行</span></span><br><span class="line">classLoader.loadClass(<span class="string">&quot;java.util.Date&quot;</span>);  <span class="comment">// 根据类加载器获取时间对象</span></span><br></pre></td></tr></table></figure></li>
-<li><p>*常用的方法**</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ClassLoader classLoader = String.class.getClassLoader(); <span class="comment">// 获取类加载器，随便哪个类的加载器都行</span></span><br><span class="line">classLoader.loadClass(<span class="string">&quot;java.util.Date&quot;</span>);  <span class="comment">// 根据类加载器获取时间对象</span></span><br></pre></td></tr></table></figure>
+
+
 </li>
 </ul>
+<p><strong>常用的方法</strong></p>
 <table>
 <thead>
 <tr>
@@ -6435,7 +6438,7 @@
 <td>返回Servlet的别名</td>
 </tr>
 <tr>
-<td>StringgetInitParameter(String name)</td>
+<td>String getInitParameter(String name)</td>
 <td>返回包含初始化参数值的字符串，如果该参数不存在，则返回null</td>
 </tr>
 <tr>
@@ -6449,7 +6452,7 @@
 </tbody></table>
 <h2 id="ServletContext接口"><a href="#ServletContext接口" class="headerlink" title="ServletContext接口"></a>ServletContext接口</h2><p><strong>基本概念</strong></p>
 <ul>
-<li>javax.servlet.ServletContext接口主要用于定义一组方法，Servlet使用这些方法与它的Servlet容 器通信。 </li>
+<li>javax.servlet.ServletContext接口主要用于定义一组方法，Servlet使用这些方法与其它的Servlet容 器通信。 </li>
 <li>服务器容器在启动时会为每个项目创建唯一的一个ServletContext对象，用于实现多个Servlet之间 的信息共享和通信。 </li>
 <li>在Servlet中通过this.getServletContext()方法可以获得ServletContext对象，也可以通过ServletConfig对象获取。</li>
 </ul>
@@ -7170,7 +7173,7 @@
 <p><strong>多个过滤器的使用</strong> </p>
 <p>如果有多个过滤器都满足过滤的条件，则容器依据映射 (filter-mapping) 的先后顺序来调用各个过滤器。</p>
 <p><a href="https://imgtu.com/i/RVeyAs"><img src="https://z3.ax1x.com/2021/06/21/RVeyAs.png" alt="RVeyAs.png"></a></p>
-<p>**过滤器优点 **</p>
+<p><strong>过滤器优点</strong></p>
 <p>实现代码的“可插拔性”，即增加或减少某个功能模块，不会影响程序的正常执行。 可以将多个相同处理逻辑的模块集中写在过滤器里面，可实现重复利用、也方便代码的维护。</p>
 <h1 id="Listener监听器"><a href="#Listener监听器" class="headerlink" title="Listener监听器"></a>Listener监听器</h1><p><strong>基本概念</strong></p>
 <ul>
@@ -7396,9 +7399,102 @@
 <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">listener</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">listener-class</span>&gt;</span>com.hui.CountListener<span class="tag">&lt;/<span class="name">listener-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">listener</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p><strong>jsp页面</strong></p>
 <figure class="highlight"><table><tr><td class="code"><pre><span class="line">&lt;%@ page contentType=<span class="string">&quot;text/html;charset=UTF-8&quot;</span> language=<span class="string">&quot;java&quot;</span> %&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">    &lt;head&gt;</span><br><span class="line">        &lt;title&gt;统计人数&lt;/title&gt;</span><br><span class="line">    &lt;/head&gt;</span><br><span class="line">    &lt;body&gt;</span><br><span class="line">        &lt;h1&gt;</span><br><span class="line">            当前访问人数 $&#123;applicationScope.count&#125;</span><br><span class="line">        &lt;/h1&gt;</span><br><span class="line">    &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
-
-
-<p>over。。。</p>
+<h1 id="通用Servlet"><a href="#通用Servlet" class="headerlink" title="通用Servlet"></a>通用Servlet</h1><p>之前一个Servlet只对应一个功能，这样编码太麻烦，没必要这样细分。我们可以让一个Servlet对应一个模块的功能。</p>
+<p>让前端传递 一个参数  <strong>methodName = xxx</strong>  ，这样可以判断当前要调用哪个方法。再调用相应的方法时，将request与response传递过去。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseServlet</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        String methodName = req.getParameter(<span class="string">&quot;methodName&quot;</span>);</span><br><span class="line">        <span class="comment">// 通过前端传递的参数，调用相应的方法</span></span><br><span class="line">  		<span class="keyword">if</span> (method.equals(<span class="string">&quot;delete&quot;</span>)) &#123;</span><br><span class="line">            delete(req, resp);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (method.equals(<span class="string">&quot;update&quot;</span>)) &#123;</span><br><span class="line">            update(req, resp);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (method.equals(<span class="string">&quot;add&quot;</span>)) &#123;</span><br><span class="line">            add(req, resp);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;没有该方法!!!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.doPost(req, resp);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// methodName 相对应的功能</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">delete</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span></span>&#123; System.out.println(<span class="string">&quot;删除。。。&quot;</span>);&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span></span>&#123; System.out.println(<span class="string">&quot;修改。。。&quot;</span>);&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span></span>&#123; System.out.println(<span class="string">&quot;添加。。。&quot;</span>);&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的全是通过  if..else..  判断，比较的low。我们可以使用反射去对代码进行优化, 提升代码的可维护性/可扩展性.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;    </span><br><span class="line">    String methodName = req.getParameter(<span class="string">&quot;methodName&quot;</span>);</span><br><span class="line">    <span class="comment">// 通过前端传递的参数，调用相应的方法    </span></span><br><span class="line">    <span class="keyword">if</span>(methodName!=<span class="keyword">null</span>)&#123;</span><br><span class="line">        <span class="comment">// 通过反射优化代码</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 通过方法名与参数获取相关方法对象</span></span><br><span class="line">            Method method = <span class="keyword">this</span>.getClass().getMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);</span><br><span class="line">            <span class="comment">// 调用方法</span></span><br><span class="line">            method.invoke(<span class="keyword">this</span>,req,resp);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            System.out.println(<span class="string">&quot;没有该方法！！！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当前代码依然存在问题，每个Servlet都需要写一份相同的反射代码</p>
+<p><strong>解决方案</strong>: 将反射相关的代码抽取到一个 <strong>BaseServlet类</strong>  中, 让BaseServlet去继承HTTPServlet，其他的Servlet基础BaseServelt。</p>
+<p>这样其他的Servlet可以不用重写 doPost() 与 doGet() 方法，直接写自己的功能即可。</p>
+<p><strong>注意</strong>  其他Servelt中的方法要加形参  request 与 response</p>
+<p><strong>BaseServlet类</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseServlet</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        String methodName = req.getParameter(<span class="string">&quot;methodName&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span>(methodName!=<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="comment">// 通过反射优化代码</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 通过方法名与获取相关方法</span></span><br><span class="line">                Method method = <span class="keyword">this</span>.getClass().getMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);</span><br><span class="line">                <span class="comment">// 调用方法</span></span><br><span class="line">                method.invoke(<span class="keyword">this</span>,req,resp);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">                System.out.println(<span class="string">&quot;没有该方法！！！&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.doPost(req, resp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="JSON"><a href="#JSON" class="headerlink" title="JSON"></a>JSON</h1><p><img src="C:\Users\oddDog\Desktop\source\任务1\02_图片\52.jpg"> </p>
+<p><strong>JSON的特点</strong></p>
+<ul>
+<li>JSON 是一种轻量级的数据交换格式。</li>
+<li>JSON采用完全独立于语言的文本格式，就是说不同的编程语言JSON数据是一致的。</li>
+<li>JSON易于人阅读和编写，同时也易于机器解析和生成(一般用于提升网络传输速率)。</li>
+</ul>
+<p>目前, 前后端的ajax通讯几乎用的都是json格式的了,所以在开发的过程中,我们经常会涉及到JSON数据的转换</p>
+<p><a href="https://imgtu.com/i/W9QnaD"><img src="https://z3.ax1x.com/2021/07/11/W9QnaD.jpg" alt="W9QnaD.jpg"></a></p>
+<h2 id="XML与JSON的区别"><a href="#XML与JSON的区别" class="headerlink" title="XML与JSON的区别"></a>XML与JSON的区别</h2><ul>
+<li><p>XML : 可扩展标记语言，是一种用于标记电子文件使其具有结构性的标记语言。 </p>
+</li>
+<li><p>JSON:  (JavaScript Object Notation, JS 对象简谱) 是一种轻量级的数据交换格式。</p>
+</li>
+<li><p>相同点:  </p>
+<ul>
+<li>它们都可以作为一种数据交换格式。</li>
+</ul>
+</li>
+<li><p>二者区别:</p>
+<ul>
+<li><p>XML是重量级的，JSON是轻量级的,XML在传输过程中比较占带宽，JSON占带宽少，易于压缩。</p>
+</li>
+<li><p>XML和json都用在项目交互下，XML多用于做配置文件，JSON用于数据交互</p>
+</li>
+<li><p>JSON独立于编程语言存在,任何编程语言都可以去解析json</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="JSON语法格式"><a href="#JSON语法格式" class="headerlink" title="JSON语法格式"></a>JSON语法格式</h2><p>用{} 包裹，用 逗号分隔数据，每个数据采用键值对的方式，键一定要用双引号引起，值如果是数字，可以不用双引号</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 对象格式</span><br><span class="line">&#123;&quot;name&quot;:&quot;tom&quot;,&quot;sex&quot;:&quot;女&quot;, &quot;age&quot;:12&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 数组格式</span><br><span class="line">&#123;&quot;person&quot;:[&#123;&quot;name&quot;:&quot;tom&quot;,&quot;sex&quot;:&quot;女&quot;, &quot;age&quot;:12&#125;,&#123;&quot;name&quot;:&quot;jack&quot;,&quot;sex&quot;:&quot;男&quot;, &quot;age&quot;:22&#125;]&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 集合格式</span><br><span class="line">[&#123;&quot;name&quot;:&quot;老五&quot;,&quot;sex&quot;:&quot;女&quot;, &quot;age&quot;:12&#125;,&#123;&quot;name&quot;:&quot;会长&quot;,&quot;sex&quot;:&quot;男&quot;, &quot;age&quot;:12&#125;]</span><br></pre></td></tr></table></figure>
+<h2 id="FastJson"><a href="#FastJson" class="headerlink" title="FastJson"></a>FastJson</h2><ul>
+<li>Fastjson 是一个 Java 库，可以将 Java 对象转换为 JSON 格式，当然它也可以将 JSON 字符串转换为 Java 对象。</li>
+<li>FastJson特点如下：<ul>
+<li> 能够支持将java bean序列化成JSON字符串，也能够将JSON字符串反序列化成Java bean。</li>
+<li> 顾名思义，FastJson操作JSON的速度是非常快的。</li>
+<li> 无其他包的依赖, 使用比较方便。</li>
+</ul>
+</li>
+</ul>
+<p><strong>基本使用</strong></p>
+<ul>
+<li>引入依赖</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fastjson<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.colobu<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fastjson-jaxrs-json-provider<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>常用方法</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>使用说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>JSON.toJSONString(Object obj)</td>
+<td>将Java对象转换为JSON字符串格式</td>
+</tr>
+<tr>
+<td>JSON.parseObject(String jsonString)</td>
+<td>将JSON字符串转换为Java对象，注意反序列化时为对象时，必须要有默认无参的构造函数，否则会报异常</td>
+</tr>
+<tr>
+<td>JSON.parseArray(String jsonString)</td>
+<td>将JSON字符串转换为集合对象</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>Fastjson中的 <strong>@JSONField</strong> 注解</p>
+<p>通过 <strong>@JSONField</strong> 我们可以自定义字段的名称进行输出，并控制字段的排序，还可以进行序列化标记。 </p>
+<ul>
+<li>name属性, 指定JSON格式化后的字段的名称 </li>
+<li>ordinal属性, 指定字段的顺序</li>
+<li>serialize属性, 指定字段不序列化</li>
+</ul>
+</li>
+</ul>
+<p>也可以通过  <strong>new JSONObject()</strong>  直接创建 JSON 对象，使用 <strong>jsonObject.put()</strong> 经行赋值</p>
+<h1 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h1><h1 id="BeanUtil工具类"><a href="#BeanUtil工具类" class="headerlink" title="BeanUtil工具类"></a>BeanUtil工具类</h1><p>续。。。</p>
 ]]></content>
       <categories>
         <category>java</category>
@@ -7795,13 +7891,10 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">## 查看root用户允许哪个ip能够连接,默认localhost</span><br><span class="line">select host from user where user&#x3D;&#39;root&#39;;</span><br><span class="line">## 允许所有ip地址连接root用户</span><br><span class="line">update user set host&#x3D;&#39;%&#39; where user&#x3D;&#39;root&#39;; </span><br><span class="line">## 刷新</span><br><span class="line">flush privileges;  </span><br></pre></td></tr></table></figure>
 <h1 id="Shell编程"><a href="#Shell编程" class="headerlink" title="Shell编程"></a>Shell编程</h1><p><strong>基本概念</strong> </p>
 <ul>
-<li><p>Shell是一个命令行解释器，可以接收应用程序或用户命令，然后访问操作系统内核。 </p>
-</li>
-<li><p>Shell是一个功能相当强大的编程语言，易编写、易调试、灵活性强；</p>
-</li>
-<li><p>*简单编写**</p>
-</li>
+<li>Shell是一个命令行解释器，可以接收应用程序或用户命令，然后访问操作系统内核。 </li>
+<li>Shell是一个功能相当强大的编程语言，易编写、易调试、灵活性强；</li>
 </ul>
+<p> <strong>简单编写</strong></p>
 <p>创建以 .sh 为后缀的文件。 以#!/bin/bash开头并编写代码后续代码</p>
 <p><strong>执行Shell程序</strong></p>
 <ul>
@@ -7856,6 +7949,209 @@
       </categories>
       <tags>
         <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>maven笔记</title>
+    <url>/2021/07/14/maven%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<p>Maven是一个跨平台的项目管理工具。作为Apache组织的一个颇为成功的开源项目，其主要服务于基于Java平台的项目创建，依赖管理和项目信息管理。<a id="more"></a>maven是Apache的顶级项目，解释为“专家，内行”，它是一个项目管理的工具，maven自身是纯java开发的，可以使用maven对java项目进行构建、依赖管理。</p>
+<p><strong>Maven的作用</strong></p>
+<ul>
+<li>依赖管理<ul>
+<li>依赖指的就是是 我们项目中需要使用的第三方Jar包, 一个大一点的工程往往需要几十上百个Jar包,按照我们之前的方式,每使用一种Jar,就需要导入到工程中,还要解决各种Jar冲突的问题.</li>
+<li>Maven可以对Jar包进行统一的管理,包括快速引入Jar包,以及对使用的 Jar包进行统一的版本控制</li>
+</ul>
+</li>
+<li>一键构建项目<ul>
+<li>之前我们创建项目,需要确定项目的目录结构,比如<code>src</code> 存放Java源码, <code>resources</code>存放配置文件,还要配置环境比如JDK的版本等等,如果有多个项目 那么就需要每次自己搞一套配置,十分麻烦</li>
+<li>Maven为我们提供了一个标准化的Java项目结构,我们可以通过Maven快速创建一个标准的Java项目.</li>
+</ul>
+</li>
+</ul>
+<h1 id="maven的使用"><a href="#maven的使用" class="headerlink" title="maven的使用"></a>maven的使用</h1><p> <strong>到官网去下载它的安装软件</strong></p>
+<p><a href="http://maven.apache.org/download.cgi">http://maven.apache.org/download.cgi</a>    ,例如找到 apache-maven-3.6.3-bin.zip,直接下载即可。</p>
+<p><strong>将下载好的Maven压缩包 直接解压，放到一个没有中文没有空格的路径下</strong></p>
+<p>如 C:\study\softwareInstall\maven</p>
+<p><strong>maven下的文件说明</strong></p>
+<ul>
+<li>bin:存放了 maven 的命令</li>
+<li>boot:存放了一些 maven 本身的引导程序，如类加载器等</li>
+<li>conf:存放了 maven 的一些配置文件，如 setting.xml 文件 </li>
+<li>lib:存放了 maven 本身运行所需的一些 jar 包 </li>
+</ul>
+<p><strong>Maven环境变量配置</strong></p>
+<ul>
+<li>配置系统变量 MAVEN_HOME ，变量值就是你的 maven 安装的路径（bin 目录之前一级目录）</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">变量名 : MAVEN_HOME</span><br><span class="line">变量值 : C:\study\softwareInstall\maven\apache-maven-3.6.3</span><br></pre></td></tr></table></figure>
+<ul>
+<li>将MAVEN_HOME 添加到Path系统变量</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">%MAVEN_HOME%\bin</span><br></pre></td></tr></table></figure>
+<p>**软件版本测试 **</p>
+<p>再cmd窗口输入  mvn-v 命令检查 maven 是是否安装成功，如果看到maven版本与java版本则安装成功。</p>
+<h1 id="maven仓库"><a href="#maven仓库" class="headerlink" title="maven仓库"></a>maven仓库</h1><p>Maven中的仓库是用来存放maven构建的项目和各种依赖的(Jar包)</p>
+<p><strong>Maven的仓库分类</strong></p>
+<ul>
+<li><strong>本地仓库</strong>:    位于自己计算机中的仓库, 用来存储从远程仓库或中央仓库下载的插件和 jar 包，</li>
+<li><strong>远程仓库</strong>:    需要联网才可以使用的仓库。如阿里提供了一个免费的maven 远程仓库  <a href="https://maven.aliyun.com/mvn/search%E3%80%82">https://maven.aliyun.com/mvn/search。</a></li>
+<li><strong>中央仓库</strong>:    在 maven 软件中内置一个远程仓库地址 <a href="http://repo1.maven.org/maven2">http://repo1.maven.org/maven2</a> ，它是中 央仓库，服务于整个互联网，它是由 Maven 团队自己维护，里面存储了非常全的 jar 包，它包 含了世界上大部分流行的开源项目构件</li>
+</ul>
+<p><a href="https://imgtu.com/i/WVid4H"><img src="https://z3.ax1x.com/2021/07/14/WVid4H.jpg" alt="WVid4H.jpg"></a></p>
+<p>**Maven 本地仓库的配置 **</p>
+<p>1.maven仓库默认是在 C盘  .m2 目录下</p>
+<p>2.一般会把maven仓库放到别的地方，如C:\study\softwareInstall\repository。</p>
+<p>3.需在 maven/conf/settings.xml 配置文件中设置仓库地址</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 配置本地仓库位置 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">localRepository</span>&gt;</span>C:\study\softwareInstall\repository<span class="tag">&lt;/<span class="name">localRepository</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>为了方便使用仓库，可以先引入别人的仓库，这样就不用自己浪费时间去下载了</p>
+<p>链接：<a href="https://pan.baidu.com/s/18OGIHpkpOlpWvYRKyfoKdA">https://pan.baidu.com/s/18OGIHpkpOlpWvYRKyfoKdA</a><br>提取码：gvbp </p>
+<p><strong>配置阿里云远程仓库</strong></p>
+<p>Maven默认的远程仓库是在国外, 所以下载jar包时速度会非常慢, 这里推荐使用阿里云仓库</p>
+<p>打开 settings.xml 文件 ， 在 mirrors 标签下添加 ：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 配置本地仓库位置 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">id</span>&gt;</span>aliyunmaven<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>*<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">name</span>&gt;</span>阿里云公共仓库<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">url</span>&gt;</span>https://maven.aliyun.com/repository/public<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1 id="maven项目"><a href="#maven项目" class="headerlink" title="maven项目"></a>maven项目</h1><p>在idea中创建一个maven的项目，不使用模板，创建好的默认工程长这样：</p>
+<p><a href="https://imgtu.com/i/WVAF9H"><img src="https://z3.ax1x.com/2021/07/14/WVAF9H.jpg" alt="WVAF9H.jpg"></a></p>
+<p>如果编译后还会出现一个  <strong>target</strong> 目录 ： 项目输出位置，编译后的class 文件会输出到此目录 </p>
+<h2 id="将maven工程改造成-web项目"><a href="#将maven工程改造成-web项目" class="headerlink" title="将maven工程改造成 web项目"></a>将maven工程改造成 web项目</h2><ul>
+<li>在main目录下创建一个webapp文件夹</li>
+<li>选中  project Structure —&gt; facets—&gt; 点击+号 添加web —&gt; 选择当前工程hello_maven</li>
+</ul>
+<p><a href="https://imgtu.com/i/WVEFaT"><img src="https://z3.ax1x.com/2021/07/14/WVEFaT.jpg" alt="WVEFaT.jpg" style="zoom: 50%;" /></a></p>
+<ul>
+<li>修改路径信息 </li>
+</ul>
+<p><a href="https://imgtu.com/i/WVEkIU"><img src="https://z3.ax1x.com/2021/07/14/WVEkIU.jpg" alt="WVEkIU.jpg"></a></p>
+<p><a href="https://imgtu.com/i/WVE1IO"><img src="https://z3.ax1x.com/2021/07/14/WVE1IO.jpg" alt="WVE1IO.jpg"></a></p>
+<h2 id="pom核心配置文件"><a href="#pom核心配置文件" class="headerlink" title="pom核心配置文件"></a>pom核心配置文件</h2><p>一个 maven 工程都有一个 pom.xml 文件，通过 pom.xml 文件定义项目的信息、项目依赖、引入插件等</p>
+<p>1） 一个Maven工程就是由<code>groupId</code>，<code>artifactId </code>和 <code>version</code> 作为唯一标识, 我们在引用其他第三方库的时候，也是通过这3个变量确定</p>
+<p>Maven坐标主要组成(GAV) - 确定一个jar在互联网位置 </p>
+<table>
+<thead>
+<tr>
+<th>标签</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>groupId</strong></td>
+<td>定义当前Maven组织名称,通常是公司名</td>
+</tr>
+<tr>
+<td><strong>artifactId</strong></td>
+<td>定义实际项目名称</td>
+</tr>
+<tr>
+<td><strong>version</strong></td>
+<td>定义当前项目的当前版本</td>
+</tr>
+<tr>
+<td><strong>packaging</strong></td>
+<td>打包类型<br />jar：执行 package 会打成 jar 包       war：执行 package 会打成 war 包</td>
+</tr>
+</tbody></table>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.hui<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hello_maven<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">packaging</span>&gt;</span>war<span class="tag">&lt;/<span class="name">packaging</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>引入其他jar包</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>标签</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>dependencies</strong></td>
+<td>表示依赖关系</td>
+</tr>
+<tr>
+<td><strong>dependency</strong></td>
+<td>使用 <code>&lt;dependency&gt; </code>声明一个依赖后，Maven就会自动下载这个依赖包</td>
+</tr>
+</tbody></table>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>javax.servlet<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>servlet-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.1.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>provided<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span>	</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>添加插件</li>
+</ol>
+<p>添加编译插件,  设置 jdk 编译版本 </p>
+<p>本教程使用 jdk11，需要设置编译版本为 11，这里需要使用 maven 的插件来设置</p>
+<p>在pom中加入如下配置: </p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- properties 是全局设置,可以设置整个maven项目的编译器 JDK版本 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.build.sourceEncoding</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 重点  --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">maven.compiler.source</span>&gt;</span>11<span class="tag">&lt;/<span class="name">maven.compiler.source</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">maven.compiler.target</span>&gt;</span>11<span class="tag">&lt;/<span class="name">maven.compiler.target</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 在build中 我们需要指定一下项目的JDK编译版本,maven默认使用1.5版本进行编译</span></span><br><span class="line"><span class="comment">    注意 build 与 dependencies是平级关系,标签不要写错位置  --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-compiler-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.8.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">release</span>&gt;</span>11<span class="tag">&lt;/<span class="name">release</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="maven的常用命令"><a href="#maven的常用命令" class="headerlink" title="maven的常用命令"></a>maven的常用命令</h2><p><strong>maven项目生命周期</strong></p>
+<p><a href="https://imgtu.com/i/WVmDns"><img src="https://z3.ax1x.com/2021/07/14/WVmDns.jpg" alt="WVmDns.jpg"></a></p>
+<p>maven 通过执行一些简单命令即可实现上边生命周期的各个过程</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>mvn clean</strong></td>
+<td>执行完毕后，会将target目录删除.</td>
+</tr>
+<tr>
+<td><strong>mvn compile</strong></td>
+<td>完成编译操作 , 执行完毕后，会生成target目录，该目录中存放了编译后的字节码文件。</td>
+</tr>
+<tr>
+<td><strong>mvn test</strong></td>
+<td>执行完毕后，会在target目录中生成三个文件夹：<br />surefire、surefire-reports（测试报告）、test-classes（测试的字节码文件）</td>
+</tr>
+<tr>
+<td><strong>mvn package</strong></td>
+<td>完成打包操作, 执行完毕后，会在target目录中生成一个文件，该文件可能是 jar、war</td>
+</tr>
+<tr>
+<td><strong>mvn install</strong></td>
+<td>执行 mvn install命令，完成将打好的jar包安装到本地仓库的操作 ,<br /> 执行完毕后，会在本地仓库中出现安装后的jar包，方便其他工程引用</td>
+</tr>
+</tbody></table>
+<p> <strong>idea中maven视图介绍</strong></p>
+<p><a href="https://imgtu.com/i/WVmfc4"><img src="https://z3.ax1x.com/2021/07/14/WVmfc4.jpg" alt="WVmfc4.jpg"></a></p>
+<p><strong>工具栏介绍</strong></p>
+<p><a href="https://imgtu.com/i/WVn9Et"><img src="https://z3.ax1x.com/2021/07/14/WVn9Et.jpg" alt="WVn9Et.jpg"></a></p>
+<figure class="highlight tex"><table><tr><td class="code"><pre><span class="line">1.根据pom.xml文件重新导入所有Maven项目和依赖,刷新</span><br><span class="line">2.创建源码（重新编译）并更新目录</span><br><span class="line">3.下载源码或文档</span><br><span class="line">4.添加Maven项目</span><br><span class="line">5.执行生命周期中的阶段，选中lifecycle选项中生命周期中的一个阶段（phase），才能点击执行。</span><br><span class="line">6.运行Maven生命周期或插件</span><br><span class="line">7.切换离线模式，就是关闭和远程仓库的链接，从本地仓库中获取，也不能将jar包提交到远程仓库</span><br><span class="line">8.是否跳过测试，点击选中就可以跳过测试，在点击选择取消跳过测试</span><br><span class="line">9.展示当前选中的maven项目jar包的依赖，并且可以直接在图形化依赖图上进行排除依赖操作</span><br><span class="line">10.收起下面展开的视图</span><br><span class="line">11.跳转到maven的Setting页面</span><br></pre></td></tr></table></figure>
+<h2 id="依赖范围介绍"><a href="#依赖范围介绍" class="headerlink" title="依赖范围介绍"></a>依赖范围介绍</h2><p>A 依赖 B，需要在 A 的 pom.xml 文件中添加 B 的坐标，添加坐标时需要指定依赖范围，依赖范围包 括： </p>
+<table>
+<thead>
+<tr>
+<th>依赖范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>compile</td>
+<td>编译范围，指 A在编译时依赖 B，此范围为默认依赖范围。编译范围的依赖会用在 编译、测试、运行，由于运行时需要所以编译范围的依赖会被打包。</td>
+</tr>
+<tr>
+<td>provided</td>
+<td>provided 依赖只有在当 JDK 或者一个容器已提供该依赖之后才使用， provided 依 赖在编译和测试时需要，在运行时不需要，比如：servlet api 被 tomcat 容器提供。</td>
+</tr>
+<tr>
+<td>runtime</td>
+<td>runtime 依赖在运行和测试系统的时候需要，但在编译的时候不需要。比如：jdbc 的驱动包。由于运行时需要所以 runtime 范围的依赖会被打包。</td>
+</tr>
+<tr>
+<td>test</td>
+<td>test 范围依赖 在编译和运行时都不需要，它们只有在测试编译和测试运行阶段可用， 比如：junit。由于运行时不需要所以test范围依赖不会被打包。</td>
+</tr>
+<tr>
+<td>system</td>
+<td>system 范围依赖与 provided 类似，但是你必须显式的提供一个对于本地系统中 JAR 文件的路径，需要指定 systemPath 磁盘路径，system依赖不推荐使用。</td>
+</tr>
+</tbody></table>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 项目名称 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>javax.servlet<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 模块名称 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>servlet-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 版本信息 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.1.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 依赖范围, 指定依赖范围是编译与测试时有效,运行时无效,运行时使用tomcat中的依赖,避免冲突 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>provided<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<p>over 。。。</p>
+]]></content>
+      <categories>
+        <category>java</category>
+      </categories>
+      <tags>
+        <tag>maven</tag>
       </tags>
   </entry>
 </search>
