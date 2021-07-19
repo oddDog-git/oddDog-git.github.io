@@ -7445,7 +7445,7 @@
 <p>​    将Map保存到request域对象中 (流只能使用一次)</p>
 <p>4.如果不是JSON格式，就按照原来的方法     req.getParameter(“methodName”);</p>
 <p>5.继续执行之前的代码</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">      String methodName = <span class="keyword">null</span>;</span><br><span class="line">      <span class="comment">// 获取数据提交格式</span></span><br><span class="line">      String ContentType = req.getHeader(<span class="string">&quot;Content-Type&quot;</span>);</span><br><span class="line">      <span class="comment">// 如果数据是 JSON 的格式，需要解析</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="string">&quot;application/json;charset=utf-8&quot;</span>.equals(ContentType)) &#123;</span><br><span class="line"></span><br><span class="line">          String JsonDate = getPostJSON(req);</span><br><span class="line">          <span class="comment">// 将 JSON 字符串转换成 map 类型</span></span><br><span class="line">          Map&lt;String, Object&gt; map = JSON.parseObject(JsonDate, Map.class);</span><br><span class="line">          <span class="comment">// 获取请求的 功能</span></span><br><span class="line">          methodName = (String) map.get(<span class="string">&quot;methodName&quot;</span>);</span><br><span class="line">          <span class="comment">// 将其他的数据保存到 request域 中</span></span><br><span class="line">          req.setAttribute(<span class="string">&quot;map&quot;</span>, map);</span><br><span class="line"></span><br><span class="line">      &#125; <span class="keyword">else</span> &#123; <span class="comment">// 普通模式,可以直接获取</span></span><br><span class="line">          methodName = req.getParameter(<span class="string">&quot;methodName&quot;</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (methodName != <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="comment">// 通过反射优化代码</span></span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">              <span class="comment">// 通过方法名与获取相关方法</span></span><br><span class="line">              Method method = <span class="keyword">this</span>.getClass().getMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);</span><br><span class="line">              <span class="comment">// 调用方法</span></span><br><span class="line">              method.invoke(<span class="keyword">this</span>, req, resp);</span><br><span class="line">          &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">              e.printStackTrace();</span><br><span class="line">              System.out.println(<span class="string">&quot;没有该方法！！！&quot;</span>);</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">      String methodName = <span class="keyword">null</span>;</span><br><span class="line">      <span class="comment">// 获取数据提交格式</span></span><br><span class="line">      String ContentType = req.getHeader(<span class="string">&quot;Content-Type&quot;</span>);</span><br><span class="line">      <span class="comment">// 如果数据是 JSON 的格式，需要解析</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="string">&quot;application/json;charset=utf-8&quot;</span>.equalsIgnoreCase(ContentType)) &#123;</span><br><span class="line"></span><br><span class="line">          String JsonDate = getPostJSON(req);</span><br><span class="line">          <span class="comment">// 将 JSON 字符串转换成 map 类型</span></span><br><span class="line">          Map&lt;String, Object&gt; map = JSON.parseObject(JsonDate, Map.class);</span><br><span class="line">          <span class="comment">// 获取请求的 功能</span></span><br><span class="line">          methodName = (String) map.get(<span class="string">&quot;methodName&quot;</span>);</span><br><span class="line">          <span class="comment">// 将其他的数据保存到 request域 中</span></span><br><span class="line">          req.setAttribute(<span class="string">&quot;map&quot;</span>, map);</span><br><span class="line"></span><br><span class="line">      &#125; <span class="keyword">else</span> &#123; <span class="comment">// 普通模式,可以直接获取</span></span><br><span class="line">          methodName = req.getParameter(<span class="string">&quot;methodName&quot;</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (methodName != <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="comment">// 通过反射优化代码</span></span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">              <span class="comment">// 通过方法名与获取相关方法</span></span><br><span class="line">              Method method = <span class="keyword">this</span>.getClass().getMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);</span><br><span class="line">              <span class="comment">// 调用方法</span></span><br><span class="line">              method.invoke(<span class="keyword">this</span>, req, resp);</span><br><span class="line">          &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">              e.printStackTrace();</span><br><span class="line">              System.out.println(<span class="string">&quot;没有该方法！！！&quot;</span>);</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 
 
 
@@ -7548,8 +7548,12 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>populate(Object bean, Map properties)</td>
+<td>BeanUtils.populate(Object bean, Map properties)</td>
 <td>将Map数据封装到指定Javabean中，<br />一般用于将表单的所有数据封装到javabean</td>
+</tr>
+<tr>
+<td>BeanUtils.copyProperties(Object obj1, Object obj2);</td>
+<td>将参数二中的数据封装到参数一中</td>
 </tr>
 <tr>
 <td>setProperty(Object obj,String name,Object value)</td>
@@ -8627,7 +8631,26 @@
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">//引入axios</span></span><br><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">&#x27;axios&#x27;</span></span><br><span class="line"><span class="comment">//Vue对象使用axios</span></span><br><span class="line">Vue.prototype.axios = axios;</span><br></pre></td></tr></table></figure>
 
 
-<p>续。。。</p>
+<h2 id="前端项目部署"><a href="#前端项目部署" class="headerlink" title="前端项目部署"></a>前端项目部署</h2><p><strong>修改配置文件</strong></p>
+<ul>
+<li><p>.env.development     开发环境的配置文件</p>
+</li>
+<li><p>.env.production    生产环境的配置文件</p>
+</li>
+</ul>
+<p>修改生产环境的配置文件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 后端项目的路径</span><br><span class="line">VUE_APP_API_BASE &#x3D; http:&#x2F;&#x2F;192.168.52.100:8080&#x2F;lagou_edu_home</span><br></pre></td></tr></table></figure>
+<p><strong>修改 vue.config.js 配置文件</strong></p>
+<p>直接复制即可</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    <span class="comment">// relative path for dev</span></span><br><span class="line">    publicPath: process.env.NODE_ENV === <span class="string">&quot;production&quot;</span> ? <span class="string">&quot;/edu-boss/&quot;</span> : <span class="string">&quot;./&quot;</span>,</span><br><span class="line">    <span class="comment">// for gh-pages</span></span><br><span class="line">    indexPath: <span class="string">&quot;index.html&quot;</span>,</span><br><span class="line">    assetsDir: <span class="string">&quot;static&quot;</span>,</span><br><span class="line">    lintOnSave: process.env.NODE_ENV !== <span class="string">&quot;production&quot;</span>,</span><br><span class="line">    productionSourceMap: <span class="literal">false</span>,</span><br><span class="line">    css: &#123;</span><br><span class="line">        <span class="comment">// sourceMap: process.env.NODE_ENV !== &#x27;production&#x27;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    devServer: &#123;</span><br><span class="line">        open: <span class="literal">true</span>,</span><br><span class="line">        port: <span class="number">8081</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><strong>前端项目打包</strong></p>
+<p>执行  <strong>npm run build</strong>   命令经行打包</p>
+<p>生产 dist 目录，dist文件就是vue项目的线上发布文件</p>
+<p><strong>运行tomcat</strong></p>
+<p>将 dist 文件放入tomcat中的webapps目录下。</p>
+<p>开启tomcat服务器，可通过 <a href="http://localhost:8080/dist/">http://localhost:8080/dist/</a>  访问到Vue项目</p>
+<p>不过一般建议把dist名称改一下，并且tomcat的端口号改一改，避免与后端项目起冲突。</p>
+<p>over。。。</p>
 ]]></content>
       <categories>
         <category>前端</category>
