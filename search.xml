@@ -4620,7 +4620,61 @@
 <li><p>当你的接口中功能在增加了,或者修改了,会影响众多的实现类,厂家类,代理都需要修改,影响比较多</p>
 </li>
 </ol>
-<h2 id="动态代理-1"><a href="#动态代理-1" class="headerlink" title="动态代理"></a>动态代理</h2><p>使用jdk反射机制，在程序执行时，动态创建代理对象。</p>
+<h2 id="动态代理-1"><a href="#动态代理-1" class="headerlink" title="动态代理"></a>动态代理</h2><ol>
+<li>动态代理是指代理类对象在程序运行时由JVM根据反射机制动态生成的。动态代理不需要定义代理类的，java源文件。</li>
+<li>动态代理其实就是jdk运行期间，动态创建class字节码并加载到JVM。</li>
+</ol>
+<p><strong>两种方式</strong></p>
+<ul>
+<li>jdk动态代理(理解):使用java反射包中的类和接口实现动态代理的功能。反射包java.lang.reflect,里面有三个类:InvocationHandler,Method,Proxy</li>
+<li>cglib动态代理(了解): cglib是第三方的工具库,创建代理对象<ul>
+<li>cglib的原理是继承，cglib通过继承目标类，创建它的子类，在子类中<br>重写父类中同名的方法，实现功能的修改。</li>
+<li>因为cglib是继承，重写方法，所以要求目标类不能是fina1的，方法也不能是final的。cglib的要求目标类比较宽松，只要能继承就可以了。cglib在很多的框架中使用，<br>比如mybatis，spring框架中都有使用。</li>
+</ul>
+</li>
+</ul>
+<h3 id="InvocationHandler类"><a href="#InvocationHandler类" class="headerlink" title="InvocationHandler类"></a>InvocationHandler类</h3><p>代理类需要实现InvocationHandler类，重写invoke方法，代理类要完成的功能就写在invoke（）方法中。</p>
+<p><strong>代理类完成的功能</strong>    </p>
+<ol>
+<li><p>调用目标方法,执行目标方法的功能    </p>
+</li>
+<li><p>功能增强,在目标方法调用时,增加功能</p>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span></span></span><br></pre></td></tr></table></figure>
+<p><strong>Object  proxy</strong>        jdk创建的代理对象，无需赋值</p>
+<p><strong>Method  method</strong>   目标类中的方法，jdk提供。</p>
+<p><strong>Object[]  args</strong>          目标类中方法的参数，jkd提供。</p>
+<h3 id="proxy类"><a href="#proxy类" class="headerlink" title="proxy类"></a>proxy类</h3><p>创建代理对象，使用其中的静态方法 <code>newProxyInstance()</code>  , 等同于静态代理中直接  new  商家(代理)</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">newProxyInstance</span><span class="params">( ClassLoader loader,Class&lt;?&gt;[] interfaces,InvocationHandler h)</span></span></span><br></pre></td></tr></table></figure>
+<p><strong>ClassLoader loader</strong>   类加载器,负责向内存中加载对象的,使用反射机制获取对象的classLoader,</p>
+<p><strong>Class&lt;?&gt;[] interfaces</strong>   接口,目标对象实现的接口,也是反射获取的</p>
+<p><strong>InvocationHandler  h</strong>  : 我们自己写的,代理类要完成的功能</p>
+<h3 id="实现动态代理的步骤"><a href="#实现动态代理的步骤" class="headerlink" title="实现动态代理的步骤"></a>实现动态代理的步骤</h3><ol>
+<li>创建接口,定义目标类要完成的功能</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 定义卖u盘的方法,表示厂家和商家做的事情</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">USB</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">sell</span><span class="params">(<span class="keyword">int</span> count)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>创建目标类,并实现上面接口</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//  厂家</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">KingstonUSB</span> <span class="keyword">implements</span> <span class="title">USB</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">sell</span><span class="params">(<span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 假设 100 元一个usb</span></span><br><span class="line">        <span class="keyword">return</span> count * <span class="number">100</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>创建InvocationHandler接口的实现类,在invoke方法中完成代理类的功能<ol>
+<li>调用目标方法</li>
+<li>增强功能</li>
+</ol>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 动态代理，增强 KingstonUSB中的 sell 方法</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">KingstonUSBHandler</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> USB kingstonUSB;</span><br><span class="line">	<span class="comment">// 构造方法，初始化 目标对象</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">KingstonUSBHandler</span><span class="params">(USB kingstonUSB)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.kingstonUSB = kingstonUSB;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        <span class="comment">// 调用原来的方法</span></span><br><span class="line">        <span class="keyword">int</span> res = (<span class="keyword">int</span>) method.invoke(kingstonUSB, args);</span><br><span class="line">        <span class="comment">// 功能增强 , 每个 usb 价格 + 40 并 返回一张优惠券</span></span><br><span class="line">        res = res + ( (<span class="keyword">int</span>)args[<span class="number">0</span>] * <span class="number">40</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;淘宝优惠券一张！！！&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>使用Proxy类的静态方法,创建代理对象,并把返回值转换成接口类型</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 创建目标对象</span></span><br><span class="line">    KingstonUSB usb = <span class="keyword">new</span> KingstonUSB();</span><br><span class="line">    <span class="comment">// 创建InvocationHandler对象</span></span><br><span class="line">    KingstonUSBHandler handler = <span class="keyword">new</span> KingstonUSBHandler(usb);</span><br><span class="line">    <span class="comment">// 创建代理对象</span></span><br><span class="line">    USB proxyUSB =(USB) Proxy.newProxyInstance(usb.getClass().getClassLoader(), usb.getClass().getInterfaces(), handler);</span><br><span class="line">    <span class="comment">// 通过代理执行方法</span></span><br><span class="line">    <span class="keyword">int</span> money = proxyUSB.sell(<span class="number">5</span>);</span><br><span class="line">    System.out.println(<span class="string">&quot;价格为:&quot;</span>+money);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<p>over。。。</p>
 ]]></content>
       <categories>
         <category>java</category>
@@ -8689,8 +8743,7 @@
     <title>mybatis</title>
     <url>/2021/07/24/mybatis/</url>
     <content><![CDATA[<p>​        MyBatis是一个优秀的基于ORM的半自动轻量级持久层框架，它对jdbc的操作数据库的过程进行封装， 使开发者只需要关注 SQL 本身，而不需要花费精力去处理例如注册驱动、创建connection、创建 statement、手动设置参数、结果集检索等jdbc繁杂的过程代码<a id="more"></a></p>
-<pre><code>     MyBatis 本是apache的一个开源项目iBatis, 2010年6月这个项目由apache software foundation 迁移 到了google code，随着开发团队转投到Google Code旗下，iBatis正式改名为MyBatis ，代码于2013 年11月迁移到Github 
-</code></pre>
+<p>MyBatis 本是apache的一个开源项目iBatis, 2010年6月这个项目由apache software foundation 迁移 到了google code，随着开发团队转投到Google Code旗下，iBatis正式改名为MyBatis ，代码于2013 年11月迁移到Github </p>
 <p><strong>Github地址</strong>：<a href="https://github.com/mybatis/mybatis-3/">https://github.com/mybatis/mybatis-3/</a></p>
 <p> <strong>ORM（Object Relational Mapping）对象关系映射</strong></p>
 <ul>
