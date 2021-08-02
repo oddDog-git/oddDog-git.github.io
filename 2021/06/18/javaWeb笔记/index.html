@@ -40,7 +40,7 @@
 <meta property="og:image" content="https://z3.ax1x.com/2021/07/14/WVg3KU.jpg">
 <meta property="og:image" content="https://z3.ax1x.com/2021/07/14/WVgaP1.jpg">
 <meta property="article:published_time" content="2021-06-18T08:30:46.000Z">
-<meta property="article:modified_time" content="2021-07-31T02:43:22.629Z">
+<meta property="article:modified_time" content="2021-07-31T09:07:30.724Z">
 <meta property="article:author" content="怪狗狗">
 <meta property="article:tag" content="javaWeb">
 <meta property="article:tag" content="jsp">
@@ -207,7 +207,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-07-31 10:43:22" itemprop="dateModified" datetime="2021-07-31T10:43:22+08:00">2021-07-31</time>
+                <time title="修改时间：2021-07-31 17:07:30" itemprop="dateModified" datetime="2021-07-31T17:07:30+08:00">2021-07-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -376,7 +376,10 @@
 <li><p>代码一般写在doPost() 方法里，而doGet() 方法中则直接调用doPost()方法 :</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.doPost(request, response);</span><br></pre></td></tr></table></figure>
 <h3 id="Servlet的生命周期"><a href="#Servlet的生命周期" class="headerlink" title="Servlet的生命周期"></a>Servlet的生命周期</h3></li>
-<li><p>构造方法只被调用一次，当第一次请求Servlet时调用构造方法来创建Servlet的实例。 </p>
+<li><p>构造方法只被调用一次，当第一次请求Servlet时调用构造方法来创建Servlet的实例。</p>
+<ul>
+<li>如果在配置文件中配置<code>&lt;load-on-startup&gt;1&lt;/load-on-startup&gt;</code>标签 ，就会在程序启动时实例化该servlet</li>
+</ul>
 </li>
 <li><p>init方法只被调用一次，当创建好Servlet实例后立即调用该方法实现Servlet的初始化。</p>
 </li>
@@ -1940,7 +1943,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-count">58</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

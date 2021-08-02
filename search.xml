@@ -6366,7 +6366,10 @@
 <li><p>代码一般写在doPost() 方法里，而doGet() 方法中则直接调用doPost()方法 :</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">this</span>.doPost(request, response);</span><br></pre></td></tr></table></figure>
 <h3 id="Servlet的生命周期"><a href="#Servlet的生命周期" class="headerlink" title="Servlet的生命周期"></a>Servlet的生命周期</h3></li>
-<li><p>构造方法只被调用一次，当第一次请求Servlet时调用构造方法来创建Servlet的实例。 </p>
+<li><p>构造方法只被调用一次，当第一次请求Servlet时调用构造方法来创建Servlet的实例。</p>
+<ul>
+<li>如果在配置文件中配置<code>&lt;load-on-startup&gt;1&lt;/load-on-startup&gt;</code>标签 ，就会在程序启动时实例化该servlet</li>
+</ul>
 </li>
 <li><p>init方法只被调用一次，当创建好Servlet实例后立即调用该方法实现Servlet的初始化。</p>
 </li>
@@ -9847,6 +9850,18 @@
       <tags>
         <tag>SSM</tag>
         <tag>Spring</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>spring-MVC</title>
+    <url>/2021/08/02/spring-MVC/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>java</category>
+      </categories>
+      <tags>
+        <tag>javaWeb</tag>
+        <tag>SSM</tag>
       </tags>
   </entry>
 </search>
