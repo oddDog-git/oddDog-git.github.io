@@ -8858,10 +8858,11 @@
 <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--查询所有，resultType为返回的类型，需要填写全限定名称--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;findAll&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.hui.domain.User&quot;</span>&gt;</span></span><br><span class="line">    select * from user</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>可以使用typeAliases标签起别名:</p>
 <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--  起别名typeAlias单个起别名，package给包起别名,该包下的所有实体类不区分大小写  --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">typeAliases</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">typeAlias</span> <span class="attr">type</span>=<span class="string">&quot;com.hui.entity.User&quot;</span> <span class="attr">alias</span>=<span class="string">&quot;user&quot;</span>/&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">package</span> <span class="attr">name</span>=<span class="string">&quot;com.hui.entity&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">typeAliases</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p><strong>mappers标签</strong></p>
-<p>该标签的作用是加载映射的，加载方式有如下几种：</p>
+<h3 id="mappers标签"><a href="#mappers标签" class="headerlink" title="mappers标签"></a>mappers标签</h3><p>该标签的作用是加载映射的，加载方式有如下几种：</p>
 <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">1. 使用相对于类路径的资源引用，例如：</span><br><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">resource</span>=<span class="string">&quot;org/mybatis/builder/userMapper.xml&quot;</span>/&gt;</span></span><br><span class="line">2. 使用完全限定资源定位符（URL），例如：</span><br><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">url</span>=<span class="string">&quot;file:///var/mappers/userMapper.xml&quot;</span>/&gt;</span></span><br><span class="line">《下面两种mapper代理开发中使用》</span><br><span class="line">3. 使用映射器接口实现类的完全限定类名，例如：</span><br><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">class</span>=<span class="string">&quot;org.mybatis.builder.userMapper&quot;</span>/&gt;</span></span><br><span class="line">4. 将包内的映射器接口实现全部注册为映射器，例如：(常用)</span><br><span class="line"><span class="tag">&lt;<span class="name">package</span> <span class="attr">name</span>=<span class="string">&quot;org.mybatis.builder&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-<p><strong>settings</strong> 与 <strong>plugins</strong> 在后面会了解到</p>
+<h3 id="settings标签"><a href="#settings标签" class="headerlink" title="settings标签"></a>settings标签</h3><p>配置各种设置，如  支持驼峰命名、延迟加载设置、缓存设置</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--  数据库字段转驼峰命名法  --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">settings</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;mapUnderscoreToCamelCase&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">settings</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>settings</strong> 与 <strong>plugins</strong> 在后面还会了解到</p>
 <h1 id="Mybatis的基本API"><a href="#Mybatis的基本API" class="headerlink" title="Mybatis的基本API"></a>Mybatis的基本API</h1><p><strong>SqlSessionFactoryBuilder</strong></p>
 <p>SqlSession工厂构建器，通过加载mybatis的配置文件的输入流，构建一个SqlSessionFactory对象。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Resources工具类只是加载资源文件,在org.apache.ibatis.io 包中</span></span><br><span class="line">InputStream stream = Resources.getResourceAsStream(<span class="string">&quot;sqlMapConfig.xmo&quot;</span>);</span><br><span class="line">SqlSessionFactoryBuilder builder = <span class="keyword">new</span> SqlSessionFactoryBuilder();</span><br><span class="line">SqlSessionFactory factory = builder.build(stream);</span><br></pre></td></tr></table></figure>
@@ -9872,8 +9873,14 @@
 <p>这也就是spring整合spring-mvc,spring会创建一个IOC容器，spring-mvc也会创建一个IOC容器，spring创建的为父容器，mvc创建的为子容器。子容器可以访问父容器中的bean，但父容器不能访问子容器中的bean，即Controller层可以调用service层，而service层不能调用controller层。</p>
 <h1 id="Spring整合Mybatis"><a href="#Spring整合Mybatis" class="headerlink" title="Spring整合Mybatis"></a>Spring整合Mybatis</h1><p>将mybatis接口代理对象的创建权交给spring管理，我们就可以把dao的代理对象注入到service中， 此时也就完成了spring与mybatis的整合了。</p>
 <p>因为SqlSessionFactory对象是安全的，所以把它交给spring管理。整合的过程其实是将mybatis主配置文件的内容全部移到spring配置文件中。如果需要用到mybatis主配置文件也是可以的。</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--spring整合mybatis--&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--引入JDBC数据源--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">context:property-placeholder</span> <span class="attr">location</span>=<span class="string">&quot;classpath:jdbc.properties&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--dataSource--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;dataSource&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.alibaba.druid.pool.DruidDataSource&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;driverClassName&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.driver&#125;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.url&#125;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.username&#125;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.password&#125;&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--SqlSessionFactory创建交给spring的IOC容器，mybatis中的所有配置可以在里面配置--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;sqlSessionFactory&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--数据库环境配置--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;dataSource&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;dataSource&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--类型别名配置--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;typeAliasesPackage&quot;</span> <span class="attr">value</span>=<span class="string">&quot;com.lagou.domain&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--如果要引入mybatis主配置文件，可以通过如下配置--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--&lt;property name=&quot;configLocation&quot; value=&quot;classpath:SqlMapConfig.xml&quot;/&gt;--&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--映射接口扫描配置，由spring创建代理对象，交给IOC容器--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.mybatis.spring.mapper.MapperScannerConfigurer&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;basePackage&quot;</span> <span class="attr">value</span>=<span class="string">&quot;com.lagou.dao&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--spring整合mybatis--&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--引入JDBC数据源--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">context:property-placeholder</span> <span class="attr">location</span>=<span class="string">&quot;classpath:jdbc.properties&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--dataSource--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;dataSource&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.alibaba.druid.pool.DruidDataSource&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;driverClassName&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.driver&#125;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.url&#125;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.username&#125;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.password&#125;&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--SqlSessionFactory创建交给spring的IOC容器，mybatis中的所有配置可以在里面配置--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;sqlSessionFactory&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--数据库环境配置--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;dataSource&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;dataSource&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--类型别名配置--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;typeAliasesPackage&quot;</span> <span class="attr">value</span>=<span class="string">&quot;com.lagou.domain&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--如果要引入mybatis主配置文件，可以通过如下配置--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--&lt;property name=&quot;configLocation&quot; value=&quot;classpath:SqlMapConfig.xml&quot;/&gt;--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--    配置pageHelper分页，记得需导入依赖    --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;plugins&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;com.github.pagehelper.PageHelper&quot;</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- 配置方言   --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;properties&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">value</span>&gt;</span>helperDialect=mysql<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--映射接口扫描配置，由spring创建代理对象，交给IOC容器--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.mybatis.spring.mapper.MapperScannerConfigurer&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;basePackage&quot;</span> <span class="attr">value</span>=<span class="string">&quot;com.lagou.dao&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>配置好了，可以不用mybatis主配置文件，并且在service层注入dao层的接口其实是spring创建的代理对象。</p>
+<h1 id="Other"><a href="#Other" class="headerlink" title="Other"></a>Other</h1><h2 id="MD5-的使用"><a href="#MD5-的使用" class="headerlink" title="MD5 的使用"></a>MD5 的使用</h2><p><strong>导入依赖</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--MD5依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.commons<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-lang3<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.3.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>commons-codec<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-codec<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>添加自定义工具类</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Md5</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 盐</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String md5key = <span class="string">&quot;hui&quot;</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">        * MD5方法</span></span><br><span class="line"><span class="comment">        * <span class="doctag">@param</span> text 明文</span></span><br><span class="line"><span class="comment">        * <span class="doctag">@param</span> key 密钥</span></span><br><span class="line"><span class="comment">        * <span class="doctag">@return</span> 密文</span></span><br><span class="line"><span class="comment">        * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">md5</span><span class="params">(String text, String key)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//加密后的字符串</span></span><br><span class="line">        String encodeStr= DigestUtils.md5Hex(text+key);</span><br><span class="line">        System.out.println(<span class="string">&quot;MD5加密后的字符串为:encodeStr=&quot;</span>+encodeStr);</span><br><span class="line">        <span class="keyword">return</span> encodeStr;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">        * MD5验证方法</span></span><br><span class="line"><span class="comment">        * <span class="doctag">@param</span> text 明文</span></span><br><span class="line"><span class="comment">        * <span class="doctag">@param</span> key 密钥</span></span><br><span class="line"><span class="comment">        * <span class="doctag">@param</span> md5 密文</span></span><br><span class="line"><span class="comment">        * <span class="doctag">@return</span> true/false</span></span><br><span class="line"><span class="comment">        * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">verify</span><span class="params">(String text, String key, String md5)</span> <span class="keyword">throws</span></span></span><br><span class="line"><span class="function">        Exception </span>&#123;</span><br><span class="line">        <span class="comment">//根据传入的密钥进行验证</span></span><br><span class="line">        String md5Text = md5(text, key);</span><br><span class="line">        <span class="keyword">if</span>(md5Text.equalsIgnoreCase(md5))</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;MD5验证通过&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
 <p>over。。。</p>
 ]]></content>
       <categories>
@@ -10099,6 +10106,296 @@
       <tags>
         <tag>javaWeb</tag>
         <tag>SSM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>nginx</title>
+    <url>/2021/08/13/nginx/</url>
+    <content><![CDATA[<p>Nginx（发音同 engine x）是一款轻量级的Web 服务器/反向代理服务器及电子邮件（IMAP/POP3）代理服务器，并在一个BSD-like 协议下发行。<a id="more"></a>由俄罗斯的程序设计师Igor Sysoev(伊戈尔·西索夫)所开发，供俄国大型的入口网站及搜索引擎Rambler(漫步者)（俄文：Рамблер）使用。其特点是占有内存少，并发能力强，事实上nginx的并发能力确实在同类型的网页服务器中表现较好，中国大陆使用nginx网站用户有：新浪、网易、 腾讯等。</p>
+<p><strong>优点</strong></p>
+<ol>
+<li>占用内存少，并发能力强</li>
+<li>Nginx专为性能优化而开发, 在高连接并发的情况下，能够支持高达 50,000 个并发连接数的响应.</li>
+<li>Nginx支持热部署, 可以在不间断服务的情况下,对软件版本进行升级.</li>
+</ol>
+<p><strong>应用场景</strong></p>
+<ol>
+<li><p><strong>http服务器</strong>: Nginx是一个http服务可以独立提供http服务。可以做网页静态服务器。</p>
+</li>
+<li><p><strong>虚拟主机</strong>: 可以实现在一台服务器虚拟出多个网站。例如个人网站使用的虚拟主机。</p>
+</li>
+<li><p><strong>反向代理，负载均衡</strong> :  当网站的访问量达到一定程度后，单台服务器不能满足用户的请求时，需要用多台服务器集群可以使用nginx做反向代理。并且多台服务器可以平均分担负载，不会因为某台服务器负载高宕机而某台服务器闲置的情况</p>
+</li>
+</ol>
+<h1 id="Nginx安装"><a href="#Nginx安装" class="headerlink" title="Nginx安装"></a>Nginx安装</h1><p>下载nginx, 官方网站：<a href="http://nginx.org/">http://nginx.org/</a></p>
+<p>这里使用的版本是1.17.8版本。</p>
+<p>Nginx在Linux下安装,只提供了源代码,所以我们需要进行编译.</p>
+<h2 id="安装环境配置"><a href="#安装环境配置" class="headerlink" title="安装环境配置"></a>安装环境配置</h2><ol>
+<li>因为Nginx是C语言编写的,所以需要配置C语言编译环境 (一定要在联网状态下安装)</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">需要安装gcc的环境。执行命令: </span><br><span class="line">yum install gcc-c++</span><br></pre></td></tr></table></figure>
+<p>注意: 如果执行命令出现这样的提示:</p>
+<p><a href="https://imgtu.com/i/fDwRiR"><img src="https://z3.ax1x.com/2021/08/13/fDwRiR.jpg" alt="fDwRiR.jpg"></a></p>
+<p>解决办法:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">问题是 yum在锁定状态中,强制关掉yum进程即可</span><br><span class="line">rm -f &#x2F;var&#x2F;run&#x2F;yum.pid</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>第三方的开发包, 在编译之前需要安装这些第三方包。</li>
+</ol>
+<ul>
+<li><p><code>PCRE</code></p>
+<ul>
+<li>nginx的http模块使用pcre来解析正则表达式，所以需要在linux上安装pcre库</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">安装命令:</span><br><span class="line">yum install -y pcre pcre-devel</span><br></pre></td></tr></table></figure></li>
+<li><p><code>zlib</code></p>
+<ul>
+<li>nginx使用zlib对http包的内容进行gzip，所以需要在linux上安装zlib库。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">安装命令:</span><br><span class="line">yum install -y zlib zlib-devel</span><br></pre></td></tr></table></figure></li>
+<li><p><code>openssl</code></p>
+<ul>
+<li>OpenSSL 是一个强大的安全套接字层密码库,nginx不仅支持http协议，还支持https,所以需要在linux安装openssl库。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">安装命令:</span><br><span class="line">yum install -y openssl openssl-devel</span><br></pre></td></tr></table></figure>
+<h2 id="安装Nginx-步骤"><a href="#安装Nginx-步骤" class="headerlink" title="安装Nginx 步骤"></a>安装Nginx 步骤</h2></li>
+</ul>
+<ol>
+<li><p>将Nginx的源码包上传到 Linux</p>
+</li>
+<li><p>解压Nginx</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">tar -xvf nginx-1.17.8.tar </span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><p>进入到解压之后的目录 nginx-1.17.8</p>
+</li>
+<li><p>执行命令下方的 configure,生成 Mikefile 文件 </p>
+</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">./configure \</span><br><span class="line">--prefix=/usr/local/nginx \</span><br><span class="line">--pid-path=/var/run/nginx/nginx.pid \</span><br><span class="line">--lock-path=/var/lock/nginx.lock \</span><br><span class="line">--error-log-path=/var/log/nginx/error.log \</span><br><span class="line">--http-log-path=/var/log/nginx/access.log \</span><br><span class="line">--with-http_gzip_static_module \</span><br><span class="line">--http-client-body-temp-path=/var/temp/nginx/client \</span><br><span class="line">--http-proxy-temp-path=/var/temp/nginx/proxy \</span><br><span class="line">--http-fastcgi-temp-path=/var/temp/nginx/fastcgi \</span><br><span class="line">--http-uwsgi-temp-path=/var/temp/nginx/uwsgi \</span><br><span class="line">--http-scgi-temp-path=/var/temp/nginx/scgi</span><br></pre></td></tr></table></figure>
+<p>执行命令后, 生成了MakeFile文件 </p>
+<ol start="5">
+<li>创建临时文件目录</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir &#x2F;var&#x2F;temp&#x2F;nginx&#x2F;client -p</span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>执行make命令,进行编译</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">make</span><br></pre></td></tr></table></figure>
+<ol start="7">
+<li>安装</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p>安装完毕后，nginx在 /usr/loacl/ 目录下</p>
+<h2 id="启动并访问-Nginx"><a href="#启动并访问-Nginx" class="headerlink" title="启动并访问 Nginx"></a>启动并访问 Nginx</h2><ol>
+<li>进入到nginx 安装目录</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;nginx&#x2F;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>进入到 sbin目录,执行 <code>nginx</code> 命令</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.&#x2F;nginx 启动</span><br><span class="line">.&#x2F;nginx -s reload 重启</span><br><span class="line">.&#x2F;nginx -s stop 关闭</span><br><span class="line">ps aux | grep nginx 查看进程</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>通过浏览器进行访问  ,默认端口 80  (注意：是否关闭防火墙。)</li>
+</ol>
+<h2 id="nginx核心配置文件"><a href="#nginx核心配置文件" class="headerlink" title="nginx核心配置文件"></a>nginx核心配置文件</h2><p>/usr/local/nginx/conf/nginx.conf</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">worker_processes  1; #work的进程数，默认为1</span><br><span class="line"><span class="meta">#</span><span class="bash">配置 影响nginx服务器与用户的网络连接</span></span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  1024; #单个work 最大并发连接数</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> http块是配置最频繁的部分 可以嵌套多个server，配置代理，缓存，日志定义等绝大多数功能</span></span><br><span class="line">http &#123;</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 引入mime类型定义文件</span></span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line">    sendfile        on;</span><br><span class="line">    keepalive_timeout  65; # 超时时间</span><br><span class="line">	</span><br><span class="line"><span class="meta">	#</span><span class="bash">server 配置虚拟主机的相关参数 可以有多个,一个server就是一个虚拟主机</span></span><br><span class="line">    server &#123;</span><br><span class="line"><span class="meta">		#</span><span class="bash"> 监听的端口</span></span><br><span class="line">        listen       80; </span><br><span class="line"><span class="meta">		#</span><span class="bash">监听地址</span></span><br><span class="line">        server_name  localhost;         </span><br><span class="line"></span><br><span class="line"><span class="meta">		#</span><span class="bash"> 默认请求配置</span></span><br><span class="line">        location / &#123;</span><br><span class="line">            root   html; # 默认网站根目录</span><br><span class="line">            index  index.html index.htm; # 欢迎页</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">		#</span><span class="bash"> 错误提示页面</span></span><br><span class="line">        error_page   500 502 503 504  /50x.html;</span><br><span class="line">        location = /50x.html &#123;</span><br><span class="line">            root   html;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="配置虚拟主机"><a href="#配置虚拟主机" class="headerlink" title="配置虚拟主机"></a>配置虚拟主机</h1><p>虚拟主机指的是,在一台服务器中,我们使用Nginx,来配置多个网站.</p>
+<p>如何区分不同的网站:</p>
+<ol>
+<li>端口不同</li>
+<li>域名不同</li>
+</ol>
+<h2 id="通过端口区分不同的虚拟主机"><a href="#通过端口区分不同的虚拟主机" class="headerlink" title="通过端口区分不同的虚拟主机"></a>通过端口区分不同的虚拟主机</h2><p>1.配置nginx.conf,  在配置文件中添加一个 新的server</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 原来的server</span></span><br><span class="line">server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  localhost;</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">            root   html;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line"> &#125;</span><br><span class="line">    # 配置新的server,主要需改 listen</span><br><span class="line">	server &#123;</span><br><span class="line">        listen       81; # 修改端口</span><br><span class="line">        server_name  localhost;</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">            root   html2; # 重新制定一个目录</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>2.复制一份 html目录，来观察不同的效果</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cp -r html html2</span><br></pre></td></tr></table></figure>
+<p>3.重新加载</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.&#x2F;nginx -s relaod </span><br></pre></td></tr></table></figure>
+<p>4.访问</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;127.0.0.1   访问第一个server</span><br><span class="line"></span><br><span class="line">http:&#x2F;&#x2F;127.0.0.1:81&#x2F;  访问第二个server</span><br></pre></td></tr></table></figure>
+<h2 id="通过域名区分不同的虚拟主机"><a href="#通过域名区分不同的虚拟主机" class="headerlink" title="通过域名区分不同的虚拟主机"></a>通过域名区分不同的虚拟主机</h2><p><strong>域名绑定</strong></p>
+<ul>
+<li>一个域名对应一个ip地址，一个ip地址可以被多个域名绑定。</li>
+<li>通过 DNS服务器去解析域名</li>
+</ul>
+<p><strong>配置域名映射</strong></p>
+<ul>
+<li>本地测试可以修改hosts文件。修改window的hosts文件：（C:\Windows\System32\drivers\etc）</li>
+</ul>
+<ul>
+<li>可以配置域名和ip的映射关系，如果hosts文件中配置了域名和ip的对应关系，不需要走dns服务器。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">127.0.0.1  www.hui1.com</span><br><span class="line">127.0.0.1  www.hui2.com</span><br></pre></td></tr></table></figure>
+<p><strong>配置 nginx.xml</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">通过域名区分虚拟主机,主要修改 server_name</span></span><br><span class="line">	server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  www.hui1.com;</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">            root   html;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">	server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  www.hui2.com;</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">            root   html2;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>访问</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">www.hui1.com</span><br><span class="line">www.hui2.com</span><br></pre></td></tr></table></figure>
+<h1 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h1><p>客户机在发送请求时，不会直接发送给目的主机，而是先发送给代理服务器，代理服务接受客户机请求之后，再向主机发出，并接收目的主机返回的数据再发送给客户机。</p>
+<p><strong>正向代理</strong></p>
+<p>正向代理代理的是客户端, 服务端不知道实际发起请求的客户端。例如翻墙就是正向代理用的最广泛的地方</p>
+<p><a href="https://imgtu.com/i/fDIhse"><img src="https://z3.ax1x.com/2021/08/13/fDIhse.jpg" alt="fDIhse.jpg"></a></p>
+<p><strong>反向代理</strong></p>
+<p>反向代理和正向代理的区别就是：<strong>正向代理代理客户端，反向代理代理服务器。</strong></p>
+<p><a href="https://imgtu.com/i/fDIqRf"><img src="https://z3.ax1x.com/2021/08/13/fDIqRf.jpg" alt="fDIqRf.jpg"></a></p>
+<p><strong>Nginx实现反向代理</strong></p>
+<p>Nginx作为反向代理服务器安装在服务端，Nginx的功能就是把请求转发给后面的应用服务器.</p>
+<p><a href="https://imgtu.com/i/fDonoR"><img src="https://z3.ax1x.com/2021/08/13/fDonoR.jpg" alt="fDonoR.jpg"></a></p>
+<p>1.启动两个tomcat，端口号分别是8080、8081，模拟两个网站</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;115.45.129.213:8080&#x2F;</span><br><span class="line">http:&#x2F;&#x2F;115.45.129.213:8081&#x2F;</span><br></pre></td></tr></table></figure>
+<p>2.反向代理服务器的配置  nginx.conf</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">反向代理配置</span> </span><br><span class="line"><span class="meta">	#</span><span class="bash">upstream中的server是真正处理请求的应用服务器地址</span></span><br><span class="line">	upstream hui01&#123;</span><br><span class="line"><span class="meta">		#</span><span class="bash">用server定义HTTP地址</span></span><br><span class="line">		server 115.45.129.213:8080;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  www.hui1.com;</span><br><span class="line">        location / &#123;</span><br><span class="line">        	# 利用 proxy_ pass可以将请求代理到upstream命名的HTTP服务</span><br><span class="line">            proxy_pass http://hui01;  #转发到的地址</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">	upstream hui02&#123;</span><br><span class="line"><span class="meta">		#</span><span class="bash">用server定义HTTP地址</span></span><br><span class="line">		server 115.45.129.213:8081;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  www.hui2.com;</span><br><span class="line">        location / &#123;</span><br><span class="line">            proxy_pass http://hui02; </span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>记得在host文件中添加域名和ip的映射关系</p>
+<ul>
+<li>在浏览器输入域名, 访问Nginx代理服务器, Nginx根据域名将请求转发给对应的目标服务器。</li>
+<li>作为用户的我们看到的是服务器的响应结果页面,在整个过程中目标服务器相对于客户端是不可见的,服务端向外暴露的就是Nginx的地址.</li>
+</ul>
+<h1 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h1><p>反向代理服务器，合理分配请求到目标服务器的过程就叫做负载均衡</p>
+<p>负载均衡主要是为了分担访问量，将请求合理分发给不同的服务器, 避免临时的网络堵塞</p>
+<h2 id="负载均衡策略"><a href="#负载均衡策略" class="headerlink" title="负载均衡策略"></a>负载均衡策略</h2><p><strong>轮询</strong></p>
+<ul>
+<li><p>默认策略, 每个请求按照时间顺序逐一分配到不同的服务器,如果某一个服务器下线,能自动剔除</p>
+</li>
+<li><p>配置nginx.conf</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">upstream hui&#123;</span><br><span class="line"><span class="meta">	#</span><span class="bash">用server定义HTTP地址</span></span><br><span class="line">	server 115.45.129.213:8080;</span><br><span class="line">	server 115.45.129.213:8081;</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line">server &#123;</span><br><span class="line">    listen   80;</span><br><span class="line">    server_name  www.hui.com; #当前访问的域名</span><br><span class="line">    location / &#123;</span><br><span class="line">        proxy_pass http://hui;  #转发到的地址</span><br><span class="line">        index  index.html index.htm;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样访问 <a href="http://www.hui.com/">www.hui.com</a> 时，有时会访问 8080 端口的tomcat，有时会访问到8081端口的tomcat</p>
+<p><strong>weight</strong></p>
+<ul>
+<li>可以根据服务器的实际情况调整服务器权重。权重越高分配的请求越多，权重越低，请求越少。默认是都是1。</li>
+<li>配置nginx.conf</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 在后面加 weight 即可</span></span><br><span class="line">upstream hui&#123;</span><br><span class="line"><span class="meta">	#</span><span class="bash">用server定义HTTP地址</span></span><br><span class="line">	server 115.45.129.213:8080 weight=1;</span><br><span class="line">	server 115.45.129.213:8081 weight=3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="项目的部署与发布"><a href="#项目的部署与发布" class="headerlink" title="项目的部署与发布"></a>项目的部署与发布</h1><h2 id="后端项目部署"><a href="#后端项目部署" class="headerlink" title="后端项目部署"></a>后端项目部署</h2><h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><p>1.需要安装的软件</p>
+<table>
+<thead>
+<tr>
+<th>软件</th>
+<th>版本</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>JDK</strong></td>
+<td>11</td>
+</tr>
+<tr>
+<td><strong>Tomcat</strong></td>
+<td>8.5</td>
+</tr>
+<tr>
+<td><strong>MySQL</strong></td>
+<td>5.7</td>
+</tr>
+<tr>
+<td><strong>Nginx</strong></td>
+<td>1.17.8</td>
+</tr>
+</tbody></table>
+<p>2.开启8080端口</p>
+<p>3.使用SQLYoga连接Linux上的数据库，导入SQL脚本</p>
+<h3 id="项目打包发布"><a href="#项目打包发布" class="headerlink" title="项目打包发布"></a>项目打包发布</h3><p>在平常开发的过程中，不同的环境中项目的相关配置也会有相关的不同，我们在不同的环境中部署就要手动修改为对应环境的配置，这样太麻烦了以及这样也会很容易出错。 接下来我们就通过maven的相关配置来在打包时指定各个环境对应配置文件</p>
+<h4 id="dao模块创建配置文件"><a href="#dao模块创建配置文件" class="headerlink" title="dao模块创建配置文件"></a>dao模块创建配置文件</h4><p>在ssm-dao项目的src/main/resources 下面创建<strong>filter</strong>目录, 再创建 <strong>development.properties</strong> ,  <strong>product.properties</strong> 两个文件</p>
+<ul>
+<li>development是开发配置内容，配置本地的Mysql</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">JDBC.driver=com.mysql.jdbc.Driver</span><br><span class="line">JDBC.url=jdbc:mysql:<span class="comment">///ssm_lagou_edu?characterEncoding=UTF-8</span></span><br><span class="line">JDBC.username=root</span><br><span class="line">JDBC.password=<span class="number">123456</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>product是正式配置内容，配置远程服务器的Mysql</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">JDBC.driver=com.mysql.jdbc.Driver</span><br><span class="line">JDBC.url=jdbc:mysql:<span class="comment">//*.*.*.*:3306/ssm_lagou_edu?characterEncoding=UTF-8</span></span><br><span class="line">JDBC.username=root</span><br><span class="line">JDBC.password=<span class="number">123456</span></span><br></pre></td></tr></table></figure>
+<h4 id="配置jdbc-properties-文件"><a href="#配置jdbc-properties-文件" class="headerlink" title="配置jdbc.properties 文件"></a>配置jdbc.properties 文件</h4><p>jdbc.properties中的内容不再写死,而是从上面两个文件中获取</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">JDBC.driver&#x3D;com.mysql.jdbc.Driver</span><br><span class="line">JDBC.url&#x3D;$&#123;JDBC.url&#125;</span><br><span class="line">JDBC.username&#x3D;$&#123;JDBC.username&#125;</span><br><span class="line">JDBC.password&#x3D;$&#123;JDBC.password&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：${jdbc.url} 等需要直接对应上面配置的development.properties或product.properties文件中的名称</p>
+</blockquote>
+<h4 id="配置dao模块的的-pom-xml文件"><a href="#配置dao模块的的-pom-xml文件" class="headerlink" title="配置dao模块的的 pom.xml文件"></a>配置dao模块的的 pom.xml文件</h4><p>添加如下配置</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">profiles</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">profile</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">id</span>&gt;</span>dev<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">               <span class="comment">&lt;!-- 测试环境 --&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">env</span>&gt;</span>development<span class="tag">&lt;/<span class="name">env</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">activation</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">activeByDefault</span>&gt;</span>true<span class="tag">&lt;/<span class="name">activeByDefault</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;/<span class="name">activation</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">profile</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">profile</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">id</span>&gt;</span>prod<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">               <span class="comment">&lt;!-- 正式环境 --&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">env</span>&gt;</span>product<span class="tag">&lt;/<span class="name">env</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">profile</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">profiles</span>&gt;</span></span><br><span class="line"></span><br><span class="line">   <span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">finalName</span>&gt;</span>web<span class="tag">&lt;/<span class="name">finalName</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">filters</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">filter</span>&gt;</span>src/main/resources/filter/$&#123;env&#125;.properties<span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">filters</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>filter/*.properties<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line"></span><br><span class="line">               <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">filtering</span>&gt;</span>true<span class="tag">&lt;/<span class="name">filtering</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>profile说明</strong></p>
+<ul>
+<li>profile可以让我们定义一系列的配置信息，然后指定其激活条件。这样我们就可以定义多个profile，然后每个profile对应不同的激活条件和配置信息，从而达到不同环境使用不同配置信息的效果</li>
+<li>默认启用的是dev环境配置:</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">profiles</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">profile</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">id</span>&gt;</span>dev<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">               <span class="comment">&lt;!-- 测试环境 --&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">env</span>&gt;</span>development<span class="tag">&lt;/<span class="name">env</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">activation</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">activeByDefault</span>&gt;</span>true<span class="tag">&lt;/<span class="name">activeByDefault</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;/<span class="name">activation</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">profile</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">profile</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">id</span>&gt;</span>prod<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">               <span class="comment">&lt;!-- 正式环境 --&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">env</span>&gt;</span>product<span class="tag">&lt;/<span class="name">env</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">profile</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">profiles</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>指定数据库配置文件路径，此路径可以自定义:</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">filters</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">filter</span>&gt;</span>src/main/resources/filter/$&#123;env&#125;.properties<span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filters</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>指定资源目录路径</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 资源根目录排除各环境的配置 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">        	<span class="tag">&lt;<span class="name">exclude</span>&gt;</span>filter/*.properties<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">filtering</span>&gt;</span>true<span class="tag">&lt;/<span class="name">filtering</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="打包"><a href="#打包" class="headerlink" title="打包"></a>打包</h4><ul>
+<li>命令打包</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">打本地包 mvn -Pdev install 或者mvn install(因为本例activeByDefault配的为true)</span><br><span class="line">打产品包 mvn -Pprod install</span><br><span class="line"></span><br><span class="line">结果：src&#x2F;main&#x2F;resources&#x2F;config&#x2F;jdbc.properties根据 mvn -P 参数决定值</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用idea打包</li>
+</ul>
+<p><a href="https://imgtu.com/i/fraYKU"><img src="https://z3.ax1x.com/2021/08/13/fraYKU.jpg" alt="fraYKU.jpg"></a></p>
+<p><strong>打包后的文件</strong></p>
+<ul>
+<li><p>war包在web模块中的target目录中，我们就是需要该war包</p>
+</li>
+<li><p>打开这个war包,我们会发现 其他子模块都已经被打成jar包,放到了lib文件夹下</p>
+</li>
+</ul>
+<h4 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h4><ul>
+<li><p>修改一下项目名称 ssm-web.war</p>
+</li>
+<li><p>上传到Linux中tomcat的webapp目录下,启动测试 <code>./startup.sh</code></p>
+</li>
+<li><p>在部署tomcat的 webapps目录下创建一个 upload文件夹,用于保存图片 </p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir upload</span><br></pre></td></tr></table></figure>
+<ul>
+<li>访问</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;*.*.*.*:8080&#x2F;ssm-web&#x2F;user&#x2F;login?phone&#x3D;18211111111&amp;password&#x3D;123456</span><br></pre></td></tr></table></figure>
+<h2 id="前端项目部署"><a href="#前端项目部署" class="headerlink" title="前端项目部署"></a>前端项目部署</h2><h3 id="修改配置文件"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件</h3><ul>
+<li>生产环境配置文件,配置后台URL</li>
+</ul>
+<p><code>.env.production</code> </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">VUE_APP_NAME &#x3D; Edu Boss</span><br><span class="line">VUE_APP_TITLE &#x3D; Lagou Edu Boss (Dev)</span><br><span class="line"></span><br><span class="line">VUE_APP_STORAGE_PREFIX &#x3D; lagou_edu_boss_dev</span><br><span class="line"></span><br><span class="line">#VUE_APP_API_FAKE &#x3D; &#x2F;front</span><br><span class="line">VUE_APP_API_FAKE &#x3D; http:&#x2F;&#x2F;47.115.139.213:8080&#x2F;ssm-web</span><br><span class="line"></span><br><span class="line">#VUE_APP_API_BASE &#x3D; &#x2F;boss</span><br><span class="line">VUE_APP_API_BASE &#x3D; http:&#x2F;&#x2F;47.115.139.213:8080&#x2F;ssm-web</span><br></pre></td></tr></table></figure>
+<ul>
+<li>自定义配置文件,配置打包相关信息 </li>
+</ul>
+<p>将下面内容拷贝到 <strong>vue.config.js</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    publicPath: process.env.NODE_ENV === <span class="string">&quot;production&quot;</span> ? <span class="string">&quot;/edu-boss/&quot;</span> : <span class="string">&quot;/&quot;</span>,</span><br><span class="line">    indexPath: <span class="string">&quot;index.html&quot;</span>,</span><br><span class="line">    assetsDir: <span class="string">&quot;static&quot;</span>,</span><br><span class="line">    lintOnSave: process.env.NODE_ENV !== <span class="string">&quot;production&quot;</span>,</span><br><span class="line">    productionSourceMap: <span class="literal">false</span>,</span><br><span class="line">    devServer: &#123;</span><br><span class="line">        open: <span class="literal">true</span>,</span><br><span class="line">        port: <span class="number">8081</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="打包操作"><a href="#打包操作" class="headerlink" title="打包操作"></a>打包操作</h3><ul>
+<li>打包命令</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm run build</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在项目下会生成一个 dist 目录 ,该目录就是我们所需的文件</li>
+</ul>
+<h3 id="发布前端项目"><a href="#发布前端项目" class="headerlink" title="发布前端项目"></a>发布前端项目</h3><ul>
+<li>在Linux系统上复制一个新的tomcat，端口号改为 8081</li>
+<li>将dist目录放到tomcat的webapp下</li>
+<li>运行tomcat，即可访问前端项目</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.&#x2F;bin&#x2F;startup.sh </span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;动态查看日志</span><br><span class="line">tail -f logs&#x2F;catalina.out </span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;访问</span><br><span class="line">http:&#x2F;&#x2F;47.115.139.213:8081&#x2F;edu-boss&#x2F;</span><br></pre></td></tr></table></figure>
+<h2 id="修改tomcat默认访问项目"><a href="#修改tomcat默认访问项目" class="headerlink" title="修改tomcat默认访问项目"></a>修改tomcat默认访问项目</h2><p>打开tomcat中的server.xml配置文件，找到 <code>host</code> 标签</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--加入以下内容--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Context</span> <span class="attr">path</span>=<span class="string">&quot;&quot;</span> <span class="attr">docBase</span>=<span class="string">&quot;edu-boss&quot;</span> <span class="attr">reloadable</span>=<span class="string">&quot;true&quot;</span> <span class="attr">debug</span>=<span class="string">&quot;0&quot;</span> <span class="attr">privileged</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Context</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>重启tomcat即可，只需要直接访问 8081即可</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;47.115.139.213:8081&#x2F;</span><br></pre></td></tr></table></figure>
+<h2 id="配置nginx反向代理"><a href="#配置nginx反向代理" class="headerlink" title="配置nginx反向代理"></a>配置nginx反向代理</h2><p>1.修改本地hosts, 配置域名映射</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">47.115.139.213  www.edu-boss.com</span><br></pre></td></tr></table></figure>
+<p>2.配置nginx.conf</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">配置ssm项目 反向代理</span></span><br><span class="line">	upstream lagouedu&#123;</span><br><span class="line">		server 47.115.139.213:8081;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  www.edu-boss.com;</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">            proxy_pass http://lagouedu;  #转发的地址</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>3.访问 <a href="http://www.edu-boss.com/">www.edu-boss.com</a> 即可</p>
+<p>over。。。</p>
+]]></content>
+      <categories>
+        <category>部署</category>
+      </categories>
+      <tags>
+        <tag>nginx</tag>
+        <tag>反向代理</tag>
+        <tag>负载均衡</tag>
       </tags>
   </entry>
 </search>
