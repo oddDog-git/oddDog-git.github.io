@@ -8126,6 +8126,18 @@
 <td>强制杀死指定的进程</td>
 </tr>
 </tbody></table>
+<p><strong>防火墙</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 对外开放3306端口，供外部的计算机访问</span><br><span class="line">firewall-cmd --zone&#x3D;public --add-port&#x3D;3306&#x2F;tcp --permanent</span><br><span class="line"># 重启防火墙才生效</span><br><span class="line">systemctl restart firewalld</span><br><span class="line"># 或</span><br><span class="line">service firewalld restart</span><br></pre></td></tr></table></figure>
+<ul>
+<li>firewall-cmd：Linux中提供的操作firewall的工具。</li>
+<li>–zone：指定作用域。</li>
+<li>–add-port=3306/tcp：添加的端口，格式为：端口/通讯协议。</li>
+<li>–permanent：表示永久生效，没有此参数重启后会失效。</li>
+</ul>
+<p>也可直接修改 <strong>/etc/firewalld/zones/public.xml</strong>  文件内容来配置防火墙</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 在 zone 标签下添加</span><br><span class="line">&lt;port protocol&#x3D;&quot;tcp&quot; port&#x3D;&quot;3306&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure>
+<p>firewall其他一些操作</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 查看状态</span><br><span class="line">service firewalld status</span><br><span class="line">或</span><br><span class="line">systemctl status firewalld</span><br><span class="line">或</span><br><span class="line">firewall-cmd --state</span><br><span class="line"></span><br><span class="line"># 启动</span><br><span class="line">service firewalld start</span><br><span class="line">或</span><br><span class="line">systemctl start firewalld</span><br><span class="line"></span><br><span class="line"># 停止</span><br><span class="line">service firewalld stop</span><br><span class="line">或</span><br><span class="line">systemctl stop firewalld</span><br></pre></td></tr></table></figure>
 <p><strong>其他命令</strong></p>
 <table>
 <thead>
