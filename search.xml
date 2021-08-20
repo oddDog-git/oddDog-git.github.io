@@ -11369,15 +11369,14 @@
 <ul>
 <li>一旦执行了exec命令，那么之前加的所有监控自动失效！</li>
 </ul>
-<h1 id="订阅发布"><a href="#订阅发布" class="headerlink" title="订阅发布"></a>订阅发布</h1><p>进程间的一种消息通信模式：<strong>发送者(pub)**发送消息，</strong>订阅者(sub)**接收消息。例如：微信订阅号 订阅一个或多个频道。</p>
+<h1 id="订阅发布"><a href="#订阅发布" class="headerlink" title="订阅发布"></a>订阅发布</h1><p>进程间的一种消息通信模式：<strong>发送者(pub)</strong> 发送消息，**订阅者(sub)**接收消息。例如：微信订阅号 订阅一个或多个频道。</p>
 <p><strong>subscribe订阅</strong></p>
-<p>````</p>
-<h1 id="开启一个窗口，订阅消息"><a href="#开启一个窗口，订阅消息" class="headerlink" title="开启一个窗口，订阅消息"></a>开启一个窗口，订阅消息</h1><p>subscribe cctv1 cctv5 cctv6     # 订阅三个频道</p>
+<p>````<br>##开启一个窗口，订阅消息<br>subscribe cctv1 cctv5 cctv6     ##订阅三个频道</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">**publish发布**</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h1 id="开启另一个窗口，发布消息"><a href="#开启另一个窗口，发布消息" class="headerlink" title="开启另一个窗口，发布消息"></a>开启另一个窗口，发布消息</h1><p> publish cctv5 NBA     # 发送消息给cctv5</p>
+<p>##开启另一个窗口，发布消息<br>publish cctv5 NBA     ##发送消息给cctv5</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">这时subscribe就会接收到消息</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <ol>
-<li>“message”     # cctv5接收到推送过来的信息</li>
+<li>“message”     ##cctv5接收到推送过来的信息</li>
 <li>“cctv5”</li>
 <li>“NBA”<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"># 主从复制</span><br><span class="line"></span><br><span class="line">* redis集群的策略。 </span><br><span class="line">* 配从（库）不配主（库）：小弟可以选择谁是大哥，但大哥没有权利去选择小弟 </span><br><span class="line">* 读写分离：主机写，从机读</span><br><span class="line"></span><br><span class="line">## 实现redis集群主从复制</span><br><span class="line"></span><br><span class="line">1.准备三台Linux服务器，并修改redis.conf</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 bing 0.0.0.0   # 允许所有ip访问<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">2.启动每台服务器的redis，并查看每台机器的角色，都是master</span><br><span class="line"></span><br></pre></td></tr></table></figure>
