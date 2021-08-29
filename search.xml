@@ -5339,10 +5339,12 @@
 <li><p>修改列名称 , 关键字 CHANGE</p>
  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ALTER TABLE category CHANGE cdesc description VARCHAR(30);</span><br></pre></td></tr></table></figure></li>
 <li><p>删除列 ，关键字 DROP</p>
- <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ALTER TABLE category DROP description;</span><br></pre></td></tr></table></figure></li>
-<li><p>*数据类型**</p>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ALTER TABLE category DROP description;</span><br></pre></td></tr></table></figure>
+
+
 </li>
 </ul>
+<p><strong>数据类型</strong></p>
 <p>常用的有 varchar  、int 、double 、 date</p>
 <p><a href="https://imgtu.com/i/2g7dFU"><img src="https://z3.ax1x.com/2021/06/10/2g7dFU.png" alt="2g7dFU.png"></a></p>
 <h1 id="DML操作"><a href="#DML操作" class="headerlink" title="DML操作"></a>DML操作</h1><p><strong>insert</strong></p>
@@ -5469,7 +5471,7 @@
 </tr>
 </tbody></table>
 <p><strong>分组</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SELECT 分组字段&#x2F;聚合函数 FzROM 表名 GROUP BY 分组字段 [HAVING 条件];</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SELECT 分组字段&#x2F;聚合函数 FROM 表名 GROUP BY 分组字段 [HAVING 条件];</span><br></pre></td></tr></table></figure>
 <p>使用 GROUP BY 语句,对查询的信息进行分组,相同数据作为一组。分组如果不适用聚合函数，其结果只会显示每一组的第一行数据，没有任何意义。如果在分组后,对数据进行过滤,使用 关键字 having</p>
 <ul>
 <li>where 与 having的区别</li>
@@ -5552,9 +5554,9 @@
 <ul>
 <li><p>进入到Mysql安装目录的 bin目录下, 打开DOS命令行，输入以下命令:</p>
 </li>
-<li><p>```mysql<br>mysqldump -u 用户名 -p 密码 数据库 &gt; 要保存到的文件路径</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">* 还原</span><br><span class="line"></span><br><span class="line">  * 先创建一个 相同名称的数据库</span><br><span class="line"></span><br><span class="line">  * &#96;&#96;&#96;mysql</span><br><span class="line">    use 当前数据库;    --选中当前数据库   </span><br></pre></td></tr></table></figure></li>
-<li><p>```mysql<br>source sql 文件地址</p>
+<li><p>```<br>mysqldump -u 用户名 -p 密码 数据库 &gt; 要保存到的文件路径</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">* 还原</span><br><span class="line"></span><br><span class="line">  * 先创建一个 相同名称的数据库</span><br><span class="line"></span><br><span class="line">  * &#96;&#96;&#96;</span><br><span class="line">    use 当前数据库;    --选中当前数据库   </span><br></pre></td></tr></table></figure></li>
+<li><p>```<br>source sql 文件地址</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"># SQL约束</span><br><span class="line"></span><br><span class="line"> 约束的作用: 对表中的数据进行进一步的限制，从而保证数据的正确性、有效性、完整性. 违反约束的 不正确数据,将无法插入到表中</span><br><span class="line"></span><br><span class="line">**常见的约束**</span><br><span class="line"></span><br><span class="line">| 约束名 | 关键字      |</span><br><span class="line">| ------ | ----------- |</span><br><span class="line">| 主键   | primary key |</span><br><span class="line">| 唯一   | unique      |</span><br><span class="line">| 非空   | not null    |</span><br><span class="line">| 外键   | foreign key |</span><br><span class="line">| 默认值 | defaul      |</span><br><span class="line"></span><br><span class="line"># 事务（transaction）</span><br><span class="line"></span><br><span class="line">事务是一个整体,由一条或者多条SQL 语句组成,这些SQL语句要么都执行成功,要么都执行失败, 只要有一 条SQL出现异常,整个操作就会回滚,整个业务执行失败</span><br><span class="line"></span><br><span class="line">**手动提交事务**</span><br><span class="line"></span><br><span class="line">| 功能     | 语句                           |</span><br><span class="line">| -------- | ------------------------------ |</span><br><span class="line">| 开启事务 | start transaction; 或者 BEGIN; |</span><br><span class="line">| 提交事务 | commit;                        |</span><br><span class="line">| 回滚事务 | rollback;                      |</span><br><span class="line"></span><br><span class="line">[&lt;img src&#x3D;&quot;https:&#x2F;&#x2F;z3.ax1x.com&#x2F;2021&#x2F;06&#x2F;11&#x2F;2WFIw6.png&quot; alt&#x3D;&quot;2WFIw6.png&quot; style&#x3D;&quot;zoom:50%;&quot; &#x2F;&gt;](https:&#x2F;&#x2F;imgtu.com&#x2F;i&#x2F;2WFIw6)</span><br><span class="line"></span><br><span class="line">**自动提交事务** </span><br><span class="line"></span><br><span class="line">MySQL 默认每一条 DML(增删改)语句都是一个单独的事务，每条语句都会自动开启一个事务，语句执 行完毕 自动提交事务，MySQL 默认开始自动提交事务。</span><br><span class="line"></span><br><span class="line">**取消自动提交** </span><br><span class="line"></span><br><span class="line">MySQL默认是自动提交事务,设置为手动提交.</span><br><span class="line"></span><br><span class="line">* 登录mysql，查看autocommit状态。on ：自动提交 off : 手动提交</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;mysql</span><br><span class="line">SHOW VARIABLES LIKE &#39;autocommit&#39;;</span><br></pre></td></tr></table></figure></li>
 </ul>
 </li>
