@@ -5291,7 +5291,7 @@
 </tr>
 </tbody></table>
 <h2 id="对表的操作"><a href="#对表的操作" class="headerlink" title="对表的操作"></a>对表的操作</h2><p><strong>创建表</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE TABLE 表名(</span><br><span class="line">    字段名称1 字段类型（长度），</span><br><span class="line">    字段名称2 字段类型 -- 注意 最后一列不要加逗号</span><br><span class="line">)；</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE TABLE 表名(</span><br><span class="line">    字段名称1 字段类型（长度），</span><br><span class="line">    字段名称2 字段类型 -- 注意 最后一列不要加逗号</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <p><strong>查看表</strong></p>
 <table>
 <thead>
@@ -5329,20 +5329,17 @@
 <p><strong>修改表</strong></p>
 <ul>
 <li><p>修改表名</p>
-<ul>
-<li>```mysql<br>RENAME TABLE category TO category1;<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">*  修改表的字符集</span><br><span class="line"></span><br><span class="line">  * &#96;&#96;&#96;mysql</span><br><span class="line">    alter table category character set gbk;</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">RENAME TABLE category TO category1;</span><br></pre></td></tr></table></figure></li>
+<li><p>修改表的字符集</p>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">alter table category character set gbk;</span><br></pre></td></tr></table></figure></li>
 <li><p>向表中添加列， 关键字 ADD</p>
-<ul>
-<li>```mysql<br>ALTER TABLE category ADD cdesc VARCHAR(20);<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">* 修改表中列的 数据类型或长度 ， 关键字 MODIFY</span><br><span class="line"></span><br><span class="line">  * &#96;&#96;&#96;mysql</span><br><span class="line">    ALTER TABLE category MODIFY cdesc VARCHAR(50)</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ALTER TABLE category ADD cdesc VARCHAR(20);</span><br></pre></td></tr></table></figure></li>
+<li><p>修改表中列的 数据类型或长度 ， 关键字 MODIFY</p>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ALTER TABLE category MODIFY cdesc VARCHAR(50)</span><br></pre></td></tr></table></figure></li>
 <li><p>修改列名称 , 关键字 CHANGE</p>
-<ul>
-<li>```mysql<br>ALTER TABLE category CHANGE cdesc description VARCHAR(30);<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">* 删除列 ，关键字 DROP</span><br><span class="line"></span><br><span class="line">  * &#96;&#96;&#96;mysql</span><br><span class="line">    ALTER TABLE category DROP description;</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ALTER TABLE category CHANGE cdesc description VARCHAR(30);</span><br></pre></td></tr></table></figure></li>
+<li><p>删除列 ，关键字 DROP</p>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ALTER TABLE category DROP description;</span><br></pre></td></tr></table></figure></li>
 <li><p>*数据类型**</p>
 </li>
 </ul>
