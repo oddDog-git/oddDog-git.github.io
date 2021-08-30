@@ -5550,15 +5550,21 @@
 <p><strong>备份</strong></p>
 <ul>
 <li><p>进入到Mysql安装目录的 bin目录下, 打开DOS命令行，输入以下命令:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysqldump -u 用户名 -p 密码 数据库 &gt; 要保存到的文件路径</span><br></pre></td></tr></table></figure></li>
-<li><p>*还原**</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysqldump -u 用户名 -p 密码 数据库 &gt; 要保存到的文件路径</span><br></pre></td></tr></table></figure>
+
+
 </li>
+</ul>
+<p><strong>还原</strong></p>
+<ul>
 <li><p>先创建一个 相同名称的数据库</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">use 当前数据库;    --选中当前数据库   </span><br></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">source sql 文件地址</span><br></pre></td></tr></table></figure>
-<h1 id="SQL约束"><a href="#SQL约束" class="headerlink" title="SQL约束"></a>SQL约束</h1><p>约束的作用: 对表中的数据进行进一步的限制，从而保证数据的正确性、有效性、完整性. 违反约束的 不正确数据,将无法插入到表中</p>
+
+
 </li>
 </ul>
+<h1 id="SQL约束"><a href="#SQL约束" class="headerlink" title="SQL约束"></a>SQL约束</h1><p> 约束的作用: 对表中的数据进行进一步的限制，从而保证数据的正确性、有效性、完整性. 违反约束的 不正确数据,将无法插入到表中</p>
 <p><strong>常见的约束</strong></p>
 <table>
 <thead>
@@ -5625,17 +5631,12 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SET @@autocommit&#x3D;off;</span><br></pre></td></tr></table></figure>
 <p><strong>事务的四大特性 ACID</strong></p>
 <ul>
-<li><p><strong>原 子 性</strong> 每个事务都是一个整体，不可再拆分，事务中所有的 SQL 语句要么都执行成功， 要么都 失败。 </p>
-</li>
-<li><p><strong>一 致 性</strong> 事务在执行前数据库的状态与执行后数据库的状态保持一致。如：转账前2个人的 总金额 是 2000，转账后 2 个人总金额也是 2000. </p>
-</li>
-<li><p><strong>隔 离 性</strong> 事务与事务之间不应该相互影响，执行时保持隔离的状态. </p>
-</li>
-<li><p><strong>持 久 性</strong> 一旦事务执行成功，对数据库的修改是持久的。就算关机，数据也是要保存下来的.</p>
-</li>
-<li><p>*并发访问会产生的问题**</p>
-</li>
+<li><strong>原 子 性</strong> 每个事务都是一个整体，不可再拆分，事务中所有的 SQL 语句要么都执行成功， 要么都 失败。 </li>
+<li><strong>一 致 性</strong> 事务在执行前数据库的状态与执行后数据库的状态保持一致。如：转账前2个人的 总金额 是 2000，转账后 2 个人总金额也是 2000. </li>
+<li><strong>隔 离 性</strong> 事务与事务之间不应该相互影响，执行时保持隔离的状态. </li>
+<li><strong>持 久 性</strong> 一旦事务执行成功，对数据库的修改是持久的。就算关机，数据也是要保存下来的.</li>
 </ul>
+<p><strong>并发访问会产生的问题</strong></p>
 <table>
 <thead>
 <tr>
@@ -7255,7 +7256,7 @@
 <h2 id="创建过滤器"><a href="#创建过滤器" class="headerlink" title="创建过滤器"></a>创建过滤器</h2><ul>
 <li>自定义类实现Filter接口并重写doFilter方法。</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyFilter</span> <span class="keyword">implements</span> <span class="title">Filter</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(ServletRequest request, ServletResponse response, FilterChain chain)</span> <span class="keyword">throws</span> IOException, ServletException </span>&#123;</span><br><span class="line">        <span class="comment">// 放行，写在上面的代码是对请求的数据进行过滤</span></span><br><span class="line">        chain.doFilter(request, response);</span><br><span class="line">        <span class="comment">// 写在下面的代码是对响应后进行的操作</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyFilter</span> <span class="keyword">implements</span> <span class="title">Filter</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(ServletRequest request, ServletResponse response, FilterChain chain)</span> <span class="keyword">throws</span> IOException, ServletException </span>&#123;</span><br><span class="line">        <span class="comment">// 放行，写在上面的代码是对响应前等待操作</span></span><br><span class="line">        chain.doFilter(request, response);</span><br><span class="line">        <span class="comment">// 写在下面的代码是对响应后的操作</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>在web.xml文件中配置过滤器</li>
 </ul>
@@ -7542,7 +7543,7 @@
 <h2 id="代码优化"><a href="#代码优化" class="headerlink" title="代码优化"></a>代码优化</h2><p>上面的全是通过  if..else..  判断，比较的low。我们可以使用反射去对代码进行优化, 提升代码的可维护性/可扩展性.</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;    </span><br><span class="line">    String methodName = req.getParameter(<span class="string">&quot;methodName&quot;</span>);</span><br><span class="line">    <span class="comment">// 通过前端传递的参数，调用相应的方法    </span></span><br><span class="line">    <span class="keyword">if</span>(methodName!=<span class="keyword">null</span>)&#123;</span><br><span class="line">        <span class="comment">// 通过反射优化代码</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 通过方法名与参数获取相关方法对象</span></span><br><span class="line">            Method method = <span class="keyword">this</span>.getClass().getMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);</span><br><span class="line">            <span class="comment">// 调用方法</span></span><br><span class="line">            method.invoke(<span class="keyword">this</span>,req,resp);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            System.out.println(<span class="string">&quot;没有该方法！！！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="BaseServlet类"><a href="#BaseServlet类" class="headerlink" title="BaseServlet类"></a>BaseServlet类</h2><p>当前代码依然存在问题，每个Servlet都需要写一份相同的反射代码</p>
-<p><strong>解决方案</strong>: 将反射相关的代码抽取到一个 <strong>BaseServlet类</strong>  中, 让BaseServlet去继承HTTPServlet，其他的Servlet基础BaseServelt。</p>
+<p><strong>解决方案</strong>: 将反射相关的代码抽取到一个 <strong>BaseServlet类</strong>  中, 让BaseServlet去继承HTTPServlet，其他的Servlet继承BaseServelt。</p>
 <p>这样其他的Servlet可以不用重写 doPost() 与 doGet() 方法，直接写自己的功能即可。</p>
 <p><strong>注意</strong>  其他Servelt中的方法要加形参  request 与 response</p>
 <p><strong>BaseServlet类</strong></p>
@@ -10595,11 +10596,11 @@
 <li>随后，Leader会告诉Server1数据写成功了。 </li>
 <li>Server1会反馈通知 Client 数据写成功了，整个流结束</li>
 </ol>
-<h1 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h1><h2 id="分布式安装部署"><a href="#分布式安装部署" class="headerlink" title="分布式安装部署"></a>分布式安装部署</h2><p>准备好三台Linux服务器，都按照好 zookeeper</p>
-<h3 id="配置服务器编号"><a href="#配置服务器编号" class="headerlink" title="配置服务器编号"></a>配置服务器编号</h3><p>1.在/opt/zookeeper/zkData创建myid文件</p>
+<h1 id="分布式安装部署"><a href="#分布式安装部署" class="headerlink" title="分布式安装部署"></a>分布式安装部署</h1><p>准备好三台Linux服务器，都安装好 zookeeper</p>
+<h2 id="配置服务器编号"><a href="#配置服务器编号" class="headerlink" title="配置服务器编号"></a>配置服务器编号</h2><p>1.在/opt/zookeeper/zkData创建myid文件</p>
 <p>2.在文件中添加与server对应的编号：1 </p>
 <p>3.其余两台服务器分别对应2和3</p>
-<h3 id="配置zoo-cfg文件"><a href="#配置zoo-cfg文件" class="headerlink" title="配置zoo.cfg文件"></a>配置zoo.cfg文件</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 每台服务器上都添加如下配置</span></span><br><span class="line">server.1=192.168.204.141:2888:3888</span><br><span class="line">server.2=192.168.204.142:2888:3888</span><br><span class="line">server.3=192.168.204.143:2888:3888</span><br></pre></td></tr></table></figure>
+<h2 id="配置zoo-cfg文件"><a href="#配置zoo-cfg文件" class="headerlink" title="配置zoo.cfg文件"></a>配置zoo.cfg文件</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 每台服务器上都添加如下配置</span></span><br><span class="line">server.1=192.168.204.141:2888:3888</span><br><span class="line">server.2=192.168.204.142:2888:3888</span><br><span class="line">server.3=192.168.204.143:2888:3888</span><br></pre></td></tr></table></figure>
 <p><strong>配置参数解读 server.A=B:C:D</strong> </p>
 <ul>
 <li><strong>A</strong>：一个数字，表示第几号服务器 集群模式下配置的/opt/zookeeper/zkData/myid文件里面的数据就是A的值 </li>
@@ -10609,7 +10610,7 @@
 </ul>
 <p>启动3台服务器，可通过   <code>./zkServer.sh status</code> 查看状态。</p>
 <p><strong>注意</strong>  启动时没过半数以上，集群会失败。超过半数时才会成功，并且已经选举出了 leader</p>
-<h2 id="客户端命令"><a href="#客户端命令" class="headerlink" title="客户端命令"></a>客户端命令</h2><ul>
+<h1 id="客户端命令"><a href="#客户端命令" class="headerlink" title="客户端命令"></a>客户端命令</h1><ul>
 <li>显示所有操作命令</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">help</span><br></pre></td></tr></table></figure>
@@ -10663,7 +10664,7 @@
 <li>递归删除节点 （非空节点，节点下有子节点）</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">deleteall &#x2F;china</span><br></pre></td></tr></table></figure>
-<h2 id="API的使用"><a href="#API的使用" class="headerlink" title="API的使用"></a>API的使用</h2><p><strong>依赖</strong></p>
+<h1 id="API的使用"><a href="#API的使用" class="headerlink" title="API的使用"></a>API的使用</h1><p><strong>依赖</strong></p>
 <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.logging.log4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>log4j-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.8.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.zookeeper<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>zookeeper<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.6.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.12<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p><strong>创建log4j.properties</strong></p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">log4j.rootLogger&#x3D;INFO, stdout</span><br><span class="line">log4j.appender.stdout&#x3D;org.apache.log4j.ConsoleAppender</span><br><span class="line">log4j.appender.stdout.layout&#x3D;org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.stdout.layout.ConversionPattern&#x3D;%d %p [%c] - %m%n</span><br><span class="line"></span><br><span class="line">log4j.appender.logfile&#x3D;org.apache.log4j.FileAppender</span><br><span class="line">log4j.appender.logfile.File&#x3D;target&#x2F;zk.log</span><br><span class="line">log4j.appender.logfile.layout&#x3D;org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.logfile.layout.ConversionPattern&#x3D;%d %p [%c] - %m%n</span><br></pre></td></tr></table></figure>
@@ -10691,7 +10692,7 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getChildren2</span><span class="params">()</span><span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="comment">// 参数1：节点的路径</span></span><br><span class="line">    <span class="comment">// 参数2：是否开启监听</span></span><br><span class="line">    List&lt;String&gt; children = zoo.getChildren(<span class="string">&quot;/&quot;</span>, <span class="keyword">true</span>);</span><br><span class="line">    <span class="keyword">for</span> (String child : children) &#123;</span><br><span class="line">        System.out.println(child);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 让程序暂停在此处，如果节点发生变化，就会执行 watcher监听器（初始化zookeeper时传递的）</span></span><br><span class="line">    Thread.sleep(<span class="number">1000000000</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>判断节点是否存在</strong></p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">exist</span><span class="params">()</span><span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="comment">// 参数1：节点的路径</span></span><br><span class="line">    <span class="comment">// 参数2：是否开启监听</span></span><br><span class="line">    Stat stat = zoo.exists(<span class="string">&quot;/hui2&quot;</span>, <span class="keyword">false</span>);</span><br><span class="line">    System.out.println(stat==<span class="keyword">null</span>?<span class="string">&quot;不存在&quot;</span>:<span class="string">&quot;存在&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="案例-模拟美团上下线"><a href="#案例-模拟美团上下线" class="headerlink" title="案例-模拟美团上下线"></a>案例-模拟美团上下线</h2><p><strong>需求</strong></p>
+<h1 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h1><h2 id="案例-模拟美团上下线"><a href="#案例-模拟美团上下线" class="headerlink" title="案例-模拟美团上下线"></a>案例-模拟美团上下线</h2><p><strong>需求</strong></p>
 <ul>
 <li><p>模拟美团服务平台，商家营业通知，商家打烊通知 </p>
 </li>
