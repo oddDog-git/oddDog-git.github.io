@@ -10673,7 +10673,7 @@
 <p><strong>创建节点</strong></p>
 <ul>
 <li>节点权限类似linux的文件权限，不同的是共有5种操作：CREATE、READ、WRITE、DELETE、 ADMIN(对应更改ACL的权限) <ul>
-<li>OPEN_ACL_UNSAFE：创建开放节点，允许任意操作 （用的最少，其余的权限用的很 少） </li>
+<li>OPEN_ACL_UNSAFE：创建开放节点，允许任意操作 （用的最多，其余的权限用的很 少） </li>
 <li>READ_ACL_UNSAFE：创建只读节点 </li>
 <li>CREATOR_ALL_ACL：创建者才有全部权限</li>
 </ul>
