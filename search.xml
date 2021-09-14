@@ -12927,4 +12927,315 @@
         <tag>SpringBoot</tag>
       </tags>
   </entry>
+  <entry>
+    <title>SpringCloud</title>
+    <url>/2021/09/14/SpringCloud/</url>
+    <content><![CDATA[<p>随着互联⽹的发展，⽤户群体逐渐扩大，⽹站的流量成倍增⻓，常规的单体架构已⽆法满⾜请求压⼒ 和业务的快速迭代，架构的变化势在必⾏。<a id="more"></a></p>
+<h1 id="微服务架构"><a href="#微服务架构" class="headerlink" title="微服务架构"></a>微服务架构</h1><p><strong>SOA</strong> (Service-Oriented Architecture)，即面向服务的架构。根据实际业务，把系统拆分成合适 的、独立部署的模块，模块之间相互独立（通过Webservice/Dubbo等技术进行通信）。</p>
+<p><a href="https://imgtu.com/i/4AElKx"><img src="https://z3.ax1x.com/2021/09/14/4AElKx.png" alt="4AElKx.png"></a></p>
+<p><strong>微服务架构</strong>  </p>
+<p>可以说是<strong>SOA架构</strong>的一种拓展，这种架构模式下它拆分粒度更小、服务更独立。把应用 拆分成为一个个微小的服务，不同的服务可以使用不同的开发语言和存储，服务之间往往通过Restful等 轻量级通信。微服务架构关键在于微小、独立、轻量级通信。 </p>
+<p>微服务是在 SOA 上做的升华粒度更加细致，微服务架构强调的⼀个重点是业务需要彻底的组件化和 服务化</p>
+<p><a href="https://imgtu.com/i/4Akz11"><img src="https://z3.ax1x.com/2021/09/14/4Akz11.png" alt="4Akz11.png"></a></p>
+<p><strong>优点</strong></p>
+<ul>
+<li>微服务很小，便于特定业务功能的聚焦 </li>
+<li>微服务很小，每个微服务都可以被一个小团队单独实施（开发、测试、部署上线、运维），团队合 作一定程度解耦，便于实施敏捷开发 </li>
+<li>微服务很小，便于重用和模块之间的组装 </li>
+<li>微服务很独立，那么不同的微服务可以使用不同的语言开发，松耦合 </li>
+<li>微服务架构下，我们更容易引入新技术</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>微服务架构下，分布式复杂难以管理，当服务数量增加，管理将越加复杂；</li>
+<li>微服务架构下，分布式链路跟踪难等；</li>
+</ul>
+<h1 id="SpringCloud介绍"><a href="#SpringCloud介绍" class="headerlink" title="SpringCloud介绍"></a>SpringCloud介绍</h1><p>Spring Cloud其实是一套规范，是一套用于构建微服务架构的规范，而不是一个 可以拿来即用的框架。在这个规范之下第三方的Netflix公司开发了一些组件、Spring官方开发了一些框架/组件，包括第 三方的阿里巴巴开发了一套框架/组件集合Spring Cloud Alibaba，这些才是Spring Cloud规范的实现。</p>
+<p><strong>SpringCloud解决的问题</strong></p>
+<ul>
+<li>Distributed/versioned configuration （分布式/版本化配置） </li>
+<li>Service registration and discovery （服务注册和发现） </li>
+<li>Routing （智能路由） </li>
+<li>Service-to-service calls （服务调用）</li>
+<li>Load balancing （负载均衡） </li>
+<li>Circuit Breakers （熔断器） </li>
+<li>Global locks （全局锁） </li>
+<li>Leadership election and cluster state （ 选举与集群状态管理） </li>
+<li>Distributed messaging （分布式消息传递平台）</li>
+</ul>
+<p><strong>Spring Cloud 核心组件</strong></p>
+<p>Spring Cloud 生态圈中的组件，按照发展可以分为第一代 Spring Cloud组件和第二代 Spring Cloud组件。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>第一代 Spring Cloud（Netflix，SCN）</th>
+<th>第二代 Spring Cloud（主要就是SpringCloud Alibaba，SCA）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>注册中心</td>
+<td>Netflix Eureka</td>
+<td>阿里巴巴 Nacos</td>
+</tr>
+<tr>
+<td>客户端负载均衡</td>
+<td>Netflix Ribbon</td>
+<td>阿里巴巴 Dubbo LB、Spring Cloud Loadbalancer</td>
+</tr>
+<tr>
+<td>熔断器</td>
+<td>Netflix Hystrix</td>
+<td>阿里巴巴 Sentinel</td>
+</tr>
+<tr>
+<td>网关</td>
+<td>Netflix Zuul：性能一般，未来将退出Spring Cloud 生态圈</td>
+<td>官方 Spring Cloud Gateway</td>
+</tr>
+<tr>
+<td>配置中心</td>
+<td>官方 Spring Cloud Config</td>
+<td>阿里巴巴 Nacos、携程 Apollo</td>
+</tr>
+<tr>
+<td>服务调用</td>
+<td>Netflix Feign</td>
+<td>阿里巴巴 Dubbo RPC</td>
+</tr>
+<tr>
+<td>消息驱动</td>
+<td>官方 Spring Cloud Stream</td>
+<td></td>
+</tr>
+<tr>
+<td>链路追踪</td>
+<td>官方 Spring Cloud Sleuth/Zipkin</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>阿里巴巴 seata 分布式事务方案</td>
+</tr>
+</tbody></table>
+<p><strong>Spring Cloud 体系结构（组件协同工作机制）</strong></p>
+<p>Spring Cloud中的各组件协同工作，才能够支持一个完整的微服务架构</p>
+<p><a href="https://imgtu.com/i/4AmSe0"><img src="https://z3.ax1x.com/2021/09/14/4AmSe0.png" alt="4AmSe0.png"></a></p>
+<p><strong>Spring Cloud 与 Dubbo 对比</strong> </p>
+<p>Dubbo是阿里巴巴公司开源的一个高性能优秀的服务框架，基于RPC调用，对于目前使用率较高的 Spring Cloud Netflix来说，它是基于HTTP的，所以效率上没有Dubbo高。但问题在于Dubbo体系的组 件不全，不能够提供一站式解决方案，比如服务注册与发现需要借助于Zookeeper等实现，而Spring Cloud Netflix则是真正的提供了一站式服务化解决方案，且有Spring大家族背景。</p>
+<p>前些年，Dubbo使用率高于SpringCloud，但目前Spring Cloud在服务化/微服务解决方案中已经有 了非常好的发展趋势。</p>
+<p><strong>Spring Cloud 与 Spring Boot 的关系</strong></p>
+<p>Spring Cloud 只是利用了Spring Boot 的特点，让我们能够快速的实现微服务组件开发，否则不使 用Spring Boot的话，我们在使用Spring Cloud时，每一个组件的相关Jar包都需要我们自己导入配置以 及需要开发人员考虑兼容性等各种情况。所以Spring Boot是我们快速把Spring Cloud微服务技术应用起 来的一种方式。</p>
+<h1 id="准备案例"><a href="#准备案例" class="headerlink" title="准备案例"></a>准备案例</h1><p>本部分我们按照普通方式模拟一个微服务之间的调用，后续我们将一步步使用Spring Cloud的组件对案 例进行改造</p>
+<p><a href="https://imgtu.com/i/4AWbrD"><img src="https://z3.ax1x.com/2021/09/14/4AWbrD.png" alt="4AWbrD.png"></a></p>
+<p>基于SpringBoot来构造工程环境，工程模块关系如下所示：</p>
+<p><a href="https://imgtu.com/i/4AWjIA"><img src="https://z3.ax1x.com/2021/09/14/4AWjIA.png" alt="4AWjIA.png"></a></p>
+<p><strong>数据库环境准备</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#商品信息表</span><br><span class="line">CREATE TABLE products(</span><br><span class="line">    id INT PRIMARY KEY AUTO_INCREMENT,</span><br><span class="line">    NAME VARCHAR(50), #商品名称</span><br><span class="line">    price DOUBLE,</span><br><span class="line">    flag VARCHAR(2), #上架状态</span><br><span class="line">    goods_desc VARCHAR(100), #商品描述</span><br><span class="line">    images VARCHAR(400), #商品图片</span><br><span class="line">    goods_stock INT, #商品库存</span><br><span class="line">    goods_type VARCHAR(20) #商品类型</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h2 id="父工程"><a href="#父工程" class="headerlink" title="父工程"></a>父工程</h2><p>idea中创建一个普通maven工程，命名为 spring-parent</p>
+<p><strong>pom.xml</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--父工程打包方式--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">packaging</span>&gt;</span>pom<span class="tag">&lt;/<span class="name">packaging</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--spring boot 父启动器依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.6.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--web依赖--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--日志依赖--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-logging<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--测试依赖--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--lombok工具--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.18.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>provided<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- Actuator可以帮助你监控和管理Spring Boot应用--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-actuator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--热部署--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-devtools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--编译插件--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-compiler-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">source</span>&gt;</span>11<span class="tag">&lt;/<span class="name">source</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">target</span>&gt;</span>11<span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">encoding</span>&gt;</span>utf-8<span class="tag">&lt;/<span class="name">encoding</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--打包插件--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goal</span>&gt;</span>repackage<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="公共组件微服务"><a href="#公共组件微服务" class="headerlink" title="公共组件微服务"></a>公共组件微服务</h2><p>父工程下创建子模块   spring-service-common</p>
+<p><strong>pom.xml</strong></p>
+<p>主要引入数据库驱动及mybatis-plus</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--Mybatis-plus--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.baomidou<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-plus-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.3.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--mysql驱动--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--pojo持久化使用--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>javax.persistence<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>javax.persistence-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>生成数据库实体类：Products</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@ToString</span></span><br><span class="line"><span class="meta">@Table(name = &quot;products&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Products</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">double</span> price;</span><br><span class="line">    <span class="keyword">private</span> String flag;</span><br><span class="line">    <span class="keyword">private</span> String goodsDesc;</span><br><span class="line">    <span class="keyword">private</span> String images;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> goodsStock;</span><br><span class="line">    <span class="keyword">private</span> String goodsType;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="商品微服务"><a href="#商品微服务" class="headerlink" title="商品微服务"></a>商品微服务</h2><p>商品微服务是服务提供者，父工程下创建模块  spring-service-product</p>
+<p><strong>pom.xml</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--引入公共组件微服务--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.lagou<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-service-common<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>application.yml 配置端口、应用名、数据库连接等信息</strong></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">	<span class="attr">port:</span> <span class="number">9001</span>  <span class="comment"># 后期该微服务会有多个实例</span></span><br><span class="line"><span class="attr">Spring:</span></span><br><span class="line">	<span class="attr">application:</span></span><br><span class="line">		<span class="attr">name:</span> <span class="string">spring-service-product</span></span><br><span class="line"><span class="attr">datasource:</span></span><br><span class="line">	<span class="attr">driver-class-name:</span> <span class="string">com.mysql.jdbc.Driver</span></span><br><span class="line">	<span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/spring_db?useUnicode=true&amp;characterEncoding=utf8&amp;serverTimezone=UTC</span></span><br><span class="line">	<span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">	<span class="attr">password:</span> <span class="number">123</span></span><br></pre></td></tr></table></figure>
+<p><strong>mapper接口</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 现在使用的Mybatis-plus组件，该组件是Mybatis的加强版</span></span><br><span class="line"><span class="comment">    * 具体使用：让具体的Mapper接口继承BaseMapper即可,自动提供一些简单的CRUD</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ProductMapper</span> <span class="keyword">extends</span> <span class="title">BaseMapper</span>&lt;<span class="title">Products</span>&gt; </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>service层</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ProductService</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 根据id获取商品</span></span><br><span class="line">    <span class="function">Products <span class="title">getProductById</span><span class="params">(Integer id)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductServiceImpl</span> <span class="keyword">implements</span> <span class="title">ProductService</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ProductMapper productMapper;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Products <span class="title">getProductById</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> productMapper.selectById(id);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>controller层</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/product&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ProductService productService;</span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/get/&#123;id&#125;&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Products <span class="title">query</span><span class="params">(<span class="meta">@PathVariable</span> Integer id)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> productService.findById(id);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>启动类</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@MapperScan(&quot;com.hui.mapper&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(ProductApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="页面静态微服务"><a href="#页面静态微服务" class="headerlink" title="页面静态微服务"></a>页面静态微服务</h2><p>页面静态微服务是服务消费者，父工程下创建模块  spring-service-page</p>
+<p><strong>pom.xml</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--引入公共组件微服务--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.lagou<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lagou-service-common<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>application.yml 配置端口、应用名、数据库连接等信息</strong></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">	<span class="attr">port:</span> <span class="number">9101</span> </span><br><span class="line"><span class="attr">Spring:</span></span><br><span class="line">	<span class="attr">application:</span></span><br><span class="line">		<span class="attr">name:</span> <span class="string">spring-service-page</span></span><br><span class="line"><span class="attr">datasource:</span></span><br><span class="line">	<span class="attr">driver-class-name:</span> <span class="string">com.mysql.jdbc.Driver</span></span><br><span class="line">	<span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/spring_db?useUnicode=true&amp;characterEncoding=utf8&amp;serverTimezone=UTC</span></span><br><span class="line">	<span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">	<span class="attr">password:</span> <span class="number">123</span></span><br></pre></td></tr></table></figure>
+<p><strong>controller层</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/page&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PageController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RestTemplate restTemplate;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 使用RestTemplate发送url调用远程服务</span></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/get/&#123;id&#125;&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Products <span class="title">findDataById</span><span class="params">(<span class="meta">@PathVariable</span> Integer id)</span></span>&#123;</span><br><span class="line">        String url =<span class="string">&quot;http://localhost:9001/product/get/&quot;</span>;</span><br><span class="line">        Products products = restTemplate.getForObject(url+id,Products.class);</span><br><span class="line">        <span class="keyword">return</span> products;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>启动类，注入RestTemplate</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PageApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(PageApplication.class,args);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RestTemplate <span class="title">restTemplate</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> RestTemplate();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="案例代码问题"><a href="#案例代码问题" class="headerlink" title="案例代码问题"></a>案例代码问题</h2><p>我们在页面静态化微服务中使用RestTemplate调用商品微服务的商品状态接口时（Restful API 接 口）。在微服务分布式集群环境下会存在什么问题呢?</p>
+<p><strong>存在的问题及SpringCloud解决方案:</strong></p>
+<ul>
+<li>在服务消费者中，我们把url地址硬编码到代码中，不方便后期维护<ul>
+<li>自动注册与发现</li>
+</ul>
+</li>
+<li>在服务消费者中，不清楚服务提供者的状态。<ul>
+<li>状态监管</li>
+</ul>
+</li>
+<li>服务提供者只有一个服务，即便服务提供者形成集群，服务消费者还需要自己实现负载均衡<ul>
+<li>服务负载均衡</li>
+</ul>
+</li>
+<li>服务消费者调用服务提供者时候，如果出现故障能否及时发现不向用户抛出异常页面<ul>
+<li>熔断</li>
+</ul>
+</li>
+<li>RestTemplate这种请求调用方式是否还有优化空间？能不能类似于Dubbo那样玩<ul>
+<li>远程过程调用</li>
+</ul>
+</li>
+<li>这么多的微服务统一认证如何实现<ul>
+<li>统一认证、网关拦截、路由转发</li>
+</ul>
+</li>
+<li>配置文件每次都修改好多个很麻烦<ul>
+<li>集中式配置管理，配置信息实时自动更新</li>
+</ul>
+</li>
+</ul>
+<h1 id="第一代核心组件SCN"><a href="#第一代核心组件SCN" class="headerlink" title="第一代核心组件SCN"></a>第一代核心组件SCN</h1><p>第一代网关组件Zuul性能一般，未来将退出Spring Cloud 生态圈，所以这里把GateWay划分到第一代Spring Cloud 核心组件这一部分，代替Zuul。</p>
+<p><strong>各组件整体结构如下</strong></p>
+<p>从形式上来说，Feign一个顶三，集成了相关组件，Feign = RestTemplate + Ribbon + Hystrix</p>
+<p><a href="https://imgtu.com/i/4AX7bn"><img src="https://z3.ax1x.com/2021/09/14/4AX7bn.png" alt="4AX7bn.png"></a></p>
+<h2 id="Eureka服务注册中心"><a href="#Eureka服务注册中心" class="headerlink" title="Eureka服务注册中心"></a>Eureka服务注册中心</h2><p>常用的服务注册中心：Eureka、Nacos、Zookeeper、Consul</p>
+<h3 id="服务注册中心相关概念"><a href="#服务注册中心相关概念" class="headerlink" title="服务注册中心相关概念"></a>服务注册中心相关概念</h3><p>服务注册中心本质上是为了解耦服务提供者和服务消费者</p>
+<ul>
+<li>没有注册中心：服务消费者 –&gt; 服务提供者</li>
+<li>有了注册中心：服务消费者 –&gt; 服务注册中心 –&gt; 服务提供者</li>
+</ul>
+<p><a href="https://imgtu.com/i/4AxnAI"><img src="https://z3.ax1x.com/2021/09/14/4AxnAI.png" alt="4AxnAI.png"></a></p>
+<p>分布式微服务架构中，服务注册中心用于存储服务提供者地址信息、服务发布相关的属性信息，消 费者通过主动查询和被动通知的方式获取服务提供者的地址信息，而不再需要通过硬编码方式得到提供 者的地址信息。消费者只需要知道当前系统发布了那些服务，而不需要知道服务具体存在于什么位置， 这就是<strong>透明化路由</strong>。</p>
+<ol>
+<li>启动服务提供者 </li>
+<li>服务提供者将相关服务信息主动注册到注册中心 </li>
+<li>启动服务消费者，获取服务注册信息： <ul>
+<li>pull模式：服务消费者可以主动拉取可用的服务提供者清单 </li>
+<li>push模式：服务消费者订阅服务（当服务提供者有变化时，注册中心也会主动推送更新后的 服务清单给消费者 </li>
+</ul>
+</li>
+<li>服务消费者直接调用服务提供者 另外，注册中心也需要完成服务提供者的健康监控，当发现服务提供者失效时需要及时剔除；</li>
+</ol>
+<p><strong>主流注册中心</strong></p>
+<table>
+<thead>
+<tr>
+<th>组件名</th>
+<th>语言</th>
+<th>CAP</th>
+<th>对外暴露接口</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Eureka</td>
+<td>Java</td>
+<td>AP（自我保护机制，保证可用）</td>
+<td>HTTP</td>
+</tr>
+<tr>
+<td>Consul</td>
+<td>Go</td>
+<td>CP</td>
+<td>HTTP/DNS</td>
+</tr>
+<tr>
+<td>Zookeeper</td>
+<td>Java</td>
+<td>CP</td>
+<td>客户端</td>
+</tr>
+<tr>
+<td>Nacos</td>
+<td>Java</td>
+<td>支持AP/CP切换</td>
+<td>HTTP</td>
+</tr>
+</tbody></table>
+<p><strong>CAP原则</strong></p>
+<ul>
+<li>P：分区容错性：分布式系统在遇到某节点或网络分区故障的时候，仍然能够对外提供满足一致性或可用 性的服务（一定的要满足的） </li>
+<li>C：数据一致性：all nodes see the same data at the same time </li>
+<li>A：高可用：Reads and writes always succeed</li>
+</ul>
+<p>CAP不可能同时满足三个，要么是AP，要么是CP</p>
+<h3 id="Eureka相关概念"><a href="#Eureka相关概念" class="headerlink" title="Eureka相关概念"></a>Eureka相关概念</h3><p>Eureka 包含两个组件：  <strong>Eureka Server</strong>   和   <strong>Eureka Client</strong>  </p>
+<ul>
+<li>Eureka Client是一个Java客户端，用于简化 与Eureka Server的交互；</li>
+<li>Eureka Server提供服务发现的能力，各个微服务启动时，会通过Eureka Client向Eureka Server 进行注册自己的信息（例如网络信息），Eureka Server会存储该服务的信息</li>
+</ul>
+<p><strong>Eureka 基础架构</strong></p>
+<p><a href="https://imgtu.com/i/4ES8Ts"><img src="https://z3.ax1x.com/2021/09/14/4ES8Ts.png" alt="4ES8Ts.png"></a></p>
+<p><strong>Eureka 集群架构</strong></p>
+<p><a href="https://imgtu.com/i/4EScfx"><img src="https://z3.ax1x.com/2021/09/14/4EScfx.png" alt="4EScfx.png"></a></p>
+<ol>
+<li>图中us-east-1c、us-east-1d，us-east-1e代表不同的区也就是不同的机，每一个Eureka Server都是一个集群。</li>
+<li>图中Application Service作为服务提供者向Eureka Server中注册服务，Eureka Server接受到注 册事件会在集群和分区中进行数据同步，Application Client作为消费端（服务消费者）可以从Eureka Server中获取到服务注册信息，进行服务调用。</li>
+<li>微服务启动后，会周期性地向Eureka Server发送心跳（默认周期为<strong>30秒</strong>）以续约自己的信息</li>
+<li>Eureka Server在一定时间内没有接收到某个微服务节点的心跳，Eureka Server将会注销该微 服务节点（默认<strong>90秒</strong>）</li>
+<li>每个Eureka Server同时也是Eureka Client，多个Eureka Server之间通过复制的方式完成服务 注册列表的同步</li>
+<li>Eureka Client会缓存Eureka Server中的信息。即使所有的Eureka Server节点都宕掉，服务消 费者依然可以使用缓存中的信息找到服务提供者 </li>
+</ol>
+<p>Eureka通过心跳检测、健康检查和客户端缓存等机制，提高系统的灵活性、可伸缩性和高可用性。</p>
+<h3 id="搭建单例Eureka-Server服务注册中心"><a href="#搭建单例Eureka-Server服务注册中心" class="headerlink" title="搭建单例Eureka Server服务注册中心"></a>搭建单例Eureka Server服务注册中心</h3><p><strong>实现过程</strong>：</p>
+<ol>
+<li>单例Eureka Server—&gt;访问管理界面 </li>
+<li>服务提供者（商品微服务注册到集群） </li>
+<li>服务消费者（页面静态化微服务注册到Eureka/从Eureka Server获取服务信息） </li>
+<li>完成调用</li>
+</ol>
+<h4 id="搭建单例Eureka-Server"><a href="#搭建单例Eureka-Server" class="headerlink" title="搭建单例Eureka Server"></a>搭建单例Eureka Server</h4><p><strong>spring-parent中引入Spring Cloud依赖</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--Spring Cloud 是一个综合的项目，下面有很多子项目，比如eureka子项目--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencyManagement</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-dependencies<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>Greenwich.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">type</span>&gt;</span>pom<span class="tag">&lt;/<span class="name">type</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>import<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencyManagement</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong>：在父工程的pom文件中手动引入jaxb的jar，因为Jdk9之后默认没有加载该模块，Eureka Server使用到，所以需要手动导入，否则EurekaServer服务无法启动</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--引入Jaxb，开始--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.sun.xml.bind<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jaxb-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.2.11<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>javax.xml.bind<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jaxb-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.sun.xml.bind<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jaxb-impl<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.2.11<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.glassfish.jaxb<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jaxb-runtime<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.2.10-b140310.1920<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>javax.activation<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>activation<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--引入Jaxb，结束--&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>创建子模块spring-cloud-eureka，并引入依赖</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--Eureka server依赖--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-server<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>配置application.yaml</strong></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">9201</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">spring-cloud-eureka</span></span><br><span class="line"><span class="comment"># eureka相关配置    </span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">service-url:</span> <span class="comment"># 客户端与EurekaServer交互的地址，如果是集群，也需要写其它Server的地址，当前是自己</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://$&#123;eureka.instance.hostname&#125;:$&#123;server.port&#125;/eureka/</span></span><br><span class="line">    <span class="attr">register-with-eureka:</span> <span class="literal">true</span>   <span class="comment"># 向集群中注册自己，默认true（单例模式没必要）</span></span><br><span class="line">    <span class="attr">fetch-registry:</span> <span class="literal">true</span>         <span class="comment">#Eureka Server获取服务信息,默认为true （单例模式没必要）</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">localhost</span></span><br></pre></td></tr></table></figure>
+<p><strong>编写启动类，声明当前服务为Eureka注册中心</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableEurekaServer</span> <span class="comment">// 标识该项目为一个Eureka Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EurekaApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(EurekaApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>启动项目，访问<a href="http://127.0.0.1:9201，如果看到Eureka注册中心后台，则表明EurekaServer">http://127.0.0.1:9201，如果看到Eureka注册中心后台，则表明EurekaServer</a> 发布成功</p>
+<h4 id="服务提供者注册到注册中心"><a href="#服务提供者注册到注册中心" class="headerlink" title="服务提供者注册到注册中心"></a>服务提供者注册到注册中心</h4><p><strong>spring-service-product引入依赖</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--Eureka client--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>yml配置Eureka服务端信息</strong></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">service-url:</span>  <span class="comment">#  eureka server的路径</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://localhost:9201/eureka/</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="comment">#使用ip注册，否则会使用主机名注册了（此处考虑到对老版本的兼容，新版本经过实验都是ip）</span></span><br><span class="line">    <span class="attr">prefer-ip-address:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#自定义实例显示格式，加上版本号，便于多版本管理，注意是ip-address，早期版本是ipAddress</span></span><br><span class="line">    <span class="attr">instance-id:</span> <span class="string">$&#123;spring.cloud.client.ip-address&#125;:$&#123;spring.application.name&#125;:$&#123;server.port&#125;:@project.version@</span></span><br></pre></td></tr></table></figure>
+<p><strong>修改启动类</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@MapperScan(&quot;com.hui.mapper&quot;)</span></span><br><span class="line"><span class="comment">//@EnableEurekaClient  // 表示当前项目注册到 Eureka Server</span></span><br><span class="line"><span class="meta">@EnableDiscoveryClient</span>   <span class="comment">// 表示当前项目注册到注册中心（包含Eureka、zookeeper等）</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(ProductApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="服务消费者注册到注册中心"><a href="#服务消费者注册到注册中心" class="headerlink" title="服务消费者注册到注册中心"></a>服务消费者注册到注册中心</h4><p>与上面步骤一样，对于EurekaServer来说，服务提供者与服务消费者都是EurekaClient角色。</p>
+<h4 id="完成调用"><a href="#完成调用" class="headerlink" title="完成调用"></a>完成调用</h4><p>之前消费方调用提供方，是通过RestTemplate硬编码的方式调用url，现在我们可以小小的改变一下</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> RestTemplate restTemplate;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Eureka注册中心容器</span></span><br><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> DiscoveryClient discoveryClient;</span><br><span class="line"></span><br><span class="line"><span class="meta">@GetMapping(&quot;get/&#123;id&#125;&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Products <span class="title">getById</span><span class="params">(<span class="meta">@PathVariable</span> Integer id)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 从Eureka注册中心获取的 spring-service-product 实例集合</span></span><br><span class="line">    List&lt;ServiceInstance&gt; instanceList = discoveryClient.getInstances(<span class="string">&quot;spring-service-product&quot;</span>);</span><br><span class="line">    ServiceInstance instance = instanceList.get(<span class="number">0</span>);<span class="comment">// 当前不是集群环境，所以只有一个</span></span><br><span class="line">    <span class="comment">// 从实例中获取ip与端口号</span></span><br><span class="line">    String host = instance.getHost();</span><br><span class="line">    <span class="keyword">int</span> port = instance.getPort();</span><br><span class="line">    <span class="comment">// 获取消费提供方的ip与端口经行拼接URL</span></span><br><span class="line">    String url = <span class="string">&quot;http://&quot;</span> + host + <span class="string">&quot;:&quot;</span> + port + <span class="string">&quot;/product/get/&quot;</span>; </span><br><span class="line">    <span class="keyword">return</span> restTemplate.getForObject(url + id, Products.class);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="搭建Eureka-Server-高可用集群"><a href="#搭建Eureka-Server-高可用集群" class="headerlink" title="搭建Eureka Server 高可用集群"></a>搭建Eureka Server 高可用集群</h3><p>在互联网应用中，服务实例很少有单个的。 在生产环境中，我们会配置Eureka Server集群实现高可用。Eureka Server集群之中的节点通过点 对点（P2P）通信的方式共享服务注册表。我们开启两台 Eureka Server 以搭建集群。 </p>
+<p>由于是在个人计算机中进行测试很难模拟多主机的情况，Eureka配置server集群时需要执行host地 址。 所以需要修改个人电脑中host地址，win10操作系统下：<strong>C:\Windows\System32\drivers\etc\host</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 测试Eureka集群</span><br><span class="line">127.0.0.1  EurekaServerA</span><br><span class="line">127.0.0.1  EurekaServerB</span><br></pre></td></tr></table></figure>
+<p>将spring-cloud-eureka复制一份为spring-cloud-eureka02</p>
+<p><strong>修改 Eureka Server配置文件</strong></p>
+<p>9201</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">9201</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">spring-cloud-eureka</span> <span class="comment"># 应用名称，会在Eureka中作为id表示，同一集群要相同</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">EurekaServerA</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">service-url:</span> <span class="comment"># 客户端与EurekaServer交互的地址，如果是集群，也需要写其它Server的地址</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://EurekaServerB:9202/eureka/</span>  <span class="comment"># 另一个集群地址</span></span><br><span class="line">    <span class="attr">register-with-eureka:</span> <span class="literal">true</span>   <span class="comment"># 向集群中注册自己，默认true（单例模式没必要）</span></span><br><span class="line">    <span class="attr">fetch-registry:</span> <span class="literal">true</span>         <span class="comment">#Eureka Server获取服务信息,默认为true （单例模式没必要）</span></span><br></pre></td></tr></table></figure>
+<p>9202</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">9202</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">spring-cloud-eureka</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">EurekaServerB</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://EurekaServerA:9201/eureka/</span>  <span class="comment"># 另一个集群地址</span></span><br><span class="line">    <span class="attr">register-with-eureka:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">fetch-registry:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p><strong>修改商品微服务eureka配置</strong></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">service-url:</span>  <span class="comment">#  eureka server的路径，添加集群</span></span><br><span class="line">      <span class="comment">#把 eureka 集群中的所有 url 都填写了进来，也可以只写一台，因为各个 eureka server可以同步注册表</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://EurekaServerA:9201/eureka/,http://EurekaServerB:9202/eureka/</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="comment">#使用ip注册，否则会使用主机名注册了（此处考虑到对老版本的兼容，新版本经过实验都是ip）</span></span><br><span class="line">    <span class="attr">prefer-ip-address:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#自定义实例显示格式，加上版本号，便于多版本管理，注意是ip-address，早期版本是ipAddress</span></span><br><span class="line">    <span class="attr">instance-id:</span> <span class="string">$&#123;spring.cloud.client.ip-address&#125;:$&#123;spring.application.name&#125;:$&#123;server.port&#125;:@project.version@</span></span><br></pre></td></tr></table></figure>
+<p><strong>修改页面静态微服务</strong></p>
+<p>同上。</p>
+<p>调用方法与单例Eureka Server一样。</p>
+<h3 id="Eureka细节详情"><a href="#Eureka细节详情" class="headerlink" title="Eureka细节详情"></a>Eureka细节详情</h3><h4 id="Eureka元数据"><a href="#Eureka元数据" class="headerlink" title="Eureka元数据"></a>Eureka元数据</h4><p>Eureka的元数据有两种：标准元数据和自定义元数据。 </p>
+<ul>
+<li>标准元数据：主机名、IP地址、端口号等信息，这些信息都会被发布在服务注册表中，用于服务之 间的调用。 </li>
+<li>自定义元数据：可以使用eureka.instance.metadata-map配置，符合KEY/VALUE的存储格式。这 些元数据可以在远程客户端中访问。</li>
+</ul>
+<p>例如在商品微服务中定义自定义元数据</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">eureka:</span></span><br><span class="line">    <span class="attr">instance:</span></span><br><span class="line">        <span class="attr">prefer-ip-address:</span> <span class="literal">true</span></span><br><span class="line">        <span class="attr">instance-id:</span> <span class="string">$&#123;spring.cloud.client.ipaddress&#125;:$&#123;spring.application.name&#125;:$&#123;server.port&#125;:@project.version@</span></span><br><span class="line">        <span class="attr">metadata-map:</span></span><br><span class="line">            <span class="attr">ip:</span> <span class="number">11.11</span><span class="number">.11</span><span class="number">.11</span></span><br><span class="line">            <span class="attr">port:</span> <span class="number">10000</span></span><br><span class="line">            <span class="attr">user:</span> <span class="string">oddDog</span></span><br><span class="line">            <span class="attr">pwd:</span> <span class="number">123456</span></span><br></pre></td></tr></table></figure>
+<p>在页面微服务中获取商品微服务自定义元数据</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;metadata&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MetadataController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span>   <span class="comment">// Eureka注册中心容器</span></span><br><span class="line">    <span class="keyword">private</span> DiscoveryClient discoveryClient;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;show&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">showMetadata</span><span class="params">()</span></span>&#123;</span><br><span class="line">        List&lt;ServiceInstance&gt; instances = discoveryClient.getInstances(<span class="string">&quot;spring-service-product&quot;</span>);</span><br><span class="line">        ServiceInstance instance = instanceList.get(<span class="number">0</span>);<span class="comment">// 当前不是集群环境，所以只有一个</span></span><br><span class="line">        <span class="comment">//获取服务元数据</span></span><br><span class="line">        Map&lt;String, String&gt; metadata = instance.getMetadata();</span><br><span class="line">        <span class="keyword">for</span> (String key : metadata.entrySet())&#123;</span><br><span class="line">            System.out.println(key+<span class="string">&quot;:&quot;</span>+metadata.get(key));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Eureka客户端详情"><a href="#Eureka客户端详情" class="headerlink" title="Eureka客户端详情"></a>Eureka客户端详情</h4><p>续。。。</p>
+<h4 id="Eureka服务端详情"><a href="#Eureka服务端详情" class="headerlink" title="Eureka服务端详情"></a>Eureka服务端详情</h4><h2 id="Ribbon负载均衡"><a href="#Ribbon负载均衡" class="headerlink" title="Ribbon负载均衡"></a>Ribbon负载均衡</h2><h2 id="Hystrix熔断器"><a href="#Hystrix熔断器" class="headerlink" title="Hystrix熔断器"></a>Hystrix熔断器</h2><h2 id="Feign远程调用"><a href="#Feign远程调用" class="headerlink" title="Feign远程调用"></a>Feign远程调用</h2><h2 id="Gateway网关"><a href="#Gateway网关" class="headerlink" title="Gateway网关"></a>Gateway网关</h2><h2 id="Spring-Cloud-Config-分布式配置中心"><a href="#Spring-Cloud-Config-分布式配置中心" class="headerlink" title="Spring Cloud Config 分布式配置中心"></a>Spring Cloud Config 分布式配置中心</h2><h1 id="第二代核心组件SCA"><a href="#第二代核心组件SCA" class="headerlink" title="第二代核心组件SCA"></a>第二代核心组件SCA</h1><h2 id="Nacos服务支持和配置中心"><a href="#Nacos服务支持和配置中心" class="headerlink" title="Nacos服务支持和配置中心"></a>Nacos服务支持和配置中心</h2><h2 id="Sentinel分布式系统流量防卫兵"><a href="#Sentinel分布式系统流量防卫兵" class="headerlink" title="Sentinel分布式系统流量防卫兵"></a>Sentinel分布式系统流量防卫兵</h2>]]></content>
+      <categories>
+        <category>微服务</category>
+      </categories>
+      <tags>
+        <tag>SpringCloud</tag>
+      </tags>
+  </entry>
 </search>
