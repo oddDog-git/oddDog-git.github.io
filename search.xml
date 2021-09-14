@@ -12671,5 +12671,260 @@
 
 <p>over。。。</p>
 ]]></content>
+      <categories>
+        <category>java</category>
+      </categories>
+      <tags>
+        <tag>微信支付</tag>
+        <tag>微信登入</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringBoot</title>
+    <url>/2021/09/09/SpringBoot/</url>
+    <content><![CDATA[<p> Spring Boot 是所有基于 Spring 开发的项目的起点。Spring Boot 的设计是为了让你尽可能快的跑起来 Spring 应用程序并且尽可能减少你的配置文件。<a id="more"></a></p>
+<p><strong>约定优于配置</strong>（Convention over Configuration），又称按约定编程，是一种软件设计范式。</p>
+<p><strong>springboot优点</strong></p>
+<ul>
+<li><p>起步依赖</p>
+<p>起步依赖本质上是一个Maven项目<strong>对象模型</strong>(Project Object Model，POM)，定义了对其他库的传递依赖，这些东西加在一起即支持某项功能。 简单的说，起步依赖就是将具备某种功能的依赖坐标打包到一起，并提供一些默认的功能。</p>
+</li>
+<li><p>自动配置</p>
+<p>springboot的自动配置，指的是springboot会自动将一些配置类的bean注册进ioc容器，我们只需要引我们想用功能的包，相关的配置我们完全不用管，springboot会自 动注入这些配置bean</p>
+</li>
+</ul>
+<h1 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h1><h2 id="Spring-Boot入门案例"><a href="#Spring-Boot入门案例" class="headerlink" title="Spring Boot入门案例"></a>Spring Boot入门案例</h2><p>案例需求：请求Controller中的方法，并将返回值响应到页面</p>
+<p><strong>依赖管理</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">所用的springBoot项目都会直接或者间接的继承spring-boot-starter-parent</span></span><br><span class="line"><span class="comment">1.指定项目的编码格式为UTF-8</span></span><br><span class="line"><span class="comment">2.指定JDK版本为1.8</span></span><br><span class="line"><span class="comment">3.对项目依赖的版本进行管理，当前项目再引入其他常用的依赖时就需要再指定版本号，避免版本冲突的问题</span></span><br><span class="line"><span class="comment">4.默认的资源过滤和插件管理</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.4.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--引入Spring Web及Spring MVC相关的依赖--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--可以将project打包为一个可以执行的jar--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>启动类</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* SpringBoot的启动类通常放在二级包中，比如：com.hui</span></span><br><span class="line"><span class="comment">* 因为SpringBoot项目在做包扫描，会扫描启动类所在的包及其子包下的所有内容。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">//标识当前类为SpringBoot项目的启动类</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringBootDemo1Application</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 模板代码。参数一:当前类的字节码；参数二:main中的参数</span></span><br><span class="line">        SpringApplication.run(SpringBootDemo1Application.class,args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Controller</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;user&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@RequestMapping(&quot;hello&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;hello world!&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>默认端口号为8080，也可以使用idea自动构建springboot项目。</p>
+<h2 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h2><p><strong>所需依赖</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>测试类</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* SpringJUnit4ClassRunner.class:Spring运行环境</span></span><br><span class="line"><span class="comment">* JUnit4.class:JUnit运行环境</span></span><br><span class="line"><span class="comment">* SpringRunner.class:Spring Boot运行环境</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@RunWith(SpringRunner.class)</span> <span class="comment">//@RunWith:运行器,不过新版Springboot项目不用加该注解</span></span><br><span class="line"><span class="meta">@SpringBootTest</span> <span class="comment">//标记为当前类为SpringBoot测试类，加载项目的ApplicationContext上下文环境</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Springbootdemo2ApplicationTests</span> </span>&#123;</span><br><span class="line">   	<span class="comment">//  需求：调用HelloController的hello方法</span></span><br><span class="line">    <span class="keyword">private</span> HelloController helloController;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">contextLoads</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String result = helloController.hello();</span><br><span class="line">        System.out.println(result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="热部署"><a href="#热部署" class="headerlink" title="热部署"></a>热部署</h2><p>在修改完代码之后，不需要重新启动容器，就可以实现更新。</p>
+<p>1）添加SpringBoot的热部署依赖启动器 </p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 引入热部署依赖 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-devtools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>2）开启Idea的自动编译 </p>
+<ul>
+<li><p>选择IDEA工具界面的【File】-&gt;【Settings】选项，打开Compiler面板设置页面</p>
+</li>
+<li><p>选择Build下的Compiler选项，在右侧勾选“Build project automatically”选项将项目设置为自动编 译，单击【Apply】→【OK】按钮保存设置 </p>
+</li>
+</ul>
+<p>3）开启Idea的在项目运行中自动编译的功能</p>
+<ul>
+<li>在项目任意页面中使用组合快捷键“Ctrl+Shift+Alt+/”打开Maintenance选项框，选中并打开 Registry页面</li>
+<li>列表中找到“compiler.automake.allow.when.app.running”，将该选项后的Value值勾选，用于指 定IDEA工具在程序运行过程中自动编译，最后单击【Close】按钮完成设置 </li>
+</ul>
+<h2 id="全局配置文件"><a href="#全局配置文件" class="headerlink" title="全局配置文件"></a>全局配置文件</h2><p>全局配置文件能够对一些默认配置值进行修改。该文件存放在<strong>src/main/resource</strong>目录或者类路径 的/config，一般会选择resource目录。springBoot会自动加载配置文件</p>
+<p><strong>Spring Boot配置文件的命名及其格式</strong> </p>
+<ul>
+<li>application.properties </li>
+<li>application.yaml </li>
+<li>application.yml</li>
+</ul>
+<p><strong>SpringBoot的三种配置文件是可以共存的</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--后加载的配置文件会覆盖前面的--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">directory</span>&gt;</span>$&#123;basedir&#125;/src/main/resources<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>**/application*.yml<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>**/application*.yaml<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>**/application*.properties<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="application-properties配置文件"><a href="#application-properties配置文件" class="headerlink" title="application.properties配置文件"></a>application.properties配置文件</h3><p><strong>application.properties</strong> </p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="comment">#修改tomcat的版本号</span></span><br><span class="line"><span class="meta">server.port</span>=<span class="string">8888</span></span><br><span class="line"><span class="comment">#定义数据库的连接信息 JdbcTemplate</span></span><br><span class="line"><span class="meta">spring.datasource.driver-class-name</span>=<span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line"><span class="meta">spring.datasource.url</span>=<span class="string">jdbc:mysql://localhost:3306/hui</span></span><br><span class="line"><span class="meta">spring.datasource.username</span>=<span class="string">root</span></span><br><span class="line"><span class="meta">spring.datasource.password</span>=<span class="string">123</span></span><br></pre></td></tr></table></figure>
+<h4 id="案例–将自定义配置属性注入到实体类"><a href="#案例–将自定义配置属性注入到实体类" class="headerlink" title="案例–将自定义配置属性注入到实体类"></a>案例–将自定义配置属性注入到实体类</h4><p>将application.properties配置文件中的自定义配置属性注入到 Person实体类的对应属性中。</p>
+<p><strong>定义两个实体类</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Pet</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String type;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span> <span class="comment">// 加入IOC容器</span></span><br><span class="line"><span class="comment">//将配置文件中所有以person开头的配置信息注入当前类中</span></span><br><span class="line"><span class="comment">//前提1：必须保证配置文件中person.xx与当前Person类的属性名一致</span></span><br><span class="line"><span class="comment">//前提2：必须保证当前Person中的属性都具有set方法</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;person&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id; <span class="comment">//id</span></span><br><span class="line">    <span class="keyword">private</span> String name; <span class="comment">//名称</span></span><br><span class="line">    <span class="keyword">private</span> List hobby; <span class="comment">//爱好</span></span><br><span class="line">    <span class="keyword">private</span> String[] family; <span class="comment">//家庭成员</span></span><br><span class="line">    <span class="keyword">private</span> Map map;</span><br><span class="line">    <span class="keyword">private</span> Pet pet; <span class="comment">//宠物</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>@ConfigurationProperties(prefix = “person”)注解的作用是将配置文件中以person开头的属性值通过 setXX()方法注入到实体类对应属性中</p>
+<p><strong>自定义配置属性</strong></p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="comment">#自定义配置信息</span></span><br><span class="line"><span class="meta">person.id</span>=<span class="string">1</span></span><br><span class="line"><span class="meta">person.name</span>=<span class="string">王二麻子</span></span><br><span class="line"><span class="meta">person.hobby</span>=<span class="string">read,write</span></span><br><span class="line"><span class="meta">person.family</span>=<span class="string">father,mather</span></span><br><span class="line"><span class="meta">person.map.key1</span>=<span class="string">value1</span></span><br><span class="line"><span class="meta">person.map.key2</span>=<span class="string">value2</span></span><br><span class="line"><span class="meta">person.pet.type</span>=<span class="string">dog</span></span><br><span class="line"><span class="meta">person.pet.name</span>=<span class="string">哈士奇</span></span><br></pre></td></tr></table></figure>
+<p>可以在测试类中注入Person，并打印出来看结果。</p>
+<p><strong>使用@value注解</strong></p>
+<p> Spring Boot框架从Spring框架中对@Value注解进行了默认继承，所以也可以使用@value经行注入属性</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;person.id&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong>  @value注解不支持注入Map集合、对象以及YAML文件格式的行内式写法的配置文件的属性，否则报错</p>
+<h3 id="application-yaml配置文件"><a href="#application-yaml配置文件" class="headerlink" title="application.yaml配置文件"></a>application.yaml配置文件</h3><p>application.yaml配置文件的 工作原理和application.properties是一样的，只不过yaml格式配置文件看起来更简洁一些。</p>
+<ul>
+<li>YAML文件的扩展名可以使用.yml或者.yaml。 </li>
+<li>application.yml文件使用 “key:（空格）value”格式配置属性，使用缩进控制层级关系。</li>
+</ul>
+<p><strong>yaml中不同数据类型的写法</strong></p>
+<ul>
+<li>普通数据类型</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#不用添加引号</span></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line">	<span class="attr">port:</span> <span class="number">8080</span></span><br><span class="line">	<span class="attr">servlet:</span></span><br><span class="line">		<span class="attr">context-path:</span> <span class="string">/hello</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>数组和单列集合</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#写法一,推荐</span></span><br><span class="line"><span class="attr">person:</span></span><br><span class="line">	<span class="attr">hobby:</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">play</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">read</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">sleep</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#写法二</span></span><br><span class="line"><span class="attr">person:</span></span><br><span class="line">    <span class="attr">hobby:</span></span><br><span class="line">        <span class="string">play,</span></span><br><span class="line">        <span class="string">read,</span></span><br><span class="line">        <span class="string">sleep</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#写法三</span></span><br><span class="line"><span class="attr">person:</span></span><br><span class="line">	<span class="attr">hobby:</span> [<span class="string">play</span>,<span class="string">read</span>,<span class="string">sleep</span>]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Map集合和对象</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#写法一，推荐</span></span><br><span class="line"><span class="attr">person:</span></span><br><span class="line">	<span class="attr">map:</span></span><br><span class="line">        <span class="attr">k1:</span> <span class="string">v1</span></span><br><span class="line">        <span class="attr">k2:</span> <span class="string">v2</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#写法二</span></span><br><span class="line"><span class="attr">person:</span></span><br><span class="line">	<span class="attr">map:</span> &#123;<span class="attr">k1:</span> <span class="string">v1</span>,<span class="attr">k2:</span> <span class="string">v2</span>&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="自定义配置文件"><a href="#自定义配置文件" class="headerlink" title="自定义配置文件"></a>自定义配置文件</h3><p>springboot只会自动识别application.properties/yaml/yml三个文件，我们也可以创建别的配置文件，不过需要我们手动加载。</p>
+<p><strong>使用@PropertySource加载配置文件</strong></p>
+<p>该注解是Spring框架已有的，再ssm中就是使用该注解来引入JDBC的相关配置</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 在类上指定自定义配置文件位置和名称</span></span><br><span class="line"><span class="meta">@PropertySource(&quot;classpath:hui.properties&quot;)</span> </span><br></pre></td></tr></table></figure>
+<h2 id="中文乱码问题解决"><a href="#中文乱码问题解决" class="headerlink" title="中文乱码问题解决"></a>中文乱码问题解决</h2><p><strong>调整文件编码格式</strong></p>
+<p><a href="https://imgtu.com/i/hOmZrt"><img src="https://z3.ax1x.com/2021/09/09/hOmZrt.png" alt="hOmZrt.png"></a></p>
+<p><strong>设置Tomcat及Http编码</strong></p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="comment">#解决中文乱码</span></span><br><span class="line"><span class="meta">server.tomcat.uri-encoding</span>=<span class="string">UTF-8</span></span><br><span class="line"><span class="meta">spring.http.encoding.force</span>=<span class="string">true</span></span><br><span class="line"><span class="meta">spring.http.encoding.charset</span>=<span class="string">UTF-8</span></span><br><span class="line"><span class="meta">spring.http.encoding.enabled</span>=<span class="string">true</span></span><br></pre></td></tr></table></figure>
+<h1 id="数据库访问"><a href="#数据库访问" class="headerlink" title="数据库访问"></a>数据库访问</h1><h2 id="SpringBoot整合Mybatis"><a href="#SpringBoot整合Mybatis" class="headerlink" title="SpringBoot整合Mybatis"></a>SpringBoot整合Mybatis</h2><p>MyBatis 是一款优秀的持久层框架，Spring Boot官方虽然没有对MyBatis进行整合，但是MyBatis 团队自行适配了对应的启动器，进一步简化了使用MyBatis进行数据的操作 ；因为Spring Boot框架开发的便利性，所以实现Spring Boot与数据访问层框架（例如MyBatis）的 整合非常简单，主要是引入对应的依赖启动器，并进行数据库相关参数设置即可 </p>
+<p><strong>依赖</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--Mybatis starter--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis.spring.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--Mysql驱动--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--druid连接池--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>druid<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>创建数据库</strong>(省略)</p>
+<p><strong>使用Free Mybatis plugin创建实体类</strong></p>
+<p>需下载Free Mybatis plugin组件，idea添加数据库信息，然后右击某张表–》mybaits generator</p>
+<p><a href="https://imgtu.com/i/4kgCZR"><img src="https://z3.ax1x.com/2021/09/14/4kgCZR.png" alt="4kgCZR.png"></a></p>
+<p><strong>启动类添加扫描注解</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@MapperScan(&quot;com.hui.mapper&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MybatisApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(MybatisApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>application.yml添加配置</strong></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># MySQL数据库连接配置</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">    <span class="attr">datasource:</span></span><br><span class="line">        <span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/spirng_dbserverTimezone=UTC&amp;characterEncoding=UTF-8</span></span><br><span class="line">        <span class="attr">type:</span> <span class="string">com.alibaba.druid.pool.DruidDataSource</span></span><br><span class="line">        <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">        <span class="attr">password:</span> <span class="number">123</span></span><br><span class="line">    <span class="comment"># mybatis相关配置    </span></span><br><span class="line">    <span class="attr">mybatis:</span></span><br><span class="line">        <span class="comment">#配置MyBatis的xml配置文件路径，如果是纯注解就不需要指定</span></span><br><span class="line">        <span class="attr">mapper-locations:</span> <span class="string">classpath:mapper/*.xml</span></span><br><span class="line">        <span class="comment">#配置XML映射文件中指定的实体类别名路径</span></span><br><span class="line">        <span class="attr">type-aliases-package:</span> <span class="string">com.lagou.base.pojo</span></span><br><span class="line">        <span class="comment">#开启驼峰命名匹配映射</span></span><br><span class="line">        <span class="attr">configuration:</span></span><br><span class="line">			<span class="attr">map-underscore-to-camel-case:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>整合完毕。。。</p>
+<h2 id="SpringBoot整合Redis"><a href="#SpringBoot整合Redis" class="headerlink" title="SpringBoot整合Redis"></a>SpringBoot整合Redis</h2><p><strong>依赖</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- redis依赖包 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>配置Redis数据库连接</strong></p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="comment">#redis配置</span></span><br><span class="line"><span class="comment">#Redis服务器地址</span></span><br><span class="line"><span class="meta">spring.redis.host</span>=<span class="string">127.0.0.1</span></span><br><span class="line"><span class="comment">#Redis服务器连接端口</span></span><br><span class="line"><span class="meta">spring.redis.port</span>=<span class="string">6379</span></span><br><span class="line"><span class="comment">#Redis数据库索引（默认为0）</span></span><br><span class="line"><span class="meta">spring.redis.database</span>=<span class="string">0</span></span><br><span class="line"><span class="comment">#连接池最大连接数（使用负值表示没有限制）</span></span><br><span class="line"><span class="meta">spring.redis.jedis.pool.max-active</span>=<span class="string">50</span></span><br><span class="line"><span class="comment">#连接池最大阻塞等待时间（使用负值表示没有限制）</span></span><br><span class="line"><span class="meta">spring.redis.jedis.pool.max-wait</span>=<span class="string">3000</span></span><br><span class="line"><span class="comment">#连接池中的最大空闲连接</span></span><br><span class="line"><span class="meta">spring.redis.jedis.pool.max-idle</span>=<span class="string">20</span></span><br><span class="line"><span class="comment">#连接池中的最小空闲连接</span></span><br><span class="line"><span class="meta">spring.redis.jedis.pool.min-idle</span>=<span class="string">2</span></span><br><span class="line"><span class="comment">#连接超时时间（毫秒）</span></span><br><span class="line"><span class="meta">spring.redis.timeout</span>=<span class="string">5000</span></span><br></pre></td></tr></table></figure>
+<p><strong>编写Redis操作工具类</strong></p>
+<p>将RedisTemplate实例包装成一个工具类，便于对redis进行数据操作。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedisUtils</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RedisTemplate redisTemplate;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 读取缓存</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">get</span><span class="params">(<span class="keyword">final</span> String key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> redisTemplate.opsForValue().get(key);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 写入缓存</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">set</span><span class="params">( String key, Object value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> result = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            redisTemplate.opsForValue().set(key, value,<span class="number">1</span>, TimeUnit.DAYS);</span><br><span class="line">            result = <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">	<span class="comment">// 更新缓存</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">getAndSet</span><span class="params">(<span class="keyword">final</span> String key, String value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> result = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            redisTemplate.opsForValue().getAndSet(key, value);</span><br><span class="line">            result = <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">// 删除缓存</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">delete</span><span class="params">(<span class="keyword">final</span> String key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> result = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            redisTemplate.delete(key);</span><br><span class="line">            result = <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>测试</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RunWith(SpringRunner.class)</span></span><br><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Springboot02MybatisApplicationTests</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RedisUtils redisUtils;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Test</span> <span class="comment">// 设置数据</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setRedisData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        redisUtils.set(<span class="string">&quot;name&quot;</span>,<span class="string">&quot;tom&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Test</span> <span class="comment">// 获取数据</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getRedisData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(redisUtils.get(<span class="string">&quot;tom&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Thymeleaf"><a href="#Thymeleaf" class="headerlink" title="Thymeleaf"></a>Thymeleaf</h1><p>Spring Boot不太支持常用的JSP模板，并且没有提供对应的整合配置，这是因为使用嵌入式Servlet容 器的Spring Boot应用程序对于JSP模板存在一些限制 ：</p>
+<ul>
+<li>在Jetty和Tomcat容器中，Spring Boot应用被打包成war文件可以支持JSP。但Spring Boot默认使 用嵌入式Servlet容器以JAR包方式进行项目打包部署，这种JAR包方式不支持JSP。 </li>
+<li>如果使用Undertow嵌入式容器部署Spring Boot项目，也不支持JSP模板。（Undertow 是红帽公 司开发的一款基于 NIO 的高性能 Web 嵌入式服务器） </li>
+<li>Spring Boot默认提供了一个处理请求路径“/error”的统一错误处理器，返回具体的异常信息。使用 JSP模板时，无法对默认的错误处理器进行覆盖，只能根据Spring Boot要求在指定位置定制错误页 面。</li>
+</ul>
+<p>上面对Spring Boot支持的模板引擎进行了介绍，并指出了整合JSP模板的一些限制。接下来，对其 中常用的Thymeleaf模板引擎进行介绍，并完成与Spring Boot框架的整合实现 </p>
+<p><strong>Thymeleaf</strong></p>
+<p>Thymeleaf是一种现代的基于服务器端的Java模板引擎技术，也是一个优秀的面向Java的XML、 XHTML、HTML5页面模板，它具有丰富的标签语言、函数和表达式，在使用Spring Boot框架进行页面 设计时，一般会选择Thymeleaf模板</p>
+<h2 id="Thymeleaf语法"><a href="#Thymeleaf语法" class="headerlink" title="Thymeleaf语法"></a>Thymeleaf语法</h2><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span> <span class="attr">xmlns:th</span>=<span class="string">&quot;http://www.thymeleaf.org&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text/css&quot;</span> <span class="attr">media</span>=<span class="string">&quot;all&quot;</span></span></span><br><span class="line"><span class="tag">              <span class="attr">href</span>=<span class="string">&quot;../../css/gtvg.css&quot;</span> <span class="attr">th:href</span>=<span class="string">&quot;@&#123;/css/gtvg.css&#125;&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span> <span class="attr">th:text</span>=<span class="string">&quot;$&#123;hello&#125;&quot;</span>&gt;</span>欢迎进入Thymeleaf的学习<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>上述代码中，“xmlns:th=”<a href="http://www.thymeleaf.org&quot;“/">http://www.thymeleaf.org&quot;“</a> 用于引入Thymeleaf模板引擎标签，使用关键字 “th”标注标签是Thymeleaf模板提供的标签，其中，“th:href”用于引入外联样式件，“th:text”用于动态 显示标签文本内容。</p>
+<h3 id="常用标签"><a href="#常用标签" class="headerlink" title="常用标签"></a>常用标签</h3><table>
+<thead>
+<tr>
+<th>th：标签</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>th:insert</td>
+<td>布局标签，替换内容到引入的文件</td>
+</tr>
+<tr>
+<td>th:replace</td>
+<td>页面片段包含（类似JSP中的include标签）</td>
+</tr>
+<tr>
+<td>th:each</td>
+<td>元素遍历（类似JSP中的c:forEach标签）</td>
+</tr>
+<tr>
+<td>th:if</td>
+<td>条件判断，如果为真</td>
+</tr>
+<tr>
+<td>th:unless</td>
+<td>条件判断，如果为假</td>
+</tr>
+<tr>
+<td>th:switch</td>
+<td>条件判断，进行选择性匹配</td>
+</tr>
+<tr>
+<td>th:case</td>
+<td>条件判断，进行选择性匹配</td>
+</tr>
+<tr>
+<td>th:value</td>
+<td>属性值修改，指定标签属性值</td>
+</tr>
+<tr>
+<td>th:href</td>
+<td>用于设定链接地址</td>
+</tr>
+<tr>
+<td>th:src</td>
+<td>用于设定链接地址</td>
+</tr>
+<tr>
+<td>th:text</td>
+<td>用于指定标签显示的文本内容</td>
+</tr>
+</tbody></table>
+<h3 id="标准表达式"><a href="#标准表达式" class="headerlink" title="标准表达式"></a>标准表达式</h3><table>
+<thead>
+<tr>
+<th>说明</th>
+<th>表达式语法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>变量表达式</td>
+<td>${…}</td>
+</tr>
+<tr>
+<td>选择变量表达式</td>
+<td>*{…}</td>
+</tr>
+<tr>
+<td>消息表达式</td>
+<td>#{…}</td>
+</tr>
+<tr>
+<td>链接URL表达式</td>
+<td>@{…}</td>
+</tr>
+<tr>
+<td>片段表达式</td>
+<td>~{…}</td>
+</tr>
+</tbody></table>
+<p><strong>变量表达式 ${…}</strong></p>
+<p>主要用于获取上下文中的变量值，示例代码如下：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">th:text</span>=<span class="string">&quot;$&#123;title&#125;&quot;</span>&gt;</span>这是标题<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如果上下文存在title，p标签的值为”title“；如果不存在title，p标签就显示“这是标题”，从而达到模板引擎页面数 据动态替换的效果 </p>
+<p>同时，Thymeleaf为变量所在域提供了一些内置对象，具体如下所示 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># ctx：上下文对象</span><br><span class="line"># vars：上下文变量</span><br><span class="line"># locale：上下文区域设置</span><br><span class="line"># request：（仅限Web Context）HttpServletRequest对象</span><br><span class="line"># response：（仅限Web Context）HttpServletResponse对象</span><br><span class="line"># session：（仅限Web Context）HttpSession对象</span><br><span class="line"># servletContext：（仅限Web Context）ServletContext对象</span><br></pre></td></tr></table></figure>
+<p>假设要在Thymeleaf模板引擎页面中动态获取当前国家信息，可以使用 #locale内置对象</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">The locale country is: <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">&quot;$&#123;#locale.country&#125;&quot;</span>&gt;</span>US<span class="tag">&lt;/<span class="name">span</span>&gt;</span>.</span><br></pre></td></tr></table></figure>
+<p>*<em>选择变量表达式 <em>{…}</em></em></p>
+<p>选择变量表达式和变量表达式用法类似，一般用于从被选定对象而不是上下文中获取属性值，如果 没有选定对象，则和变量表达式一样，示例代码如下 </p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">th:object</span>=<span class="string">&quot;$&#123;book&#125;&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>titile: <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">&quot;*&#123;title&#125;&quot;</span>&gt;</span>标题<span class="tag">&lt;/<span class="name">span</span>&gt;</span>.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>*{title} 选择变量表达式获取当前指定对象book的title属性值</p>
+<p><strong>消息表达式 #{…}</strong></p>
+<p>主要用于Thymeleaf模板页面国际化内容的动态替换和展示，使用消息表达式#{…} 进行国际化设置时，还需要提供一些国际化配置文件。</p>
+<p>**链接表达式 @{…} **</p>
+<p>一般用于页面跳转或者资源的引入</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&lt;a th:href=&quot;@&#123;http://localhost:8080/order/details(orderId=$&#123;o.id&#125;)&#125;&quot;&gt;view&lt;/a&gt;</span><br><span class="line">&lt;a th:href=&quot;@&#123;/order/details(orderId=$&#123;o.id&#125;,pid=$&#123;p.id&#125;)&#125;&quot;&gt;view&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+<p>上述代码中，链接表达式@{…}分别编写了绝对链接地址和相对链接地址。如果url中有参数，需要 按照@{路径(参数名称=参数值，参数名称=参数值…)}的形式编写，同时该参数的值可以使用变量表达式 来传递动态参数值 </p>
+<p>**片段表达式 ~{…} **</p>
+<p>用来标记一个片段模板，并根据需要移动或传递给其他模板。其中，最常见的用法是使 用th:insert或th:replace属性插入片段</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">th:insert</span>=<span class="string">&quot;~&#123;thymeleafDemo::title&#125;&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>thymeleafDemo为模板名称，Thymeleaf会自动查找“/resources/templates/”目录下的 thymeleafDemo模板，title为片段名称。</p>
+<h2 id="基本使用-1"><a href="#基本使用-1" class="headerlink" title="基本使用"></a>基本使用</h2><p>（1）依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-thymeleaf<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>（2）在全局配置文件中配置Thymeleaf模板的一些参数。一般Web项目都会使用下列配置</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">spring.thymeleaf.cache</span> = <span class="string">true ＃启用模板缓存，默认。但是一般开发过程中会关闭</span></span><br><span class="line"><span class="meta">spring.thymeleaf.encoding</span> = <span class="string">UTF_8 ＃模板编码</span></span><br><span class="line"><span class="meta">spring.thymeleaf.mode</span> = <span class="string">HTML5 ＃应用于模板的模板模式</span></span><br><span class="line"><span class="meta">spring.thymeleaf.prefix</span> = <span class="string">classpath:/templates/ ＃指定模板页面存放路径，默认</span></span><br><span class="line"><span class="meta">spring.thymeleaf.suffix</span> = <span class="string">.html ＃指定模板页面名称的后缀,默认</span></span><br></pre></td></tr></table></figure>
+<p>（3）静态资源的访问 开发Web应用时，难免需要使用静态资源。</p>
+<p>Spring boot默认设置了静态资源的访问路径。 使用Spring Initializr方式创建的Spring Boot项目，默认生成了一个resources目录，在resources目录中 新建public、resources、static三个子目录下，Spring boot默认会挨个从public、resources、static里 面查找静态资源 </p>
+<p><strong>注意</strong> resource:template 中的thymeleaf模板只能通过跳转访问</p>
+<h1 id="Spring-Boot项目部署"><a href="#Spring-Boot项目部署" class="headerlink" title="Spring Boot项目部署"></a>Spring Boot项目部署</h1><p>需求：将Spring Boot项目使用maven指令打成jar包并运行测试</p>
+<p><strong>添加打包组件</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 打jar包时如果不配置该插件，打出来的jar包没有清单文件 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>此时项目目录会出现target目录，jar包就在里面</p>
+<p><strong>部署运行</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">java -jar 包名</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>微服务</category>
+      </categories>
+      <tags>
+        <tag>SpringBoot</tag>
+      </tags>
   </entry>
 </search>
