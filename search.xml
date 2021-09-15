@@ -13229,8 +13229,156 @@
 <figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">eureka:</span></span><br><span class="line">    <span class="attr">instance:</span></span><br><span class="line">        <span class="attr">prefer-ip-address:</span> <span class="literal">true</span></span><br><span class="line">        <span class="attr">instance-id:</span> <span class="string">$&#123;spring.cloud.client.ipaddress&#125;:$&#123;spring.application.name&#125;:$&#123;server.port&#125;:@project.version@</span></span><br><span class="line">        <span class="attr">metadata-map:</span></span><br><span class="line">            <span class="attr">ip:</span> <span class="number">11.11</span><span class="number">.11</span><span class="number">.11</span></span><br><span class="line">            <span class="attr">port:</span> <span class="number">10000</span></span><br><span class="line">            <span class="attr">user:</span> <span class="string">oddDog</span></span><br><span class="line">            <span class="attr">pwd:</span> <span class="number">123456</span></span><br></pre></td></tr></table></figure>
 <p>在页面微服务中获取商品微服务自定义元数据</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;metadata&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MetadataController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span>   <span class="comment">// Eureka注册中心容器</span></span><br><span class="line">    <span class="keyword">private</span> DiscoveryClient discoveryClient;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;show&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">showMetadata</span><span class="params">()</span></span>&#123;</span><br><span class="line">        List&lt;ServiceInstance&gt; instances = discoveryClient.getInstances(<span class="string">&quot;spring-service-product&quot;</span>);</span><br><span class="line">        ServiceInstance instance = instanceList.get(<span class="number">0</span>);<span class="comment">// 当前不是集群环境，所以只有一个</span></span><br><span class="line">        <span class="comment">//获取服务元数据</span></span><br><span class="line">        Map&lt;String, String&gt; metadata = instance.getMetadata();</span><br><span class="line">        <span class="keyword">for</span> (String key : metadata.entrySet())&#123;</span><br><span class="line">            System.out.println(key+<span class="string">&quot;:&quot;</span>+metadata.get(key));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="Eureka客户端详情"><a href="#Eureka客户端详情" class="headerlink" title="Eureka客户端详情"></a>Eureka客户端详情</h4><p>续。。。</p>
-<h4 id="Eureka服务端详情"><a href="#Eureka服务端详情" class="headerlink" title="Eureka服务端详情"></a>Eureka服务端详情</h4><h2 id="Ribbon负载均衡"><a href="#Ribbon负载均衡" class="headerlink" title="Ribbon负载均衡"></a>Ribbon负载均衡</h2><h2 id="Hystrix熔断器"><a href="#Hystrix熔断器" class="headerlink" title="Hystrix熔断器"></a>Hystrix熔断器</h2><h2 id="Feign远程调用"><a href="#Feign远程调用" class="headerlink" title="Feign远程调用"></a>Feign远程调用</h2><h2 id="Gateway网关"><a href="#Gateway网关" class="headerlink" title="Gateway网关"></a>Gateway网关</h2><h2 id="Spring-Cloud-Config-分布式配置中心"><a href="#Spring-Cloud-Config-分布式配置中心" class="headerlink" title="Spring Cloud Config 分布式配置中心"></a>Spring Cloud Config 分布式配置中心</h2><h1 id="第二代核心组件SCA"><a href="#第二代核心组件SCA" class="headerlink" title="第二代核心组件SCA"></a>第二代核心组件SCA</h1><h2 id="Nacos服务支持和配置中心"><a href="#Nacos服务支持和配置中心" class="headerlink" title="Nacos服务支持和配置中心"></a>Nacos服务支持和配置中心</h2><h2 id="Sentinel分布式系统流量防卫兵"><a href="#Sentinel分布式系统流量防卫兵" class="headerlink" title="Sentinel分布式系统流量防卫兵"></a>Sentinel分布式系统流量防卫兵</h2>]]></content>
+<h4 id="Eureka客户端详情"><a href="#Eureka客户端详情" class="headerlink" title="Eureka客户端详情"></a>Eureka客户端详情</h4><ol>
+<li>当我们导入了eureka-client依赖坐标，配置Eureka服务注册中心地址 </li>
+<li>服务在启动时会向注册中心发起注册请求，携带服务元数据信息</li>
+<li>Eureka注册中心会把服务的信息保存在Map中。</li>
+</ol>
+<p><strong>服务续约详解（客户端)</strong></p>
+<p>客户端每隔30秒会向注册中心续约(心跳)一次（也称为报活），如果没有续约，租约在90秒后到期， 然后服务会被失效。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#客户端设置续约，默认即可</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">	<span class="attr">instance:</span></span><br><span class="line">        <span class="comment"># 租约续约间隔时间，默认30秒</span></span><br><span class="line">        <span class="attr">lease-renewal-interval-in-seconds:</span> <span class="number">30</span></span><br><span class="line">        <span class="comment"># 租约到期，服务时效时间，默认值90秒,服务超过90秒没有发生心跳，EurekaServer会将服务从列表移除</span></span><br><span class="line">		<span class="attr">lease-expiration-duration-in-seconds:</span> <span class="number">90</span></span><br></pre></td></tr></table></figure>
+<p><strong>客户端获取服务列表</strong></p>
+<ol>
+<li>服务消费者启动时，从 EurekaServer服务列表获取只读备份，缓存到本地</li>
+<li>每隔30秒，会重新获取并更新数据, 可以通过配置修改。</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#客户端设置拉去服务列表时间，默认即可</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">	<span class="attr">client:</span></span><br><span class="line">        <span class="comment"># 每隔多久拉取一次服务列表</span></span><br><span class="line">        <span class="attr">registry-fetch-interval-seconds:</span> <span class="number">30</span></span><br></pre></td></tr></table></figure>
+<h4 id="Eureka服务端详情"><a href="#Eureka服务端详情" class="headerlink" title="Eureka服务端详情"></a>Eureka服务端详情</h4><p><strong>服务下线</strong></p>
+<ol>
+<li>当服务正常关闭操作时，会发送服务下线的REST请求给EurekaServer。</li>
+<li>服务中心接受到请求后，将该服务置为下线状态</li>
+</ol>
+<p><strong>自我保护机制</strong></p>
+<p>如果在15分钟内超过85%的客户端节点都没有正常的心跳，那么 Eureka就认为客户端与注册中心出现了网络故障，Eureka Server自动进入自我保护机制,此时会出现 以下几种情况：</p>
+<ol>
+<li>Eureka Server不再从注册列表中移除因为长时间没收到心跳而应该过期的服务。 </li>
+<li>Eureka Server仍然能够接受新服务的注册和查询请求，但是不会被同步到其它节点上，保证当前 节点依然可用。 </li>
+<li>当网络稳定时，当前Eureka Server新的注册信息会被同步到其它节点中。</li>
+</ol>
+<p>因此Eureka Server可以很好的应对因网络故障导致部分节点失联的情况，而不会像ZK那样如果有一半 不可用的情况会导致整个集群不可用而变成瘫痪。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#服务端设置自我保护模式，默认开启，建议开启</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">	<span class="attr">server:</span></span><br><span class="line">		<span class="attr">enable-self-preservation:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<h2 id="Ribbon负载均衡"><a href="#Ribbon负载均衡" class="headerlink" title="Ribbon负载均衡"></a>Ribbon负载均衡</h2><h3 id="负载均衡相关概念"><a href="#负载均衡相关概念" class="headerlink" title="负载均衡相关概念"></a>负载均衡相关概念</h3><p>负载均衡一般分为 服务器端负载均衡和客户端负载均衡</p>
+<p><strong>服务器端负载均衡</strong> ： 比如Nginx、F5这些，请求到达服务器之后由这些负载均衡器根据一定的 算法将请求路由到目标服务器处理。 </p>
+<p><strong>客户端负载均衡</strong> ： 比如我们要说的Ribbon，服务消费者客户端会有一个服务器地址列表，调用 方在请求前通过一定的负载均衡算法选择一个服务器进行访问，负载均衡算法的执行是在请求客户端进 行。 </p>
+<p>Ribbon是Netflix发布的负载均衡器。Eureka一般配合Ribbon进行使用，Ribbon利用从Eureka中读 取到服务信息，在调用服务提供者提供的服务时，会根据一定的算法进行负载。</p>
+<p><a href="https://imgtu.com/i/4VfpM6"><img src="https://z3.ax1x.com/2021/09/15/4VfpM6.png" alt="4VfpM6.png"></a></p>
+<h3 id="Ribbon的使用"><a href="#Ribbon的使用" class="headerlink" title="Ribbon的使用"></a>Ribbon的使用</h3><p><strong>需求</strong>:  复制商品微服务spring-service-product02,修改端口:9002，在两个服务提供者中编写Controller方法，返回服务实例端口。服务消费者 spring-service-page 通过负载均衡策略调用该方法。</p>
+<p>微服务中引入过eureka-client相关依赖，会自动引入 Ribbon相关依赖坐标，所以不需要导入Ribbon依赖</p>
+<p><strong>服务提供方编写Controller,并复制一份微服务spring-service-product02</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;product&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;server.port&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String port;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取当前端口号请求</span></span><br><span class="line">    <span class="meta">@GetMapping(&quot;port&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">port</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> port;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>服务消费方注入RestTemplate时添加对应注解</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableDiscoveryClient</span>  <span class="comment">// 当前项目注册到注册中心</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PageApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(PageApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//  注入RestTemplate</span></span><br><span class="line">    <span class="meta">@LoadBalanced</span>  <span class="comment">// Ribbon 负载均衡</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RestTemplate <span class="title">restTemplate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> RestTemplate();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>服务消费方调用</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;port&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">port</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 直接通过服务的名称来访问，不需要指定ip与port  (注意：要开启Ribbon负载均衡)</span></span><br><span class="line">    String url = <span class="string">&quot;http://spring-service-product/product/port&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> restTemplate.getForObject(url, String.class);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="Ribbon负载均衡策略"><a href="#Ribbon负载均衡策略" class="headerlink" title="Ribbon负载均衡策略"></a>Ribbon负载均衡策略</h3><p>Ribbon内置了多种负载均衡策略，内部负责复杂均衡的顶级接口为 com.netflix.loadbalancer.IRule </p>
+<p><a href="https://imgtu.com/i/4V5gln"><img src="https://z3.ax1x.com/2021/09/15/4V5gln.png" alt="4V5gln.png"></a></p>
+<table>
+<thead>
+<tr>
+<th>负载均衡策略</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RoundRobinRule：轮询策略</td>
+<td>默认超过10次获取到的server都不可用，会返回一个空的server</td>
+</tr>
+<tr>
+<td>RandomRule：随机策略</td>
+<td>如果随机到的server为null或者不可用的话，会while不停的循环选取</td>
+</tr>
+<tr>
+<td>RetryRule：重试策略</td>
+<td>一定时限内循环重试。默认继承RoundRobinRule，也支持自定义注入，RetryRule会在每次选取之后，对选举的server进行判断，是否为null，是否alive，并且在500ms内会不停的选取判断。而RoundRobinRule失效的策略是超过10次，RandomRule是没有失效时间的概念，只要serverList没都挂。</td>
+</tr>
+<tr>
+<td>BestAvailableRule：最小连接数策略</td>
+<td>遍历serverList，选取出可用的且连接数最小的一个server。该算法里面有一个LoadBalancerStats的成员变量，会存储所有server的运行状况和连接数。如果选取到的server为null，那么会调用RoundRobinRule重新选取。</td>
+</tr>
+<tr>
+<td>AvailabilityFilteringRule： 可用过滤策略</td>
+<td>扩展了轮询策略，会先通过默认的轮询选取一个server，再去判断该server是否超时可用，当前连接数是否超限，都成功再返回。</td>
+</tr>
+<tr>
+<td>ZoneAvoidanceRule：区域权衡策略（默认策略）</td>
+<td>扩展了轮询策略，继承了2个过滤器：ZoneAvoidancePredicate和AvailabilityPredicate，除了过滤超时和链接数过多的server，还会过滤掉不符合要求的zone区域里面的所有节点， 在一个区域/机房内的服务实例中轮询。先过滤再轮询</td>
+</tr>
+</tbody></table>
+<p><strong>修改负载均衡策略</strong></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#针对的被调用方微服务名称,不加就是全局生效</span></span><br><span class="line"><span class="attr">spring-service-product:</span></span><br><span class="line">	<span class="attr">ribbon:</span></span><br><span class="line">		<span class="attr">NFLoadBalancerRuleClassName:</span> <span class="string">com.netflix.loadbalancer.RandomRule</span> <span class="comment">#随机策略</span></span><br></pre></td></tr></table></figure>
+<h3 id="Ribbon源码剖析"><a href="#Ribbon源码剖析" class="headerlink" title="Ribbon源码剖析"></a>Ribbon源码剖析</h3><p><a href="https://imgtu.com/i/4VI5ut"><img src="https://z3.ax1x.com/2021/09/15/4VI5ut.png" alt="4VI5ut.png"></a></p>
+<p>SpringCloud充分利用了SpringBoot的自动装配特点，在spring-cloud-commons包中找spring.factories配置文件</p>
+<p><a href="https://imgtu.com/i/4V7eAK"><img src="https://z3.ax1x.com/2021/09/15/4V7eAK.png" alt="4V7eAK.png"></a></p>
+<p>进入 LoadBalancerAutoConfiguration 类中</p>
+<p><a href="https://imgtu.com/i/4VHEvj"><img src="https://z3.ax1x.com/2021/09/15/4VHEvj.png" alt="4VHEvj.png"></a></p>
+<p><strong>注入RestTemplate拦截器</strong>： 为RestTemplate对象设置loadBalancerInterceptor</p>
+<p><a href="https://imgtu.com/i/4VHjiT"><img src="https://z3.ax1x.com/2021/09/15/4VHjiT.png" alt="4VHjiT.png"></a></p>
+<p>所以，添加了注解的RestTemplate对象会被添加一个拦截器LoadBalancerInterceptor， 该拦截器就是后续拦截请求进行负载处理的。</p>
+<h2 id="Hystrix熔断器"><a href="#Hystrix熔断器" class="headerlink" title="Hystrix熔断器"></a>Hystrix熔断器</h2><p>属于一种容错机制</p>
+<h3 id="服务雪崩相关概念"><a href="#服务雪崩相关概念" class="headerlink" title="服务雪崩相关概念"></a>服务雪崩相关概念</h3><p><strong>服务雪崩效应</strong>：是一种因“服务提供者的不可用”（原因）导致“服务调用者不可用”（结果），并将不可用逐渐放大，导致整个系统瘫痪。</p>
+<p><a href="https://imgtu.com/i/4VqP1g"><img src="https://z3.ax1x.com/2021/09/15/4VqP1g.png" alt="4VqP1g.png"></a></p>
+<p>扇入大，说明该模块复用性好 ，扇出大，说明业务逻辑复杂 ；扇入大是一个好事，扇出大不一定是好事</p>
+<p>最下游商品微服务响应时间过长，大量请求阻塞，大量线程不会释放，会导致服务器 资源耗尽，最终导致上游服务甚至整个系统瘫痪</p>
+<p><strong>服务雪崩的过程可以分为三个阶段</strong></p>
+<p><a href="https://imgtu.com/i/4VLMIP"><img src="https://z3.ax1x.com/2021/09/15/4VLMIP.png" alt="4VLMIP.png"></a></p>
+<p><strong>雪崩效应解决方案</strong></p>
+<ul>
+<li>服务熔断<ul>
+<li>熔断机制是应对雪崩效应的一种微服务链路保护机制，当扇出链路的某个微服务不可用或者响应时间太长时，熔断该节点微服务的调用，进行服务的降级，快速返回错误的响应信息。当检测到该节点微服务调用响应正常后，恢复调用链路。</li>
+</ul>
+</li>
+<li>服务降级<ul>
+<li>整体资源不够用了，先将一些不关紧的服务停掉（调用服务的时候，直接返回一个预留的 值，也叫做兜底数据），待渡过难关高峰过去，再把那些服务打开。</li>
+</ul>
+</li>
+<li>服务限流<ul>
+<li>限制总并发数（比如数据库连接池、线程池） </li>
+<li>限制瞬时并发数（如nginx限制瞬时并发连接数） </li>
+<li>限制时间窗口内的平均速率（如Guava的RateLimiter、nginx的limit_req模块，限制每秒的平均速 率） </li>
+<li>限制远程接口调用速率、限制MQ的消费速率等</li>
+</ul>
+</li>
+</ul>
+<h3 id="Hystrix简介"><a href="#Hystrix简介" class="headerlink" title="Hystrix简介"></a>Hystrix简介</h3><p>Hystrix主 要通过以下几点实现延迟和容错。 </p>
+<ul>
+<li>包裹请求：使用@HystrixCommand包裹对依赖的调用逻辑。 </li>
+<li>跳闸机制：当某服务的错误率超过一定的阈值时，Hystrix可以跳闸，停止请求该服务一段时间。 </li>
+<li>资源隔离：Hystrix为每个依赖都维护了一个小型的线程池(舱壁模式)。如果该线程池已满， 发往该 依赖的请求就被立即拒绝，而不是排队等待，从而加速失败判定。 </li>
+<li>监控：Hystrix可以近乎实时地监控运行指标和配置的变化，例如成功、失败、超时、以及被拒绝 的请求等。 </li>
+<li>回退机制：当请求失败、超时、被拒绝，或当断路器打开时，执行回退逻辑。回退逻辑由开发人员 自行提供，例如返回一个缺省值。 </li>
+<li>自我修复：断路器打开一段时间后，会自动进入“半开”状态（探测服务是否可用，如还是不可用， 再次退回打开状态）。</li>
+</ul>
+<h3 id="Hystrix的使用"><a href="#Hystrix的使用" class="headerlink" title="Hystrix的使用"></a>Hystrix的使用</h3><h4 id="熔断处理"><a href="#熔断处理" class="headerlink" title="熔断处理"></a>熔断处理</h4><p>需求：页面静态化微服务调用商品微服务，如果长时间没有响应，则页面静态化微服务快速失败给用户提示</p>
+<p><strong>引入依赖</strong>   </p>
+<p>服务消费者（静态化微服务）中引入Hystrix依赖（也可以添加在父工程中）</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--熔断器Hystrix--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-hystrix<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>开启熔断</strong></p>
+<p>启动类中添加熔断器开启注解@EnableCircuitBreaker</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 注解简化写法</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@SpringCloudApplication</span> =</span></span><br><span class="line"><span class="comment">    	<span class="doctag">@SpringBootApplication</span>+<span class="doctag">@EnableDiscoveryClient</span>+<span class="doctag">@EnableCircuitBreaker</span></span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableDiscoveryClient</span> <span class="comment">//@EnableEurekaClient</span></span><br><span class="line"><span class="meta">@EnableCircuitBreaker</span> <span class="comment">// 开启熔断</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PageApplication</span> </span>&#123;<span class="comment">// 省略&#125;</span></span><br></pre></td></tr></table></figure>
+<p><strong>定义服务熔断处理方法</strong></p>
+<p>配置@HystrixCommand注解</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 使用@HystrixCommand注解进行熔断控制</span></span><br><span class="line"><span class="meta">@HystrixCommand(</span></span><br><span class="line"><span class="meta">    // 线程池标识，要保持唯一，不唯一的话就共用</span></span><br><span class="line"><span class="meta">    threadPoolKey = &quot;port&quot;,</span></span><br><span class="line"><span class="meta">    // 线程池细节属性配置</span></span><br><span class="line"><span class="meta">    threadPoolProperties = &#123;</span></span><br><span class="line"><span class="meta">        @HystrixProperty(name = &quot;coreSize&quot;, value = &quot;1&quot;), // 线程并发数</span></span><br><span class="line"><span class="meta">        @HystrixProperty(name = &quot;maxQueueSize&quot;, value = &quot;20&quot;) // 线程队列最大值，默认-1，不开启</span></span><br><span class="line"><span class="meta">        @HystrixProperty(name = &quot;queueSizeRejectionThreshold&quot;, value = &quot;15&quot;) //控制队列最大阈值,默认值5,达到该值后，请求也会被拒绝，需搭配 maxQueueSize 使用</span></span><br><span class="line"><span class="meta">    &#125;,</span></span><br><span class="line"><span class="meta">    // 熔断的一些细节属性配置</span></span><br><span class="line"><span class="meta">    commandProperties = &#123;</span></span><br><span class="line"><span class="meta">        // 请求超时时间</span></span><br><span class="line"><span class="meta">        @HystrixProperty(name = &quot;execution.isolation.thread.timeoutInMilliseconds&quot;, value = &quot;2000&quot;),</span></span><br><span class="line"><span class="meta">    &#125;</span></span><br><span class="line"><span class="meta">)</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;port&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">port</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    String url = <span class="string">&quot;http://spring-service-product/product/port&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> restTemplate.getForObject(url, String.class);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可在 spring-service-product提供放的product/port方法上添加一Thread.Sleep() 来模拟超时操作 </p>
+<h4 id="服务降级"><a href="#服务降级" class="headerlink" title="服务降级"></a>服务降级</h4><p>使用@HystrixCommand的fallbackMethod属性关联到服务降 级处理方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 服务降级</span></span><br><span class="line"><span class="meta">@HystrixCommand(</span></span><br><span class="line"><span class="meta">    commandProperties = &#123;</span></span><br><span class="line"><span class="meta">        // 请求超时时间</span></span><br><span class="line"><span class="meta">        @HystrixProperty(name = &quot;execution.isolation.thread.timeoutInMilliseconds&quot;, value = &quot;2000&quot;) </span></span><br><span class="line"><span class="meta">    &#125;,</span></span><br><span class="line"><span class="meta">    fallbackMethod = &quot;fallBack&quot; // 服务降级调用方法</span></span><br><span class="line"><span class="meta">)</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;port2&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">port2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    String url = <span class="string">&quot;http://spring-service-product/product/port02&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> restTemplate.getForObject(url, String.class);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 服务降级调用方法,该方法形参和返回值与原始方法保持一致</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">fallBack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;-1&quot;</span>; <span class="comment">// 返回兜底数据</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>HysTrix舱壁模式</strong>     </p>
+<p>如果不进行任何设置，添加了@HystrixCommand注解的所有熔断方法使用同一个Hystrix线程池（10个线程）,这样很容易导致线程不可以的问题。</p>
+<p>为了避免问题服务请求过多导致正常服务无法访问，Hystrix 不是采用增加线程数，而是单独的为每一个 控制方法创建一个线程池的方式，这种模式叫做“舱壁模式”，也是线程隔离的手段。</p>
+<p>我们只需要在@HystrixCommand里面设置  threadPoolKey 的值不唯一即可。</p>
+<h3 id="Hystrix工作流程与高级应用"><a href="#Hystrix工作流程与高级应用" class="headerlink" title="Hystrix工作流程与高级应用"></a>Hystrix工作流程与高级应用</h3><p><a href="https://imgtu.com/i/4Zep1e"><img src="https://z3.ax1x.com/2021/09/15/4Zep1e.png" alt="4Zep1e.png"></a></p>
+<p>1）当调用出现问题时，开启一个时间窗（10s） </p>
+<p>2）在这个时间窗内，统计调用次数是否达到最小请求数？ </p>
+<p>​        如果没有达到，则重置统计信息，回到第1步 如果达到了，则统计失败的请求数占所有请求数的百分比，是否达到阈值？</p>
+<p>​        如果达到，则跳闸（不再请求对应服务） 如果没有达到，则重置统计信息，回到第1步 </p>
+<p>3）如果跳闸，则会开启一个活动窗口（默认5s），每隔5s，Hystrix会让一个请求通过,到达那个问题服 务，看是否调用成功，如果成功，重置断路器回到第1步，如果失败，回到第3步</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 8秒钟内，请求次数达到2个，并且失败率在50%以上，就跳闸</span></span><br><span class="line"><span class="comment">* 跳闸后活动窗口设置为3s</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@HystrixCommand(</span></span><br><span class="line"><span class="meta">    commandProperties = &#123;</span></span><br><span class="line"><span class="meta">        //统计窗口时间的设置</span></span><br><span class="line"><span class="meta">        @HystrixProperty(name =</span></span><br><span class="line"><span class="meta">                         &quot;metrics.rollingStats.timeInMilliseconds&quot;,value = &quot;8000&quot;),</span></span><br><span class="line"><span class="meta">        //统计窗口内的最小请求数</span></span><br><span class="line"><span class="meta">        @HystrixProperty(name =</span></span><br><span class="line"><span class="meta">                         &quot;circuitBreaker.requestVolumeThreshold&quot;,value = &quot;2&quot;),</span></span><br><span class="line"><span class="meta">        //统计窗口内错误请求阈值的设置 50%</span></span><br><span class="line"><span class="meta">        @HystrixProperty(name =</span></span><br><span class="line"><span class="meta">                         &quot;circuitBreaker.errorThresholdPercentage&quot;,value = &quot;50&quot;),</span></span><br><span class="line"><span class="meta">        //自我修复的活动窗口时间</span></span><br><span class="line"><span class="meta">        @HystrixProperty(name =</span></span><br><span class="line"><span class="meta">                         &quot;circuitBreaker.sleepWindowInMilliseconds&quot;,value = &quot;3000&quot;)</span></span><br><span class="line"><span class="meta">    &#125;</span></span><br><span class="line"><span class="meta">)</span></span><br></pre></td></tr></table></figure>
+<p><strong>以上的所有配在也可以在配置文件中完成</strong></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 配置熔断策略：</span></span><br><span class="line"><span class="attr">hystrix:</span></span><br><span class="line">	<span class="comment"># 连接池设置</span></span><br><span class="line">    <span class="attr">threadpool:</span></span><br><span class="line">        <span class="attr">default:</span></span><br><span class="line">            <span class="attr">coreSize:</span> <span class="number">10</span> <span class="comment">#并发执行的最大线程数，默认10</span></span><br><span class="line">            <span class="attr">maxQueueSize:</span> <span class="number">1000</span> <span class="comment">#BlockingQueue的最大队列数，默认值-1</span></span><br><span class="line">            <span class="attr">queueSizeRejectionThreshold:</span> <span class="number">800</span> <span class="comment">#即使maxQueueSize没有达到，达到queueSizeRejectionThreshold该值后，请求也会被拒绝，默认值5</span></span><br><span class="line">    <span class="comment"># 命令设置        </span></span><br><span class="line">    <span class="attr">command:</span></span><br><span class="line">        <span class="attr">default:</span></span><br><span class="line">            <span class="attr">circuitBreaker:</span></span><br><span class="line">            	<span class="comment"># 强制打开熔断器，如果该属性设置为true，强制断路器进入打开状态，将会拒绝所有的请求。默认false关闭的</span></span><br><span class="line">                <span class="attr">forceOpen:</span> <span class="literal">false</span></span><br><span class="line">                <span class="comment"># 熔断触发最小请求次数，默认值是20</span></span><br><span class="line">            	<span class="attr">requestVolumeThreshold:</span> <span class="number">2</span></span><br><span class="line">                <span class="comment"># 触发熔断错误比例阈值，默认值50%</span></span><br><span class="line">                <span class="attr">errorThresholdPercentage:</span> <span class="number">50</span></span><br><span class="line">                <span class="comment"># 熔断后休眠时长，默认值5秒</span></span><br><span class="line">                <span class="attr">sleepWindowInMilliseconds:</span> <span class="number">3000</span></span><br><span class="line">            <span class="attr">execution:</span></span><br><span class="line">            	<span class="attr">isolation:</span></span><br><span class="line">            		<span class="attr">thread:</span></span><br><span class="line">                        <span class="comment"># 熔断超时设置，默认为1秒</span></span><br><span class="line">                        <span class="attr">timeoutInMilliseconds:</span> <span class="number">2000</span></span><br></pre></td></tr></table></figure>
+<p>基于springboot的健康检查观察跳闸状态（自动投递微服务暴露健康检查细节）</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># springboot中暴露健康检查等断点接口</span></span><br><span class="line"><span class="attr">management:</span></span><br><span class="line">    <span class="attr">endpoints:</span></span><br><span class="line">        <span class="attr">web:</span></span><br><span class="line">        	<span class="attr">exposure:</span></span><br><span class="line">        		<span class="attr">include:</span> <span class="string">&quot;*&quot;</span></span><br><span class="line">    <span class="comment"># 暴露健康接口的细节</span></span><br><span class="line">    <span class="attr">endpoint:</span></span><br><span class="line">        <span class="attr">health:</span></span><br><span class="line">        	<span class="attr">show-details:</span> <span class="string">always</span></span><br></pre></td></tr></table></figure>
+<p>访问健康检查接口：<a href="http://localhost:9100/actuator/health">http://localhost:9100/actuator/health</a></p>
+<h2 id="Feign远程调用"><a href="#Feign远程调用" class="headerlink" title="Feign远程调用"></a>Feign远程调用</h2><p>续。。。</p>
+<h2 id="Gateway网关"><a href="#Gateway网关" class="headerlink" title="Gateway网关"></a>Gateway网关</h2><h2 id="Spring-Cloud-Config-分布式配置中心"><a href="#Spring-Cloud-Config-分布式配置中心" class="headerlink" title="Spring Cloud Config 分布式配置中心"></a>Spring Cloud Config 分布式配置中心</h2><h1 id="第二代核心组件SCA"><a href="#第二代核心组件SCA" class="headerlink" title="第二代核心组件SCA"></a>第二代核心组件SCA</h1><h2 id="Nacos服务支持和配置中心"><a href="#Nacos服务支持和配置中心" class="headerlink" title="Nacos服务支持和配置中心"></a>Nacos服务支持和配置中心</h2><h2 id="Sentinel分布式系统流量防卫兵"><a href="#Sentinel分布式系统流量防卫兵" class="headerlink" title="Sentinel分布式系统流量防卫兵"></a>Sentinel分布式系统流量防卫兵</h2>]]></content>
       <categories>
         <category>微服务</category>
       </categories>
