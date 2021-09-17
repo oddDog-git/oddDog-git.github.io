@@ -13586,9 +13586,9 @@
 <figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># springboot中暴露健康检查等断点接口</span></span><br><span class="line"><span class="attr">management:</span></span><br><span class="line">  <span class="attr">endpoints:</span></span><br><span class="line">    <span class="attr">web:</span></span><br><span class="line">      <span class="attr">exposure:</span></span><br><span class="line">        <span class="attr">include:</span> <span class="string">bus-refresh</span>   <span class="comment"># &quot;*&quot;表示暴露所有端口</span></span><br></pre></td></tr></table></figure>
 <p><strong>测试</strong></p>
 <p>重启各个服务，修改git上的值后，向配置中心服务端发送POST请求:</p>
-<p><a href="http://127.0.0.1:9300/actuator/bus-refresh">http://127.0.0.1:9300/actuator/bus-refresh</a>  ，所有客户端中的配置都会刷新</p>
+<p><a href="http://127.0.0.1:9400/actuator/bus-refresh">http://127.0.0.1:9400/actuator/bus-refresh</a>  ，所有客户端中的配置都会刷新</p>
 <p>如果只想刷新单个客户端，则访问</p>
-<p><a href="http://localhost:9006/actuator/bus-refresh/spring-service-page:9101">http://localhost:9006/actuator/bus-refresh/spring-service-page:9101</a> ，加上 <strong>服务名:端口号</strong> 即可</p>
+<p><a href="http://localhost:9400/actuator/bus-refresh/spring-service-page:9101">http://localhost:9400/actuator/bus-refresh/spring-service-page:9101</a> ，加上 <strong>服务名:端口号</strong> 即可</p>
 <h1 id="第二代核心组件SCA"><a href="#第二代核心组件SCA" class="headerlink" title="第二代核心组件SCA"></a>第二代核心组件SCA</h1><p>Spring Cloud第一代核心组件主要以Netflix开源为主，而第二代核心组件Spring Cloud Alibaba 也是一套微服务解决方案，包含开发分布式应用微服 务的必需组件。</p>
 <p><a href="https://imgtu.com/i/4eyGDg"><img src="https://z3.ax1x.com/2021/09/16/4eyGDg.png" alt="4eyGDg.png"></a></p>
 <p><strong>阿里开源组件</strong> </p>
