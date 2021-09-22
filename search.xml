@@ -14520,7 +14520,8 @@
 </ol>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -id --name&#x3D;c_redis -p 6379:6379 redis</span><br></pre></td></tr></table></figure>
 <p>部署完毕，使用外部机器连接redis。</p>
-<h1 id="迁移与备份"><a href="#迁移与备份" class="headerlink" title="迁移与备份"></a>迁移与备份</h1>]]></content>
+<h1 id="迁移与备份"><a href="#迁移与备份" class="headerlink" title="迁移与备份"></a>迁移与备份</h1><p>续。。。</p>
+]]></content>
       <categories>
         <category>部署</category>
       </categories>
