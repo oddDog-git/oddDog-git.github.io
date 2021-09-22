@@ -14354,4 +14354,15 @@
         <tag>ElasticSearch</tag>
       </tags>
   </entry>
+  <entry>
+    <title>docker虚拟化技术</title>
+    <url>/2021/09/22/docker%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>部署</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+      </tags>
+  </entry>
 </search>
