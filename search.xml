@@ -14520,7 +14520,32 @@
 </ol>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -id --name&#x3D;c_redis -p 6379:6379 redis</span><br></pre></td></tr></table></figure>
 <p>部署完毕，使用外部机器连接redis。</p>
-<h1 id="迁移与备份"><a href="#迁移与备份" class="headerlink" title="迁移与备份"></a>迁移与备份</h1><p>续。。。</p>
+<h1 id="迁移与备份"><a href="#迁移与备份" class="headerlink" title="迁移与备份"></a>迁移与备份</h1><p><strong>应用场景</strong>： 开发环境中，在Docker里安装很多的容器，进行对应的配置，将Docker中的运行的容器持久化 为镜像，将对应的镜像安装到生产环境中。</p>
+<p>1.将开发环境下的Docker中对应的容器持久化为镜像 </p>
+<p>2.将镜像保存为一个压缩包，发送到生产环境服务器中 </p>
+<p>3.生产环境中需要将压缩包–&gt;镜像–&gt;容器</p>
+<p><strong>容器保存为镜像</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker commit &#123;正在运行容器名称&#x2F;容器ID&#125; &#123;镜像名称&#125;:&#123;镜像标签&#125;</span><br></pre></td></tr></table></figure>
+<p>举例 : 将  redis 容器持久化成镜像，镜像名为   redis ，标签为 version_hui_1.0.0</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker commit redis redis:version_hui_1.0.0</span><br></pre></td></tr></table></figure>
+<p>镜像标签如果不写默认为latest , 最好是加上标签以便区分。</p>
+<p><strong>镜像备份</strong></p>
+<p>将镜像保存为 tar 文件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker save -o &#123;压缩包存放路径&#125; &#123;镜像名称&#x2F;镜像ID&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>-o :输出到的文件</li>
+</ul>
+<p>举例: 将 redis:version_hui_1.0.0 镜像在当前目录压缩成 redis.tar 文件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker save -o redis.tar redis:version_hui_1.0.0 </span><br></pre></td></tr></table></figure>
+<p><strong>镜像恢复与迁移</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker load -i &#123;备份的镜像文件&#125; </span><br></pre></td></tr></table></figure>
+<ul>
+<li>-i :指定导入的文件</li>
+</ul>
+<p>举例:  加载将刚刚生成的压缩包 redis.tar</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker load -i redis.tar </span><br></pre></td></tr></table></figure>
+<p>执行后再次查看镜像，可以看到镜像已经恢复，可以再次运行测试</p>
+<p>over。。。</p>
 ]]></content>
       <categories>
         <category>部署</category>
