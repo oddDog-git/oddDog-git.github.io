@@ -14357,7 +14357,170 @@
   <entry>
     <title>docker虚拟化技术</title>
     <url>/2021/09/22/docker%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p><strong>虚拟化技术</strong>是一种计算机资源管理技术，是将计算机的各种实体资源，如服务器、网络、内存及存储 等，予以抽象、转换后呈现出来。<a id="more"></a>虚拟化技术打破了计算机实体结构间的，不可切割的障碍。使用户可 以比原本的组态更好的方式，来应用这些资源。 </p>
+<p><strong>虚拟化技术主要作用</strong></p>
+<ul>
+<li>高性能的物理硬件产能过剩和老的旧的硬件产能过低的重组重用，透明化底层物理硬件 </li>
+<li>软件跨环境迁移问题(代码的水土不服</li>
+</ul>
+<p><strong>Docker</strong> 是一个开源的应用容器引擎，诞生于 2013 年初，基于 Go 语言实现， dotCloud 公司出品（后 改名为Docker Inc）； </p>
+<p>Docker 可以让开发者打包他们的应用，以及依赖包到一个轻量级、可移植的容器中，然后发布到任何 流行的 Linux 机器上。</p>
+<p>Docker容器是完全使用<strong>沙箱机制</strong>，相互隔离，性能开销也极低。 从 17.03 版本之后，Docker分为 CE（Community Edition: 社区版） 和 EE（Enterprise Edition: 企业 版）</p>
+<p>Docker通俗的讲是服务器中高性能的虚拟机，可以将一台物理机 虚拟N多台虚拟机的机器，互相之间隔 离，互不影响。</p>
+<p><strong>特点</strong></p>
+<ul>
+<li>标准化交付：Docker将应用打包成标准化单元，用于交付、部署； </li>
+<li>轻量级：容器及包含了软件运行所需的所有环境，而且非常轻量级 </li>
+<li>高可靠：容器化的应用程序，可以在任何Linux环境中始终如一的运行</li>
+<li>隔离性：容器化的应用程序，具备隔离性，这样多团队可以共享同一Linux系统资源</li>
+</ul>
+<p><strong>容器与虚拟机比较</strong> </p>
+<p>下图中，可见Docker是在操作系统层面上实现虚拟 化，直接复用本地主机的操作系统，而传统方式则是在硬件层面实现。</p>
+<p><a href="https://imgtu.com/i/4U9jW4"><img src="https://z3.ax1x.com/2021/09/22/4U9jW4.png" alt="4U9jW4.png"></a></p>
+<p>相同点 :  容器和虚拟机都是虚拟化技术，具备资源隔离和分配优势:</p>
+<p>不同点 ：Docker虚拟化的是操作系统，虚拟机虚拟化的是硬件；传统虚拟机可以运行不同的操作系统，Docker主要运行同一类操作系统(Linux)</p>
+<p><strong>Docker基本概念</strong></p>
+<p><a href="https://imgtu.com/i/4UPxq1"><img src="https://z3.ax1x.com/2021/09/22/4UPxq1.png" alt="4UPxq1.png"></a></p>
+<ul>
+<li>宿主机：安装Docker守护进程的Linux服务器，称之为宿主机； </li>
+<li>镜像（Image）：Docker 镜像，就相当于是一个 root 文件系统。除了提供容器运行时所需的程序、 库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数。 </li>
+<li>容器（Container）：镜像运行之后的实体，镜像和容器的关系，就像是面向对象程序设计中的类和对 象一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停 等。 </li>
+<li>仓库（Repository）：仓库可看成一个镜像控制中心，用来保存镜像。就像maven的中央仓库。</li>
+</ul>
+<h1 id="Docker安装与启动"><a href="#Docker安装与启动" class="headerlink" title="Docker安装与启动"></a>Docker安装与启动</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>linux版本 ： centOS 7.7  。注意，一定安 装在CentOS 7.x及以上版本，CentOS6.x的版本中有Bug！</p>
+<p>(2)查看电脑上已经已经安装Docker</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum list installed | grep docker</span><br></pre></td></tr></table></figure>
+<p>(2)安装docker</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum -y install docker  # 没指定版本就是按照最新版本</span><br></pre></td></tr></table></figure>
+<p>(3)安装后查看docker版本 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker -v</span><br></pre></td></tr></table></figure>
+<h2 id="守护进程相关命令"><a href="#守护进程相关命令" class="headerlink" title="守护进程相关命令"></a>守护进程相关命令</h2><p><strong>systemctl命令是系统服务管理器指令</strong></p>
+<p>启动docker     <code>systemctl start docker</code></p>
+<p>停止docker     <code>systemctl stop docker</code></p>
+<p>重启docker   <code>systemctl restart docker</code></p>
+<p>查看docker状态     <code>systemctl status docker</code></p>
+<p>开机启动     <code>systemctl enable docker</code></p>
+<p>查看docker概要信息     <code>docker info</code></p>
+<p>查看docker帮助文档     <code>docker --help</code></p>
+<h2 id="镜像加速"><a href="#镜像加速" class="headerlink" title="镜像加速"></a>镜像加速</h2><p>默认情况，将从docker hub（<a href="https://hub.docker.com/%EF%BC%89%E4%B8%8B%E8%BD%BDdocker%E9%95%9C%E5%83%8F%E5%A4%AA%E6%85%A2%EF%BC%8C%E4%B8%80%E8%88%AC%E9%83%BD%E4%BC%9A%E9%85%8D%E7%BD%AE%E9%95%9C%E5%83%8F%E5%8A%A0">https://hub.docker.com/）下载docker镜像太慢，一般都会配置镜像加</a> 速器；</p>
+<p><strong>方案一: 中科大</strong></p>
+<p>中国科学技术大学(ustc)是老牌的linux镜像服务提供者了，还在遥远的ubuntu 5.04版本的时候就在 用。ustc的docker镜像加速器速度很快。ustc docker mirror的优势之一就是不需要注册，是真正的公 共服务。地址 ： <a href="https://lug.ustc.edu.cn/wiki/mirrors/help/docker">https://lug.ustc.edu.cn/wiki/mirrors/help/docker</a></p>
+<p>1）编辑文件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;docker&#x2F;daemon.json</span><br></pre></td></tr></table></figure>
+<p>2）在该文件中输入如下内容：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	&quot;registry-mirrors&quot;: [&quot;https:&#x2F;&#x2F;docker.mirrors.ustc.edu.cn&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>方案二: 阿里云</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">&quot;registry-mirrors&quot;: [&quot;https:&#x2F;&#x2F;3ad96kxd.mirror.aliyuncs.com&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>必须要注册，每个人分配一个免费的docker镜像加速地址，速度极快</p>
+<p><strong>配置完成记得刷新配置</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
+<h1 id="Docker常用命令"><a href="#Docker常用命令" class="headerlink" title="Docker常用命令"></a>Docker常用命令</h1><h2 id="镜像相关命令"><a href="#镜像相关命令" class="headerlink" title="镜像相关命令"></a>镜像相关命令</h2><p><strong>查看镜像</strong>  <code>docker images</code></p>
+<p><a href="https://imgtu.com/i/4UA8Qe"><img src="https://z3.ax1x.com/2021/09/22/4UA8Qe.png" alt="4UA8Qe.png"></a></p>
+<p>这些镜像都是存储在Docker宿主机的/var/lib/docker目录下</p>
+<p><strong>搜索镜像</strong> <code>docker search imageName</code></p>
+<p>从网络中查找需要的镜像,必须联网。</p>
+<p><a href="https://imgtu.com/i/4UVpCV"><img src="https://z3.ax1x.com/2021/09/22/4UVpCV.png" alt="4UVpCV.png"></a></p>
+<p><strong>拉取镜像</strong>  <code>docker pull imageName：version</code> </p>
+<p>从Docker仓库下载镜像到本地，镜像名称格式为 名称:版本号，如果不指定版本号则是下载最新的版本。如果不知道镜像版本，可以去docker hub 搜索对应镜像查看。</p>
+<p>如 ：<code>docker pull tomcat:8.5</code></p>
+<p><strong>删除镜像</strong>   <code>docker rmi imageId</code> </p>
+<p>按镜像ID删除镜像, 删除之前要确认此镜像已经没有被容器在使用</p>
+<h2 id="容器相关命令"><a href="#容器相关命令" class="headerlink" title="容器相关命令"></a>容器相关命令</h2><h3 id="查看容器"><a href="#查看容器" class="headerlink" title="查看容器"></a>查看容器</h3><p>查看正在运行的容器   <code>docker ps</code></p>
+<p><a href="https://imgtu.com/i/4UVhMF"><img src="https://z3.ax1x.com/2021/09/22/4UVhMF.png" alt="4UVhMF.png"></a></p>
+<p>查看所有容器   <code>docker ps -a/all</code></p>
+<p>查看最后一次运行的容器  <code>docker ps -l</code></p>
+<p>查看停止的容器  <code>docker ps -f status=exited</code></p>
+<h3 id="创建与进入容器"><a href="#创建与进入容器" class="headerlink" title="创建与进入容器"></a>创建与进入容器</h3><p>创建容器命令    <code>docker run 参数 镜像名称:镜像标签 /bin/bash</code></p>
+<ul>
+<li><p>镜像名称:镜像标签 可以被镜像id代替，唯一标识</p>
+</li>
+<li><p>/bin/bash：进入容器之后，初始化执行的命令, 可写可不写</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">## 命令参数详解</span><br><span class="line">-i：表示运行容器,如果不加该参数那么只是通过镜像创建容器，而不启动。</span><br><span class="line"></span><br><span class="line">-t：表示容器启动后会进入其命令行。加入这两个参数后，容器创建就能登录进去。即分配一个伪终端(如果只加it两个参数，创建后就会自动进去容器)。</span><br><span class="line"></span><br><span class="line">-d：在run后面加上-d参数,则会创建一个守护式容器在后台运行（这样创建容器后不会自动登录容器）。</span><br><span class="line"></span><br><span class="line">--name :为创建的容器命名。</span><br><span class="line"></span><br><span class="line">-v：表示目录映射关系（前者是宿主机目录，后者是映射到宿主机上的目录），可以使用多个－v做多个目录或文件映射。注意：最好做目录映射，在宿主机上做修改，然后共享到容器上。</span><br><span class="line"></span><br><span class="line">-p：表示端口映射，前者是宿主机端口，后者是容器内的映射端口。可以使用多个-p做多个端口映射，例如：可以将Docker中Tomcat容器的8080端口映射到宿主机上的某一个端口8080，那么以后访问tomcat只需要：http:&#x2F;&#x2F;宿主机的IP：8080&#x2F;</span><br></pre></td></tr></table></figure>
+<p><strong>交互式容器</strong></p>
+<p>使用交互式运行容器，容器运行后直接进入到容器内部，退出容器内部后，容器直接关闭 只有第一次才会这样，以后再启动容器就是一个守护式的。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -it --name&#x3D;容器名称 镜像名称:标签 &#x2F;bin&#x2F;bash</span><br></pre></td></tr></table></figure>
+<p><strong>守护式容器</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -id --name&#x3D;容器名称 镜像名称:标签 &#x2F;bin&#x2F;bash</span><br></pre></td></tr></table></figure>
+<p><strong>登录容器/进入容器的目录</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker exec -it 容器名称(或者容器ID) &#x2F;bin&#x2F;bash</span><br></pre></td></tr></table></figure>
+<p>注意：这里的登陆容器之后执行的脚本  /bin/bash  必须写</p>
+<p><strong>退出当前容器</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">exit</span><br></pre></td></tr></table></figure>
+<h3 id="停止与启动容器"><a href="#停止与启动容器" class="headerlink" title="停止与启动容器"></a>停止与启动容器</h3><p>停止容器  <code>docker stop 容器名称(或者容器ID)</code></p>
+<p>启动容器  <code>docker start 容器名称(或者容器ID)</code></p>
+<h3 id="删除容器"><a href="#删除容器" class="headerlink" title="删除容器"></a>删除容器</h3><p>删除指定的容器，正在运行的容器无法删除</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker rm 容器名称(或容器ID)</span><br></pre></td></tr></table></figure>
+<h3 id="文件拷贝"><a href="#文件拷贝" class="headerlink" title="文件拷贝"></a>文件拷贝</h3><p>将宿主机的文件拷贝到容器内可以使用cp命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#将当前目录下的hui.html拷贝到tomcat容器的webapps目录下</span><br><span class="line">docker cp hui.html 容器id:&#x2F;usr&#x2F;local&#x2F;tomcat&#x2F;webapps</span><br></pre></td></tr></table></figure>
+<p>也可以将文件从容器内拷贝出到宿主机</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#将tomcat容器的文件拷贝带当前目录下</span><br><span class="line">docker cp 容器id:&#x2F;usr&#x2F;local&#x2F;tomcat&#x2F;webapps&#x2F;hui.html .&#x2F;</span><br></pre></td></tr></table></figure>
+<h3 id="目录挂载"><a href="#目录挂载" class="headerlink" title="目录挂载"></a>目录挂载</h3><p>创建容器 添加  -v  宿主机目录:容器目录</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -di -v &#x2F;usr&#x2F;local&#x2F;myhtml:&#x2F;usr&#x2F;local&#x2F;myhtml --name&#x3D;tomcat tomcat:8.5</span><br></pre></td></tr></table></figure>
+<h3 id="端口映射"><a href="#端口映射" class="headerlink" title="端口映射"></a>端口映射</h3><p>创建容器 添加  -p  宿主机端口号:容器端口号</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -di -p 8080:8080 --name&#x3D;tomcat tomcat:8.5</span><br></pre></td></tr></table></figure>
+<h3 id="查看容器ip地址"><a href="#查看容器ip地址" class="headerlink" title="查看容器ip地址"></a>查看容器ip地址</h3><p>输入以下命令，会出现很多容器的信息，ip地址相关在Networks中</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker inspect 容器名称（容器ID）</span><br></pre></td></tr></table></figure>
+<p>也可以直接执行下面的命令直接输出IP地址</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker inspect --format&#x3D;&#39;&#123;&#123;.NetworkSettings.IPAddress&#125;&#125;&#39; 容器名称（容器ID）</span><br></pre></td></tr></table></figure>
+<h1 id="数据卷-Volumes"><a href="#数据卷-Volumes" class="headerlink" title="数据卷(Volumes)"></a>数据卷(Volumes)</h1><p>数据卷是宿主机中的一个目录或文件，当容器目录和数据卷目录绑定后，对方的修改会立即同步。</p>
+<p> 一个数据卷可以被多个容器同时挂载，一个容器也可以被挂载多个数据卷</p>
+<p><strong>数据卷作用</strong> </p>
+<ul>
+<li>容器数据持久化 </li>
+<li>外部机器和容器间接通信 </li>
+<li>容器之间数据交换</li>
+</ul>
+<p><a href="https://imgtu.com/i/4UK3qS"><img src="https://z3.ax1x.com/2021/09/22/4UK3qS.png" alt="4UK3qS.png" style="zoom: 50%;" /></a></p>
+<p><strong>挂载数据卷</strong></p>
+<p>创建启动容器时，使用 –v 参数 设置数据卷</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run ... –v 宿主机目录(文件):容器内目录(文件) ...</span><br></pre></td></tr></table></figure>
+<p><strong>查看容器已挂载的数据卷</strong></p>
+<p>执行 <code>docker inspect 容器名称（容器ID）</code> 命令</p>
+<p><a href="https://imgtu.com/i/4UKWxx"><img src="https://z3.ax1x.com/2021/09/22/4UKWxx.png" alt="4UKWxx.png"></a></p>
+<p><strong>一个容器可以挂载多个数据卷，使用多个 -v</strong> </p>
+<p><strong>多个容器挂载1个数据卷，实现数据共享</strong></p>
+<p><strong>多个容器挂载1个容器(这1个容器挂载1个数据卷)</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">##创建启动c3数据卷容器，使用 –v 参数 设置数据卷</span><br><span class="line">docker run -di --name&#x3D;c3 -v &#x2F;root&#x2F;host_data_common:&#x2F;root&#x2F;c3_data centos:7 &#x2F;bin&#x2F;bash</span><br><span class="line">##创建启动 c1 c2 容器，使用 –-volumes-from 参数 设置数据卷</span><br><span class="line">docker run -di --name&#x3D;c1 --volumes-from c3 centos:7 &#x2F;bin&#x2F;bash</span><br><span class="line">docker run -di --name&#x3D;c2 --volumes-from c3 centos:7 &#x2F;bin&#x2F;bash</span><br></pre></td></tr></table></figure>
+<p><a href="https://imgtu.com/i/4UMpdg"><img src="https://z3.ax1x.com/2021/09/22/4UMpdg.png" alt="4UMpdg.png" style="zoom: 80%;" /></a></p>
+<h1 id="Docker部署软件"><a href="#Docker部署软件" class="headerlink" title="Docker部署软件"></a>Docker部署软件</h1><h2 id="MySQL部署"><a href="#MySQL部署" class="headerlink" title="MySQL部署"></a>MySQL部署</h2><p>1）拉取mysql镜像</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker pull mysql:5.7</span><br></pre></td></tr></table></figure>
+<p>2）创建容器，设置端口映射、目录映射</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -di --name&#x3D;mysql_5.7 -p 3307:3306 -v &#x2F;root&#x2F;mysql&#x2F;logs:&#x2F;logs -v &#x2F;root&#x2F;mysql&#x2F;data:&#x2F;var&#x2F;lib&#x2F;mysql -e MYSQL_ROOT_PASSWORD&#x3D;123456 mysql:5.7</span><br></pre></td></tr></table></figure>
+<p><strong>参数说明</strong></p>
+<ul>
+<li>-p 3307:3306：将容器的 3306 端口映射到宿主机的 3307 端口。</li>
+<li>-v /root/mysql/logs:/logs：将主机目录(/root/mysql)下的 logs 目录挂载到容器中的 /logs。日志目录 </li>
+<li>-v /root/mysql/data:/var/lib/mysql ：将宿主机目录(/root/mysql)下的data目录挂载到容 器的 /var/lib/mysql 。数据目录 </li>
+<li>-e MYSQL_ROOT_PASSWORD=123456：初始化 root 用户的密码</li>
+</ul>
+<p>部署完毕，可以使用 SQLyog进行远程连接测试。</p>
+<h2 id="Tomcat部署"><a href="#Tomcat部署" class="headerlink" title="Tomcat部署"></a>Tomcat部署</h2><p>1）拉取tomcat镜像</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker pull tomcat:8-jdk8</span><br></pre></td></tr></table></figure>
+<p>2)创建容器，设置端口映射、目录映射</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -di --name&#x3D;c_tomcat -p 8080:8080 -v &#x2F;root&#x2F;tomcat&#x2F;webapps:&#x2F;usr&#x2F;local&#x2F;tomcat&#x2F;webapps tomcat:8-jdk8</span><br></pre></td></tr></table></figure>
+<p><strong>参数说明</strong> </p>
+<ul>
+<li>-p 8080:8080：将容器的8080端口映射到主机的8080端口 </li>
+<li>-v /root/tomcat/webapps:/usr/local/tomcat/webapps：将主机目录 (/root/tomcat/webapps)挂载到容器的webapps</li>
+</ul>
+<p>部署完毕。可在在/root/tomcat/webapps下创建ROOT/index.html,并编辑，使用外部机器访问 8080 端口</p>
+<h2 id="Nginx部署"><a href="#Nginx部署" class="headerlink" title="Nginx部署"></a>Nginx部署</h2><p>1）拉取nginx镜像</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker pull nginx</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>创建容器，设置端口映射</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -di --name&#x3D;mynginx -p 80:80 nginx</span><br></pre></td></tr></table></figure>
+<p>部署完毕，使用外部机器访问 80 端口</p>
+<h2 id="Redis部署"><a href="#Redis部署" class="headerlink" title="Redis部署"></a>Redis部署</h2><p>1）拉取redis镜像</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker pull redis</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>创建容器，设置端口映射</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -id --name&#x3D;c_redis -p 6379:6379 redis</span><br></pre></td></tr></table></figure>
+<p>部署完毕，使用外部机器连接redis。</p>
+<h1 id="迁移与备份"><a href="#迁移与备份" class="headerlink" title="迁移与备份"></a>迁移与备份</h1>]]></content>
       <categories>
         <category>部署</category>
       </categories>
