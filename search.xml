@@ -10244,6 +10244,46 @@
 <li>JMS是定义了统一接口，统一消息操作；AMQP通过协议统一数据交互格式 </li>
 <li>JMS必须是java语言；AMQP只是协议，与语言无关</li>
 </ul>
+<p><strong>JMS vs AMQP</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>JMS</th>
+<th>AMQP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>定义</td>
+<td>Java</td>
+<td>api</td>
+</tr>
+<tr>
+<td>跨语言</td>
+<td>否</td>
+<td>是</td>
+</tr>
+<tr>
+<td>跨平台</td>
+<td>否</td>
+<td>是</td>
+</tr>
+<tr>
+<td>Model</td>
+<td>提供两种消息模型/模式：（1）、Peer-2- Peer（2）、Pub/sub</td>
+<td>提供了五种消息模型：（1）、direct exchange（2）、fanout exchange（3）、topic change（4）、headers exchange（5）、system exchange本质来讲，后四种和JMS的pub/sub模型没有太大差别，仅是在路 由机制上做了更详细的划分；</td>
+</tr>
+<tr>
+<td>支持消 息类型</td>
+<td>多种消息类型：TextMessage、 MapMessage、BytesMessage、 StreamMessage、ObjectMessage、 Message （只有消息头和属性）</td>
+<td>byte[]当实际应用时，有复杂的消息，可以将消息序列化后发送</td>
+</tr>
+<tr>
+<td>综合评 价</td>
+<td>JMS 定义了JAVA API层面的标准；在java 体系中，多个client均可以通过JMS进行交 互，不需要应用修改代码，但是其对跨平 台的支持较差；</td>
+<td>AMQP定义了wire-level层的协议标准；天然具有跨平台、跨语言特性</td>
+</tr>
+</tbody></table>
 <p><strong>ErLang语言</strong></p>
 <ul>
 <li>Erlang（[‘ə:læŋ]）是一种通用的面向并发的编程语言，它由瑞典电信设备制造商爱立信所辖的CSLab开发，目的是创造一种可以应对大规模并发活动的编程语言和运行环境 </li>
@@ -10259,6 +10299,8 @@
 <li><p>总结：如果你希望使用一个可靠性高、功能强大、易于管理的消息队列系统那么就选择RabbitMQ；如果你想用一个性能高，但偶尔丢点数据不是很在乎，可以使用kafka或者zeroMQ 。kafka和zeroMQ的性能爆表，绝对可以压RabbitMQ一头！</p>
 </li>
 </ul>
+<p><strong>消息队列产品对比</strong></p>
+<p><a href="https://imgtu.com/i/4rG5ee"><img src="https://z3.ax1x.com/2021/09/25/4rG5ee.png" alt="4rG5ee.png"></a></p>
 <p><strong>RabbitMQ各组件功能</strong></p>
 <p><a href="https://imgtu.com/i/hKOy24"><img src="https://z3.ax1x.com/2021/08/27/hKOy24.png" alt="hKOy24.png"></a></p>
 <ul>
@@ -12898,6 +12940,375 @@
       </categories>
       <tags>
         <tag>docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>消息队列之Kafka</title>
+    <url>/2021/09/25/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E4%B9%8BKafka/</url>
+    <content><![CDATA[<p>Kafka是最初由Linkedin公司开发，是一个分布式、分区的、多副本的、多订阅者，基于zookeeper协调的分布式日志系统（也可以当做 MQ系统），常见可以用于web/nginx日志、访问日志，消息服务等等，Linkedin于2010年贡献给了Apache基金会并成为顶级开源项目。 主要应用场景是：日志收集系统和消息系统。<a id="more"></a></p>
+<p>官网：<a href="http://kafka.apache.org/">http://kafka.apache.org/</a></p>
+<h1 id="kafka介绍"><a href="#kafka介绍" class="headerlink" title="kafka介绍"></a>kafka介绍</h1><p><strong>kafka特点</strong></p>
+<p>（1）解耦。Kafka具备消息系统的优点，只要生产者和消费者数据两端遵循接口约束，就可以自行扩展或修改数据处理的业务过程。 </p>
+<p>（2）高吞吐量、低延迟。即使在非常廉价的机器上，Kafka也能做到每秒处理几十万条消息，而它的延迟最低只有几毫秒。 </p>
+<p>（3）持久性。Kafka可以将消息直接持久化在普通磁盘上，且磁盘读写性能优异。 </p>
+<p>（4）扩展性。Kafka集群支持热扩展，Kaka集群启动运行后，用户可以直接向集群添。 </p>
+<p>（5）容错性。Kafka会将数据备份到多台服务器节点中，即使Kafka集群中的某一台加新的Kafka服务节点宕机，也不会影响整个系统的功 能。 </p>
+<p>（6）支持多种客户端语言。Kafka支持Java、.NET、PHP、Python等多种语言。 </p>
+<p>（7） 支持多生产者和多消费者。</p>
+<p><strong>kafka架构</strong></p>
+<p><a href="https://imgtu.com/i/4rJ1l6"><img src="https://z3.ax1x.com/2021/09/25/4rJ1l6.png" alt="4rJ1l6.png"></a></p>
+<ul>
+<li>Kafka Cluster：由多个服务器组成。每个服务器单独的名字broker（掮客）。 </li>
+<li>kafka broker：kafka集群中包含的服务器 </li>
+<li>Kafka Producer：消息生产者、发布消息到 kafka 集群的终端或服务。 </li>
+<li>Kafka consumer：消息消费者、负责消费数据。 </li>
+<li>Kafka Topic: 主题，一类消息的名称。存储数据时将一类数据存放在某个topci下。</li>
+<li>Partition：分区，物理上的概念，每个topic包含一个或多个partition，一个partition对应一个文件夹，这个文件夹下存储partition的 数据和索引文件，每个partition<strong>内部是有序</strong>的</li>
+</ul>
+<p>注意：Kafka的元数据都是存放在zookeeper中</p>
+<p><strong>Topic与Partition关系</strong> </p>
+<ul>
+<li>对于每一个topic， Kafka集群都会维持一个分区日志。</li>
+<li>每个分区都是有序且顺序不可变的记录集，并且不断地追加到结构化的commit log文件。 </li>
+<li>分区中的每一个记录都会分配一个id号来表示顺序，称之为offset，offset用来唯一的标识分区中每一条记录。</li>
+</ul>
+<p><a href="https://imgtu.com/i/4rJTnU"><img src="https://z3.ax1x.com/2021/09/25/4rJTnU.png" alt="4rJTnU.png"></a></p>
+<h1 id="kafka集群搭建"><a href="#kafka集群搭建" class="headerlink" title="kafka集群搭建"></a>kafka集群搭建</h1><h2 id="传统集群搭建"><a href="#传统集群搭建" class="headerlink" title="传统集群搭建"></a>传统集群搭建</h2><p><strong>关系图</strong></p>
+<p><a href="https://imgtu.com/i/4rYYvV"><img src="https://z3.ax1x.com/2021/09/25/4rYYvV.png" alt="4rYYvV.png"></a></p>
+<h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><p>虚拟机准备三台服务器, 安装jdk1.8 ,其中每一台虚拟机的hosts文件中都需要配置如下的内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">192.168.200.11 node1</span><br><span class="line">192.168.200.12 node2</span><br><span class="line">192.168.200.13 node3</span><br></pre></td></tr></table></figure>
+<p>先克隆一台虚拟机node1，记得重新生成 网络适配器中的MAC地址</p>
+<p><strong>修改IP地址</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-ens33</span><br></pre></td></tr></table></figure>
+<ul>
+<li>bootproto=static，表示使用静态IP </li>
+<li>onboot=yes，表示将网卡设置为开机启用 </li>
+<li>将原有的原有IP修改为192.168.200.11</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">IPADDR&#x3D;192.168.200.11</span><br></pre></td></tr></table></figure>
+<ul>
+<li>重启网络服务</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">service network restart</span><br></pre></td></tr></table></figure>
+<p><strong>修改host</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi &#x2F;etc&#x2F;hosts</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#添加下面内容</span><br><span class="line">192.168.200.11 node1</span><br><span class="line">192.168.200.12 node2</span><br><span class="line">192.168.200.13 node3</span><br></pre></td></tr></table></figure>
+<p>重启hosts</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;etc&#x2F;init.d&#x2F;network restart</span><br></pre></td></tr></table></figure>
+<p><strong>创建安装目录</strong></p>
+<p>安装包存放的目录：/export/software<br>安装程序存放的目录：/export/servers<br>数据目录：/export/data<br>日志目录：/export/logs</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir -p &#x2F;export&#x2F;servers&#x2F;</span><br><span class="line">mkdir -p &#x2F;export&#x2F;software&#x2F;</span><br><span class="line">mkdir -p &#x2F;export&#x2F;data&#x2F;</span><br><span class="line">mkdir -p &#x2F;export&#x2F;logs&#x2F;</span><br></pre></td></tr></table></figure>
+<p><strong>安装JDK</strong></p>
+<p>上传JDK文件  <strong>jdk-8u261-linux-x64.rpm</strong>,使用rpm安装,默认的安装路径是/usr/java/jdk1.8.0_261-amd64</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">rpm -ivh jdk-8u261-linux-x64.rpm</span><br></pre></td></tr></table></figure>
+<p> 配置JAVA_HOME</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi &#x2F;etc&#x2F;profile</span><br><span class="line"># 文件最后添加两行</span><br><span class="line">export JAVA_HOME&#x3D;&#x2F;usr&#x2F;java&#x2F;jdk1.8.0_261-amd64</span><br><span class="line">export PATH&#x3D;$PATH:$JAVA_HOME&#x2F;bin</span><br></pre></td></tr></table></figure>
+<p>退出vi，使配置生效</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">source &#x2F;etc&#x2F;profile</span><br></pre></td></tr></table></figure>
+<p>查看JDK是否安装成功</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure>
+<h3 id="zookeeper集群搭建"><a href="#zookeeper集群搭建" class="headerlink" title="zookeeper集群搭建"></a>zookeeper集群搭建</h3><p>上传zookeeper-3.4.14.tar.gz , 解压并配置zookeeper（配置data目录，集群节点）</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 解压到&#x2F;opt目录</span><br><span class="line">tar -zxf zookeeper-3.4.14.tar.gz -C &#x2F;opt</span><br></pre></td></tr></table></figure>
+<p>创建配置文件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;opt&#x2F;zookeeper-3.4.14&#x2F;conf</span><br><span class="line"># 配置文件重命名后生效</span><br><span class="line">cp zoo_sample.cfg zoo.cfg</span><br></pre></td></tr></table></figure>
+<p>编辑配置文件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi zoo.cfg</span><br><span class="line"># 设置数据目录</span><br><span class="line">dataDir&#x3D;&#x2F;var&#x2F;lagou&#x2F;zookeeper&#x2F;data</span><br><span class="line"># 添加</span><br><span class="line">server.1&#x3D;node1:2881:3881</span><br><span class="line">server.2&#x3D;node2:2881:3881</span><br><span class="line">server.3&#x3D;node3:2881:3881</span><br><span class="line"># 退出vim</span><br></pre></td></tr></table></figure>
+<p>创建zookeeper数据目录，并标记</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir -p &#x2F;var&#x2F;lagou&#x2F;zookeeper&#x2F;data</span><br><span class="line"># 当前zookeeper在集群中的标记</span><br><span class="line">echo 1 &gt; &#x2F;var&#x2F;lagou&#x2F;zookeeper&#x2F;data&#x2F;myid</span><br></pre></td></tr></table></figure>
+<p>配置环境变量</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi &#x2F;etc&#x2F;profile</span><br><span class="line"># 添加</span><br><span class="line">export ZOOKEEPER_PREFIX&#x3D;&#x2F;opt&#x2F;zookeeper-3.4.14</span><br><span class="line">export PATH&#x3D;$PATH:$ZOOKEEPER_PREFIX&#x2F;bin</span><br><span class="line">export ZOO_LOG_DIR&#x3D;&#x2F;var&#x2F;lagou&#x2F;zookeeper&#x2F;log</span><br><span class="line"># 退出vim，让配置生效</span><br><span class="line">source &#x2F;etc&#x2F;profile</span><br></pre></td></tr></table></figure>
+<p><strong>node2配置</strong></p>
+<p>克隆node1虚拟机，重写生成MAC地址，修改ip地址:192.168.200.12</p>
+<p>写入当前zookeeper在集群中的标记</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo 2 &gt; &#x2F;var&#x2F;lagou&#x2F;zookeeper&#x2F;data&#x2F;myid</span><br></pre></td></tr></table></figure>
+<p><strong>node3配置</strong></p>
+<p>克隆node1虚拟机，重写生成MAC地址，修改ip地址:192.168.200.13</p>
+<p>写入当前zookeeper在集群中的标记</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo 3 &gt; &#x2F;var&#x2F;lagou&#x2F;zookeeper&#x2F;data&#x2F;myid</span><br></pre></td></tr></table></figure>
+<p><strong>启动zookeeper</strong></p>
+<p>三台机器都启动</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">zkServer.sh start</span><br></pre></td></tr></table></figure>
+<p><strong>查看状态</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">zkServer.sh status</span><br></pre></td></tr></table></figure>
+<h3 id="kafka集群搭建-1"><a href="#kafka集群搭建-1" class="headerlink" title="kafka集群搭建"></a>kafka集群搭建</h3><p><strong>下载安装包</strong></p>
+<p>中文网站: <a href="http://kafka.apachecn.org/">http://kafka.apachecn.org/</a>  ，这里使用 kafka_2.11-1.0.0.tgz 版本 </p>
+<p><strong>上传安装包到 /export/software 目录，解压</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">tar -zxvf kafka_2.11-1.0.0.tgz -C &#x2F;export&#x2F;servers&#x2F;</span><br><span class="line">cd &#x2F;export&#x2F;servers&#x2F;</span><br><span class="line"># 重命名</span><br><span class="line">mv kafka_2.11-1.0.0 kafka</span><br></pre></td></tr></table></figure>
+<p><strong>修改kafka的核心配置文件</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;export&#x2F;servers&#x2F;kafka&#x2F;config&#x2F;</span><br><span class="line">vi server.properties</span><br></pre></td></tr></table></figure>
+<p>主要修改一下5个地方: </p>
+<ol>
+<li><p>broker.id 需要保证每一台kafka都有一个独立的broker </p>
+</li>
+<li><p>log.dirs 数据存放的目录 </p>
+</li>
+<li><p>zookeeper.connect zookeeper的连接地址信息 </p>
+</li>
+<li><p>host.name 主机的名称 </p>
+</li>
+<li><p>修改: listeners=PLAINTEXT://node1:9092</p>
+</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">broker.id 标识了kafka集群中一个唯一broker。</span></span><br><span class="line">broker.id=0</span><br><span class="line"><span class="meta">#</span><span class="bash"> 存放生产者生产的数据 数据一般以topic的方式存放</span></span><br><span class="line">log.dirs=/export/data/kafka</span><br><span class="line"><span class="meta">#</span><span class="bash"> zk的信息</span></span><br><span class="line">zookeeper.connect=node1:2181,node2:2181,node3:2181</span><br><span class="line"><span class="meta">#</span><span class="bash"> 主机名称</span></span><br><span class="line">host.name=node1</span><br><span class="line"><span class="meta">#</span><span class="bash"> listeners</span></span><br><span class="line">listeners=PLAINTEXT://node1:9092</span><br></pre></td></tr></table></figure>
+<p><strong>将配置好的kafka分发到其他二台主机</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;export&#x2F;servers</span><br><span class="line">scp -r kafka&#x2F; node2:$PWD</span><br><span class="line">scp -r kafka&#x2F; node3:$PWD</span><br></pre></td></tr></table></figure>
+<p>Linux scp 命令用于 Linux 之间复制文件和目录。 </p>
+<p>scp 是 secure copy 的缩写, scp 是 linux 系统下基于 ssh 登陆进行安全的远程文件拷贝命令。</p>
+<ul>
+<li>拷贝后, 需要修改每一台的broker.id 和 host.name和listeners</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ip为11的服务器: broker.id&#x3D;0 , host.name&#x3D;node1 listeners&#x3D;PLAINTEXT:&#x2F;&#x2F;node1:9092</span><br><span class="line">ip为12的服务器: broker.id&#x3D;1 , host.name&#x3D;node2 listeners&#x3D;PLAINTEXT:&#x2F;&#x2F;node2:9092</span><br><span class="line">ip为13的服务器: broker.id&#x3D;2 , host.name&#x3D;node3 listeners&#x3D;PLAINTEXT:&#x2F;&#x2F;node3:9092</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在每一台的服务器执行创建数据文件的命令</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir -p &#x2F;export&#x2F;data&#x2F;kafka</span><br></pre></td></tr></table></figure>
+<p><strong>启动集群</strong></p>
+<p>注意: zookeeper集群一定要先启动</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;export&#x2F;servers&#x2F;kafka&#x2F;bin</span><br><span class="line"></span><br><span class="line">#前台启动</span><br><span class="line">.&#x2F;kafka-server-start.sh &#x2F;export&#x2F;servers&#x2F;kafka&#x2F;config&#x2F;server.properties</span><br><span class="line"></span><br><span class="line">#后台启动</span><br><span class="line">nohup .&#x2F;kafka-server-start.sh &#x2F;export&#x2F;servers&#x2F;kafka&#x2F;config&#x2F;server.properties 2&gt;&amp;1 &amp;</span><br><span class="line">注意：可以启动一台broker，单机版。也可以同时启动三台broker，组成一个kafka集群版</span><br><span class="line"></span><br><span class="line">#kafka停止</span><br><span class="line">.&#x2F;kafka-server-stop.sh</span><br></pre></td></tr></table></figure>
+<p>可登录zookeeper客户端查看</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">zkCli.sh</span><br><span class="line">ls &#x2F;brokers&#x2F;ids</span><br></pre></td></tr></table></figure>
+<h2 id="Docker搭建Kafka集群"><a href="#Docker搭建Kafka集群" class="headerlink" title="Docker搭建Kafka集群"></a>Docker搭建Kafka集群</h2><p><strong>架构</strong></p>
+<table>
+<thead>
+<tr>
+<th>hostname</th>
+<th>ip addr</th>
+<th>port</th>
+<th>listener</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>zoo1</td>
+<td>192.168.0.11</td>
+<td>2184:2181</td>
+<td></td>
+</tr>
+<tr>
+<td>zoo2</td>
+<td>192.168.0.12</td>
+<td>2185:2181</td>
+<td></td>
+</tr>
+<tr>
+<td>zoo3</td>
+<td>192.168.0.13</td>
+<td>2186:2181</td>
+<td></td>
+</tr>
+<tr>
+<td>kafka1</td>
+<td>192.168.0.14</td>
+<td>9092:9092</td>
+<td>kafka1</td>
+</tr>
+<tr>
+<td>kafka2</td>
+<td>192.168.0.15</td>
+<td>9093:9092</td>
+<td>kafka1</td>
+</tr>
+<tr>
+<td>kafka3</td>
+<td>192.168.0.16</td>
+<td>9094:9092</td>
+<td>kafka1</td>
+</tr>
+<tr>
+<td>kafka-manager</td>
+<td>192.168.0.17</td>
+<td>9000:9000</td>
+<td></td>
+</tr>
+<tr>
+<td>宿主机</td>
+<td>192.168.200.20</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p><strong>克隆VM，修改ip地址：192.168.200.20</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi &#x2F;etc&#x2F;sysconfig&#x2F;network-scrpits&#x2F;ifcfg-ens33</span><br><span class="line">IPADDR&#x3D;192.168.200.20</span><br><span class="line">#退出vi，并重启网络服务</span><br><span class="line">service network restart</span><br></pre></td></tr></table></figure>
+<p><strong>安装docker-compose</strong></p>
+<p>Compose 是用于定义和运行多容器 Docker 应用程序的工具</p>
+<p>使用原来的方式操作docker，需要对zookeeper安装3次，kafka安装3次，kafka-Manage安装1次。引入Compose之后可以使用yaml格式的配置文件配置好这些信息，每个image只需要编写一个yaml文件，可以在文件中定义集群信 息、端口映射等信息，运行该文件即可创建完成集群。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">curl 是一种命令行工具，作用是发出网络请求，然后获取数据</span></span><br><span class="line">curl -L https://github.com/docker/compose/releases/download/1.8.0/run.sh &gt; /usr/local/bin/docker-compose</span><br><span class="line"><span class="meta">#</span><span class="bash">chmod（change mode）命令是控制用户对文件的权限的命令</span></span><br><span class="line">chmod +x /usr/local/bin/docker-compose</span><br><span class="line"><span class="meta">#</span><span class="bash">查看版本</span></span><br><span class="line">docker-compose --version</span><br></pre></td></tr></table></figure>
+<p><strong>拉取镜像</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#拉取Zookeeper镜像</span><br><span class="line">docker pull zookeeper:3.4</span><br><span class="line">#拉取kafka镜像</span><br><span class="line">docker pull wurstmeister&#x2F;kafka</span><br><span class="line">#拉取kafka-manager镜像</span><br><span class="line">docker pull sheepkiller&#x2F;kafka-manager:latest</span><br></pre></td></tr></table></figure>
+<p> <strong>创建集群网络</strong> </p>
+<p>基于Linux宿主机而工作的，也是在Linux宿主机创建，创建之后Docker容器中的各个应用程序可以使用该网络。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#创建</span><br><span class="line">docker network create --driver bridge --subnet 192.168.0.0&#x2F;24 --gateway 192.168.0.1 kafka</span><br><span class="line">#查看</span><br><span class="line">docker network ls</span><br></pre></td></tr></table></figure>
+<p><strong>网络设置</strong> </p>
+<p>新建网段之后可能会出现：WARNING: IPv4 forwarding is disabled. Networking will not work. </p>
+<p>解决方式： </p>
+<ol>
+<li><p>在宿主机上执行：</p>
+<p> echo “net.ipv4.ip_forward=1” &gt;&gt;/usr/lib/sysctl.d/00-system.conf </p>
+</li>
+<li><p>重启network和docker服务</p>
+<p> systemctl restart network &amp;&amp; systemctl restart docker</p>
+</li>
+</ol>
+<h3 id="搭建集群"><a href="#搭建集群" class="headerlink" title="搭建集群"></a>搭建集群</h3><p>每个镜像一个Yml文件</p>
+<p>**docker-compose-zookeeper.yml **</p>
+<p>Zookeeper各个节点的信息，端口映射，集群信息，网络配置</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;2&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">zoo1:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">zookeeper:3.4</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">zoo1</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">zoo1</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">2184</span><span class="string">:2181</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">ZOO_MY_ID:</span> <span class="number">1</span></span><br><span class="line">      <span class="attr">ZOO_SERVERS:</span> <span class="string">server.1=zoo1:2888:3888</span> <span class="string">server.2=zoo2:2888:3888</span> <span class="string">server.3=zoo3:2888:3888</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="attr">kafka:</span></span><br><span class="line">        <span class="attr">ipv4_address:</span> <span class="number">192.168</span><span class="number">.0</span><span class="number">.11</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">zoo2:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">zookeeper:3.4</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">zoo2</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">zoo2</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">2185</span><span class="string">:2181</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">ZOO_MY_ID:</span> <span class="number">2</span></span><br><span class="line">      <span class="attr">ZOO_SERVERS:</span> <span class="string">server.1=zoo1:2888:3888</span> <span class="string">server.2=0.0.0.0:2888:3888</span> <span class="string">server.3=zoo3:2888:3888</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="attr">kafka:</span></span><br><span class="line">        <span class="attr">ipv4_address:</span> <span class="number">192.168</span><span class="number">.0</span><span class="number">.12</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">zoo3:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">zookeeper:3.4</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">zoo3</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">zoo3</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">2186</span><span class="string">:2181</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">ZOO_MY_ID:</span> <span class="number">3</span></span><br><span class="line">      <span class="attr">ZOO_SERVERS:</span> <span class="string">server.1=zoo1:2888:3888</span> <span class="string">server.2=zoo2:2888:3888</span> <span class="string">server.3=0.0.0.0:2888:3888</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="attr">kafka:</span></span><br><span class="line">        <span class="attr">ipv4_address:</span> <span class="number">192.168</span><span class="number">.0</span><span class="number">.13</span></span><br><span class="line"></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">kafka:</span></span><br><span class="line">    <span class="attr">external:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">kafka</span></span><br></pre></td></tr></table></figure>
+<p><strong>docker-compose-kafka.yml</strong></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;2&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">kafka1:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">wurstmeister/kafka</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">kafka1</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">kafka1</span></span><br><span class="line">    <span class="attr">privileged:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">9092</span><span class="string">:9092</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">KAFKA_ADVERTISED_HOST_NAME:</span> <span class="string">kafka1</span></span><br><span class="line">      <span class="attr">KAFKA_LISTENERS:</span> <span class="string">PLAINTEXT://kafka1:9092</span></span><br><span class="line">      <span class="attr">KAFKA_ADVERTISED_LISTENERS:</span> <span class="string">PLAINTEXT://kafka1:9092</span></span><br><span class="line">      <span class="attr">KAFKA_ADVERTISED_PORT:</span> <span class="number">9092</span></span><br><span class="line">      <span class="attr">KAFKA_ZOOKEEPER_CONNECT:</span> <span class="string">zoo1:2181,zoo2:2181,zoo3:2181</span></span><br><span class="line">    <span class="attr">external_links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">zoo1</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">zoo2</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">zoo3</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="attr">kafka:</span></span><br><span class="line">        <span class="attr">ipv4_address:</span> <span class="number">192.168</span><span class="number">.0</span><span class="number">.14</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">kafka2:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">wurstmeister/kafka</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">kafka2</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">kafka2</span></span><br><span class="line">    <span class="attr">privileged:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">9093</span><span class="string">:9093</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">KAFKA_ADVERTISED_HOST_NAME:</span> <span class="string">kafka2</span></span><br><span class="line">      <span class="attr">KAFKA_LISTENERS:</span> <span class="string">PLAINTEXT://kafka2:9093</span></span><br><span class="line">      <span class="attr">KAFKA_ADVERTISED_LISTENERS:</span> <span class="string">PLAINTEXT://kafka2:9093</span></span><br><span class="line">      <span class="attr">KAFKA_ADVERTISED_PORT:</span> <span class="number">9093</span></span><br><span class="line">      <span class="attr">KAFKA_ZOOKEEPER_CONNECT:</span> <span class="string">zoo1:2181,zoo2:2181,zoo3:2181</span></span><br><span class="line">    <span class="attr">external_links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">zoo1</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">zoo2</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">zoo3</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="attr">kafka:</span></span><br><span class="line">        <span class="attr">ipv4_address:</span> <span class="number">192.168</span><span class="number">.0</span><span class="number">.15</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">kafka3:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">wurstmeister/kafka</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">kafka3</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">kafka3</span></span><br><span class="line">    <span class="attr">privileged:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">9094</span><span class="string">:9094</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">KAFKA_ADVERTISED_HOST_NAME:</span> <span class="string">kafka3</span></span><br><span class="line">      <span class="attr">KAFKA_LISTENERS:</span> <span class="string">PLAINTEXT://kafka3:9094</span></span><br><span class="line">      <span class="attr">KAFKA_ADVERTISED_LISTENERS:</span> <span class="string">PLAINTEXT://kafka3:9094</span></span><br><span class="line">      <span class="attr">KAFKA_ADVERTISED_PORT:</span> <span class="number">9094</span></span><br><span class="line">      <span class="attr">KAFKA_ZOOKEEPER_CONNECT:</span> <span class="string">zoo1:2181,zoo2:2181,zoo3:2181</span></span><br><span class="line">    <span class="attr">external_links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">zoo1</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">zoo2</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">zoo3</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="attr">kafka:</span></span><br><span class="line">        <span class="attr">ipv4_address:</span> <span class="number">192.168</span><span class="number">.0</span><span class="number">.16</span></span><br><span class="line"></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">kafka:</span></span><br><span class="line">    <span class="attr">external:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">kafka</span></span><br></pre></td></tr></table></figure>
+<p><strong>docker-compose-manager.yml</strong></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;2&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">kafka-manager:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">sheepkiller/kafka-manager:latest</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">kafka-manager</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">kafka-manager</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">     <span class="bullet">-</span> <span class="number">9000</span><span class="string">:9000</span></span><br><span class="line">    <span class="attr">environment:</span> <span class="comment"># 管理zoo集群与kafka集群</span></span><br><span class="line">     <span class="attr">ZK_HOSTS:</span> <span class="string">zoo1:2181,zoo2:2181,zoo3:2181</span></span><br><span class="line">     <span class="attr">KAFKA_BROKERS:</span> <span class="string">kafka1:9092,kafka2:9092,kafka3:9092</span></span><br><span class="line">     <span class="attr">APPLICATION_SECRET:</span> <span class="string">letmein</span></span><br><span class="line">     <span class="attr">KM_ARGS:</span> <span class="string">-Djava.net.preferIPv4Stack=true</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">     <span class="attr">kafka:</span></span><br><span class="line">      <span class="attr">ipv4_address:</span> <span class="number">192.168</span><span class="number">.0</span><span class="number">.17</span></span><br><span class="line"></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">kafka:</span></span><br><span class="line">    <span class="attr">external:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">kafka</span></span><br></pre></td></tr></table></figure>
+<p><strong>开始部署</strong></p>
+<p>使用命令：<code>docker-compose -f 文件位置 up -d</code></p>
+<p>参数说明：-f 加载指定位置的yaml文件  ， up表示启动， -d表示后台运行</p>
+<p>示例： </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker-compose -f &#x2F;home&#x2F;docker-compose-zookeeper.yml up -d  # 启动zookeeper集群</span><br><span class="line">docker-compose -f &#x2F;home&#x2F;docker-compose-kafka.yml up -d   	# 启动kafka集群</span><br><span class="line">docker-compose -f &#x2F;home&#x2F;docker-compose-manager.yml up -d	# 启动kafka-manager</span><br></pre></td></tr></table></figure>
+<p>浏览器访问宿主机： <a href="http://192.168.200.20:9000/">http://192.168.200.20:9000/</a></p>
+<p>刚启动没有如何东西，需要手动添加zoo集群，点击Cluster下拉列表–&gt;Add Cluster </p>
+<p>Cluster Name ：集群名，自定义</p>
+<p>Cluster Zookeeper Hosts:  zoo1:2181, zoo2:2181, zoo3:2181</p>
+<p>单击save即可。</p>
+<h1 id="kafka的基本操作"><a href="#kafka的基本操作" class="headerlink" title="kafka的基本操作"></a>kafka的基本操作</h1><p>docker环境中演示</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#登录到Kafka容器</span><br><span class="line">docker exec -it kafka1 &#x2F;bin&#x2F;bash</span><br><span class="line">#切换到bin目录</span><br><span class="line">cd opt&#x2F;kafka&#x2F;bin&#x2F;</span><br></pre></td></tr></table></figure>
+<h2 id="1-创建topic"><a href="#1-创建topic" class="headerlink" title="(1)创建topic"></a>(1)创建topic</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kafka-topics.sh --create --zookeeper zoo1:2181 --replication-factor 3 --partitions 1 --topic test</span><br></pre></td></tr></table></figure>
+<p>–create：新建命令 </p>
+<p>–zookeeper：Zookeeper节点，一个或多个 </p>
+<p>–replication-factor：指定副本，每个分区有三个副本</p>
+<p>–partitions：   指定分区</p>
+<p>– topic ： 主题名称</p>
+<h2 id="2-查看所有topic"><a href="#2-查看所有topic" class="headerlink" title="(2)查看所有topic"></a>(2)查看所有topic</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kafka-topics.sh --list --zookeeper zoo1:2181,zoo2:2181,zoo3:2181</span><br></pre></td></tr></table></figure>
+<p>__consumer_offsets 这个topic是由kafka自动创建的，默认50个分区，存储消费位移信息（offset），老版本架构中是存储在Zookeeper 中。</p>
+<h2 id="3-生产者生产数据"><a href="#3-生产者生产数据" class="headerlink" title="(3)生产者生产数据"></a>(3)生产者生产数据</h2><p>Kafka自带一个命令行客户端，它从文件或标准输入中获取输入，并将其作为message（消息）发送到Kafka集群。 默认情况下，每行将作为单独的message发送。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#运行producer，指定topic主题</span><br><span class="line">kafka-console-producer.sh --broker-list kafka1:9092,kafka2:9093,kafka3:9094 --topic test</span><br><span class="line">#发送消息</span><br><span class="line">This is a message</span><br><span class="line">This is another message</span><br></pre></td></tr></table></figure>
+<h2 id="4-消费者消费数据"><a href="#4-消费者消费数据" class="headerlink" title="(4) 消费者消费数据"></a>(4) 消费者消费数据</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kafka-console-consumer.sh --bootstrap-server kafka1:9092, kafka2:9093, kafka3:9094 --topic test --frombeginning</span><br></pre></td></tr></table></figure>
+<p>在使用的时候会用到bootstrap与broker.list其实是实现一个功能，broker.list是旧版本命令。</p>
+<h2 id="5-查看topic的相关详细信息"><a href="#5-查看topic的相关详细信息" class="headerlink" title="(5) 查看topic的相关详细信息"></a>(5) 查看topic的相关详细信息</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#查看topic主题详情，Zookeeper节点写一个和全部写，效果一致</span><br><span class="line">kafka-topics.sh --describe --zookeeper zoo1:2181,zoo2:2181,zoo3:2181 --topic test</span><br><span class="line">#结果列表</span><br><span class="line">Topic: test1 PartitionCount: 3 ReplicationFactor: 3 Configs:</span><br><span class="line">    Topic: test1 Partition: 0 Leader: 1001 Replicas: 1001,1003,1002 Isr: 1001,1003,1002</span><br><span class="line">    Topic: test1 Partition: 1 Leader: 1002 Replicas: 1002,1001,1003 Isr: 1002,1001,1003</span><br><span class="line">    Topic: test1 Partition: 2 Leader: 1003 Replicas: 1003,1002,1001 Isr: 1003,1002,1001</span><br></pre></td></tr></table></figure>
+<p>leader：是负责给定分区的所有读取和写入的节点。每个节点将成为随机选择的分区部分的领导者。 </p>
+<p>replicas：显示给定partiton所有副本所存储节点的节点列表，不管该节点是否是leader或者是否存活。 </p>
+<p>isr：副本都已同步的的节点集合，这个集合中的所有节点都是存活状态，并且跟leader同步</p>
+<h2 id="6-增加topic分区数"><a href="#6-增加topic分区数" class="headerlink" title="(6) 增加topic分区数"></a>(6) 增加topic分区数</h2><p>任意kafka服务器执行以下命令可以增加topic分区数</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kafka-topics.sh --zookeeper zkhost:port --alter --topic test --partitions 8</span><br></pre></td></tr></table></figure>
+<h2 id="7-增加配置"><a href="#7-增加配置" class="headerlink" title="(7) 增加配置"></a>(7) 增加配置</h2><p>动态修改kakfa的配置</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kafka-topics.sh --zookeeper zoo1:2181 --alter --topic test --config flush.messages&#x3D;1</span><br></pre></td></tr></table></figure>
+<p><strong>flush.messages</strong>：此项配置指定时间间隔：强制进行fsync日志，默认值为None。</p>
+<p>例如，如果这个选项设置为1，那么每条消息之后都需要进行fsync，如果设置为5，则每5条消息就需要进行一次fsync。</p>
+<h2 id="8-删除配置"><a href="#8-删除配置" class="headerlink" title="(8) 删除配置"></a>(8) 删除配置</h2><p>动态删除kafka集群配置</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kafka-topics.sh --zookeeper zoo1:2181 --alter --topic test --delete-config flush.messages</span><br></pre></td></tr></table></figure>
+<h2 id="9-删除topic"><a href="#9-删除topic" class="headerlink" title="(9) 删除topic"></a>(9) 删除topic</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kafka-topics.sh --zookeeper zoo1:2181 --delete --topic test</span><br></pre></td></tr></table></figure>
+<p>目前删除topic在默认情况只是打上一个删除的标记，在重新启动kafka后才删除。</p>
+<p>如果需要立即删除，则需要在所有节点的 server.properties中配置： <code>delete.topic.enable=true</code></p>
+<p>一个主题会在不同的kafka节点中分配分组信息和副本信息 然后执行以下命令进行删除topic</p>
+<h1 id="java-API操作Kafka"><a href="#java-API操作Kafka" class="headerlink" title="java API操作Kafka"></a>java API操作Kafka</h1><p>使用docker搭建的kafka集群经行操作</p>
+<p><a href="https://imgtu.com/i/4rrsTP"><img src="https://z3.ax1x.com/2021/09/25/4rrsTP.png" alt="4rrsTP.png"></a></p>
+<p><strong>修改Windows的Host文件</strong></p>
+<p> 目录：C:\Windows\System32\drivers\etc (win10)</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">192.168.200.20 kafka1</span><br><span class="line">192.168.200.20 kafka2</span><br><span class="line">192.168.200.20 kafka3</span><br></pre></td></tr></table></figure>
+<p><strong>创建maven工程，导入依赖</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.kafka<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>kafka-clients<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- java编译插件 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-compiler-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">source</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">source</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">target</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">encoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">encoding</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="生产者代码"><a href="#生产者代码" class="headerlink" title="生产者代码"></a>生产者代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProducerDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String topic = <span class="string">&quot;hui&quot;</span>;<span class="comment">//定义主题</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Properties properties = <span class="keyword">new</span> Properties();</span><br><span class="line">        <span class="comment">// 配置kafka集群及其他信息</span></span><br><span class="line">        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, <span class="string">&quot;192.168.200.20:9092,192.168.200.20:9093,192.168.200.20:9094&quot;</span>);</span><br><span class="line">        <span class="comment">//网络传输,对key和value进行序列化</span></span><br><span class="line">        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);</span><br><span class="line">        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);</span><br><span class="line">        <span class="comment">//ACK确认机制，默认1  --只要收到一个分区副本成功写入的通知就认为推送消息成功了</span></span><br><span class="line">        properties.put(ProducerConfig.ACKS_CONFIG,<span class="string">&quot;1&quot;</span>);</span><br><span class="line">        <span class="comment">// 创建生产者对象</span></span><br><span class="line">        KafkaProducer&lt;String, String&gt; producer = <span class="keyword">new</span> KafkaProducer&lt;&gt;(properties);</span><br><span class="line">        <span class="comment">// 发送100条消息</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">100</span>; i++) &#123;</span><br><span class="line">            String msg = <span class="string">&quot;hello &quot;</span> + i;</span><br><span class="line">            <span class="comment">// 创建消息对象 ProducerRecord ，指定topic与消息</span></span><br><span class="line">            ProducerRecord&lt;String, String&gt; record = <span class="keyword">new</span> ProducerRecord&lt;&gt;(topic, msg);</span><br><span class="line">            <span class="comment">// 发送</span></span><br><span class="line">            producer.send(record);</span><br><span class="line">            System.out.println(<span class="string">&quot;发送消息成功！&quot;</span>+i);</span><br><span class="line">            Thread.sleep(<span class="number">500</span>); <span class="comment">// 0.5秒发送一条消息</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 关闭资源</span></span><br><span class="line">        producer.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="消费者代码"><a href="#消费者代码" class="headerlink" title="消费者代码"></a>消费者代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConsumerDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Properties properties = <span class="keyword">new</span> Properties();</span><br><span class="line">        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, <span class="string">&quot;192.168.200.20:9092,192.168.200.20:9093,192.168.200.20:9094&quot;</span>);</span><br><span class="line">        <span class="comment">// 反序列化</span></span><br><span class="line">        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);</span><br><span class="line">        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);</span><br><span class="line">        <span class="comment">// 分组</span></span><br><span class="line">        properties.put(ConsumerConfig.GROUP_ID_CONFIG, <span class="string">&quot;hui_1&quot;</span>);</span><br><span class="line">        <span class="comment">// 取消自动提交</span></span><br><span class="line">        <span class="comment">// properties.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG,&quot;false&quot;);</span></span><br><span class="line">        <span class="comment">// 创建消费者</span></span><br><span class="line">        KafkaConsumer&lt;String, String&gt; consumer = <span class="keyword">new</span> KafkaConsumer&lt;&gt;(properties);</span><br><span class="line">        <span class="comment">// 订阅topic，如果没有，kafka会自动创建 1个分区，1个副本的topic</span></span><br><span class="line">        consumer.subscribe(Collections.singletonList(ProducerDemo.topic));</span><br><span class="line">        <span class="comment">// 循环读取消息</span></span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            ConsumerRecords&lt;String, String&gt; records = consumer.poll(<span class="number">500</span>);</span><br><span class="line">            <span class="keyword">for</span> (ConsumerRecord&lt;String, String&gt; record : records) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;topic:&quot;</span>+record.topic()+<span class="string">&quot;,偏移量:&quot;</span>+ record.offset()+<span class="string">&quot;,&quot;</span>+<span class="string">&quot;msg&quot;</span>+record.value());</span><br><span class="line">                <span class="comment">// 手动提交 ...</span></span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="kafka原理"><a href="#kafka原理" class="headerlink" title="kafka原理"></a>kafka原理</h1><h2 id="分区域副本机制"><a href="#分区域副本机制" class="headerlink" title="分区域副本机制"></a>分区域副本机制</h2><p>kafka有三层结构：kafka有多个主题，每个主题有多个分区，每个分区又有多条消息。</p>
+<p><strong>分区机制</strong>：主要解决了单台服务器存储容量有限和单台服务器并发数限制的问题 </p>
+<p>当主题数据量非常大的时候，一个服务器存放不了，就将数据分成两个或者多个部分，存放在多台服务器上。每个服务器上的数据，叫做 一个分片。</p>
+<p><strong>副本</strong>：副本备份机制解决了数据存储的高可用问题</p>
+<p>当数据只保存一份的时候，有丢失的风险。为了更好的容错和容灾，将数据拷贝几份，保存到不同的机器上，当某台机器挂掉后，其他follower副本也能迅 速”转正“，开始对外提供服务。</p>
+<h2 id="kafka数据不丢失机制"><a href="#kafka数据不丢失机制" class="headerlink" title="kafka数据不丢失机制"></a>kafka数据不丢失机制</h2><h3 id="消息生产者"><a href="#消息生产者" class="headerlink" title="消息生产者"></a>消息生产者</h3><p>消息生产者保证数据不丢失：消息确认机制（ACK机制）,参考值有三个：0,1，-1 。默认1</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F;producer无需等待来自broker的确认而继续发送下一批消息。</span><br><span class="line">&#x2F;&#x2F;这种情况下数据传输效率最高，但是数据可靠性确是最低的。</span><br><span class="line">properties.put(ProducerConfig.ACKS_CONFIG,&quot;0&quot;);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;producer只要收到一个分区副本成功写入的通知就认为推送消息成功了。</span><br><span class="line">&#x2F;&#x2F;这里有一个地方需要注意，这个副本必须是leader副本。</span><br><span class="line">&#x2F;&#x2F;只有leader副本成功写入了，producer才会认为消息发送成功。</span><br><span class="line">properties.put(ProducerConfig.ACKS_CONFIG,&quot;1&quot;);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;ack&#x3D;-1，简单来说就是，producer只有收到分区内所有副本的成功写入的通知才认为推送消息成功了。</span><br><span class="line">properties.put(ProducerConfig.ACKS_CONFIG,&quot;-1&quot;);</span><br></pre></td></tr></table></figure>
+<h3 id="消息消费者"><a href="#消息消费者" class="headerlink" title="消息消费者"></a>消息消费者</h3><p>Kafka consumer默认是自动提交位移的（先更新位移，再消费消息），如果消费程序出现故障，没消费完毕，则丢失了消息，此 时，broker并不知道。</p>
+<p>我们可以关闭自动提交位移  <code>enable.auto.commit=false</code> 在消息被处理完后手动提交位移。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,&quot;false&quot;);</span><br></pre></td></tr></table></figure>
+<h2 id="消息存储及查询机制"><a href="#消息存储及查询机制" class="headerlink" title="消息存储及查询机制"></a>消息存储及查询机制</h2><h3 id="消息存储机制"><a href="#消息存储机制" class="headerlink" title="消息存储机制"></a>消息存储机制</h3><p>kafka 使用日志文件的方式来保存生产者消息，每条消息都有一个 offset 值来表示它在分区中的偏移量。 </p>
+<p>一个分片 并不是直接对应在一个磁盘上的日志文件，而是对应磁盘上 的一个目录，这个目录的命名规则是{topic_name}_{partition_id} , 在kafka容器数据目录<code> /kafka/kafka-logs-kafka1</code>中可以找到</p>
+<p><strong>log分段</strong></p>
+<p>每个分片目录中，kafka 通过分段的方式将 数据分为多个 LogSegment。 </p>
+<p>一个 LogSegment 对应磁盘上的一个日志文件（00000000000000000000.log）和一个索引文件( 00000000000000000000.index)</p>
+<p>其中日志文件是用来记录消息的。索引文件是用来保存消息的索引。</p>
+<p>LogSegment的大小可以在server.properties中配置。当超过改大小时，会写入到一个新的LogSegment中，命名规则时当前offset+1</p>
+<h3 id="消息查询机制"><a href="#消息查询机制" class="headerlink" title="消息查询机制"></a>消息查询机制</h3><p>存储的结构：一个主题 –&gt; 多个分区 —-&gt; 多个日志段（多个文件）</p>
+<p>第一步，查询segment file：</p>
+<p>​        segment file命名规则跟offset有关，所以只要根据offset 二分查找文件列表，就可以快速定位到具体文件。</p>
+<p>第二步，通过segment file查找message：</p>
+<p>​        直接通过offset顺序查找即可</p>
+<h2 id="生产者消息分发机制"><a href="#生产者消息分发机制" class="headerlink" title="生产者消息分发机制"></a>生产者消息分发机制</h2><p>kafka在数据生产的时候，Partitioner接口定义数据方法策略，实现类 org.apache.kafka.clients.producer.internals.DefaultPartitioner</p>
+<p>如果是用户指定了partition，生产就不会调用DefaultPartitioner.partition()方法 </p>
+<p><strong>DefaultPartitioner源码</strong></p>
+<p>如果指定key，是取决于key的hash值</p>
+<p>如果不指定key，轮询分发</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(String topic, Object key, <span class="keyword">byte</span>[] keyBytes, Object value, <span class="keyword">byte</span>[] valueBytes, Cluster</span></span></span><br><span class="line"><span class="function"><span class="params">                     cluster)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//获取该topic的分区列表</span></span><br><span class="line">    List&lt;PartitionInfo&gt; partitions = cluster.partitionsForTopic(topic);</span><br><span class="line">    <span class="comment">//获得分区的个数</span></span><br><span class="line">    <span class="keyword">int</span> numPartitions = partitions.size();</span><br><span class="line">    <span class="comment">//如果key值为null</span></span><br><span class="line">    <span class="keyword">if</span> (keyBytes == <span class="keyword">null</span>) &#123;<span class="comment">//如果没有指定key，那么就是轮询</span></span><br><span class="line">        <span class="comment">//维护一个key为topic的ConcurrentHashMap，并通过CAS操作的方式对value值执行递增+1操作</span></span><br><span class="line">        <span class="keyword">int</span> nextValue = nextValue(topic);</span><br><span class="line">        <span class="comment">//获取该topic的可用分区列表</span></span><br><span class="line">        List&lt;PartitionInfo&gt; availablePartitions = cluster.availablePartitionsForTopic(topic);</span><br><span class="line">        <span class="keyword">if</span> (availablePartitions.size() &gt; <span class="number">0</span>) &#123;<span class="comment">//如果可用分区大于0</span></span><br><span class="line">            <span class="comment">//执行求余操作，保证消息落在可用分区上</span></span><br><span class="line">            <span class="keyword">int</span> part = Utils.toPositive(nextValue) % availablePartitions.size();</span><br><span class="line">            <span class="keyword">return</span> availablePartitions.get(part).partition();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 没有可用分区的话，就给出一个不可用分区</span></span><br><span class="line">            <span class="keyword">return</span> Utils.toPositive(nextValue) % numPartitions;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;<span class="comment">//不过指定了key，key肯定就不为null</span></span><br><span class="line">        <span class="comment">// 通过计算key的hash，确定消息分区</span></span><br><span class="line">        <span class="keyword">return</span> Utils.toPositive(Utils.murmur2(keyBytes)) % numPartitions;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="消费者负载均衡机制"><a href="#消费者负载均衡机制" class="headerlink" title="消费者负载均衡机制"></a>消费者负载均衡机制</h2><p>同一个分区中的数据，只能被一个消费者组中的一个消费者所消费，避免重复消费</p>
+<p>消费组：一个消费组中可以包含多个消费者，<code>properties.put(ConsumerConfig.GROUP_ID_CONFIG,&quot;groupName&quot;)</code>；多个消费组可以重复消费消息。</p>
+<p><a href="https://imgtu.com/i/4rc6Bj"><img src="https://z3.ax1x.com/2021/09/25/4rc6Bj.png" alt="4rc6Bj.png"></a></p>
+<h2 id="kafka配置文件说明"><a href="#kafka配置文件说明" class="headerlink" title="kafka配置文件说明"></a>kafka配置文件说明</h2><p>server.properties配置文件</p>
+<p><strong>1、broker.id=0</strong> </p>
+<p>指定集群中broker的id， 是一个不小于0的整数，各brokerId必须不同，但不必连续。如果我们想扩展kafka集群，只需引入新节点，分配一个不同的broker.id即 可。</p>
+<p><strong>2、log.dir = /export/data/kafka/</strong> </p>
+<p>broker持久化消息到哪里，数据目录 </p>
+<p><strong>3、log.retention.hours = 168</strong> </p>
+<p>log文件最小存活时间，默认是168h，即7天。相同作用的还有log.retention.minutes、log.retention.ms。。 log.retention.bytes和log.retention.hours任意一个达到要求，都会执行删除，会被topic创建时的指定参数覆盖。 </p>
+<p><strong>4、log.retention.bytes</strong> </p>
+<p>限制单个分区的log文件的最大值，超过这个值，将删除旧的log，以满足log文件不超过这个值。默认是-1，即不限制。</p>
+<p><strong>5、log.retention.check.interval.ms</strong> </p>
+<p>多长时间检查一次是否有log文件要删除。默认是300000ms，即5分钟。 </p>
+<p><strong>6、log.roll.hours</strong> </p>
+<p>多少时间会生成一个新的log segment，默认是168h，即7天。相同作用的还有log.roll.ms、segment.ms。 </p>
+<p><strong>7、log.segment.bytes log segment</strong></p>
+<p>多大之后会生成一个新的log segment，默认是1073741824，即1G。 </p>
+<p><strong>8、log.flush.interval.messages</strong> </p>
+<p>指定broker每收到几个消息就把消息从内存刷到硬盘（刷盘）。默认是9223372036854775807 好大。 </p>
+<p>kafka官方不建议使用这个配置，建议使用副本机制和操作系统的后台刷新功能，因为这更高效。这个配置可以根据不同的topic设置不同的 值，即在创建topic的时候设置值。</p>
+<p><strong>9、log.flush.interval.ms</strong> </p>
+<p>指定broker每隔多少毫秒就把消息从内存刷到硬盘。默认值同log.flush.interval.messages一样， 9223372036854775807。 同log.flush.interval.messages一样，kafka官方不建议使用这个配置。 </p>
+<p><strong>10、delete.topic.enable=true</strong> </p>
+<p>是否允许从物理上删除topic，默认false</p>
+<h1 id="kafka控制与运维"><a href="#kafka控制与运维" class="headerlink" title="kafka控制与运维"></a>kafka控制与运维</h1><p><strong>kafka-eagle</strong> </p>
+<p>kafka-eagle 管理工具可以很容易地发现分布在集 群中的哪些topic分布不均匀，或者是分区在整个集群分布不均匀的的情况。它支持管理多个集群、选择副本、副本重新分配以及创建 Topic。同时，这个管理工具也是一个非常好的可以快速浏览这个集群的工具，</p>
+<h2 id="搭建安装-kafka-eagle"><a href="#搭建安装-kafka-eagle" class="headerlink" title="搭建安装 kafka-eagle"></a>搭建安装 kafka-eagle</h2><p>由于eagle在docker中没有镜像，所以我们在之前搭建的传统集群中操作</p>
+<p>环境要求:需要安装jdk，启动zk以及kafka的服务</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 启动Zookeeper</span><br><span class="line">zkServer.sh start</span><br><span class="line">#启动Kafka</span><br><span class="line">nohup .&#x2F;kafka-server-start.sh &#x2F;export&#x2F;servers&#x2F;kafka&#x2F;config&#x2F;server.properties 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+<p>修改windows host文件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">192.168.200.11 node1</span><br><span class="line">192.168.200.12 node2</span><br><span class="line">192.168.200.13 node3</span><br></pre></td></tr></table></figure>
+<ol>
+<li>下载kafka-eagle的源码包,下载最新的安装包即可，如 kafka-eagle-bin-1.3.2.tar.gz</li>
+</ol>
+<p>kafka-eagle官网： <a href="http://download.kafka-eagle.org/">http://download.kafka-eagle.org/</a></p>
+<p>代码托管地址： <a href="https://github.com/smartloli/kafka-eagle/releases">https://github.com/smartloli/kafka-eagle/releases</a></p>
+<ol start="2">
+<li>上传安装包并解压</li>
+</ol>
+<p>这里将kafka-eagle安装在node3虚拟机上</p>
+<p>如果要解压的是zip格式，需要先安装命令支持。 </p>
+<ul>
+<li>yum install unzip</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#将安装包上传至 node03服务器的&#x2F;export&#x2F;softwares路径下, 然后解压</span><br><span class="line">cd &#x2F;export&#x2F;softwares&#x2F;</span><br><span class="line">unzip kafka-eagle.zip</span><br><span class="line">cd  kafka-eagle-web&#x2F;target&#x2F;</span><br><span class="line">tar -zxf kafka-eagle-web-2.0.1-bin.tar.gz -C &#x2F;export&#x2F;servers</span><br></pre></td></tr></table></figure>
+<p>3）准备数据库</p>
+<p>eagle需要使用一个数据库来保存一些元数据，这里在node1服务器中创建一个mysql数据库。</p>
+<p>可以使用docker镜像创建一个mysql容器，进入容器后进入mysql客户端</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">create database eagle;</span><br></pre></td></tr></table></figure>
+<p>默认情况下MySQL只允许本机连接到MYSQL实例中，所以如果要远程访问，必须开放权限： update user set host = ‘%’ where user =’root’; //修改权限 </p>
+<p>flush privileges; //刷新配置</p>
+<ol start="4">
+<li>修改kafka-eagle配置文件</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;export&#x2F;servers&#x2F;kafka-eagle-bin-1.3.2&#x2F;kafka-eagle-web-1.3.2&#x2F;conf</span><br><span class="line">vim system-config.properties</span><br><span class="line">#内容如下:</span><br><span class="line">kafka.eagle.zk.cluster.alias&#x3D;cluster1</span><br><span class="line">cluster1.zk.list&#x3D;node1:2181,node2:2181,node3:2181</span><br><span class="line"></span><br><span class="line">kafka.eagle.driver&#x3D;com.mysql.jdbc.Driver</span><br><span class="line">kafka.eagle.url&#x3D;jdbc:mysql:&#x2F;&#x2F;192.168.200.11:3306&#x2F;eagle</span><br><span class="line">kafka.eagle.username&#x3D;root</span><br><span class="line">kafka.eagle.password&#x3D;123456</span><br></pre></td></tr></table></figure>
+<p>5）配置环境变量</p>
+<p>kafka-eagle必须配置环境变量，node03服务器执行以下命令来进行配置环境变量</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi &#x2F;etc&#x2F;profile</span><br><span class="line">#内容如下:</span><br><span class="line">export KE_HOME&#x3D;&#x2F;export&#x2F;servers&#x2F;kafka-eagle-bin-1.3.2&#x2F;kafka-eagle-web-1.3.2</span><br><span class="line">export PATH&#x3D;:$KE_HOME&#x2F;bin:$PATH</span><br><span class="line">#让修改立即生效，执行</span><br><span class="line">source &#x2F;etc&#x2F;profile</span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>启动kafka-eagle</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd kafka-eagle-web-1.3.2&#x2F;bin</span><br><span class="line">chmod u+x ke.sh</span><br><span class="line">.&#x2F;ke.sh start</span><br></pre></td></tr></table></figure>
+<ol start="7">
+<li>访问主界面</li>
+</ol>
+<p><a href="http://node03:8048/ke/account/signin?/ke/">http://node03:8048/ke/account/signin?/ke/</a> </p>
+<p>用户名：admin 密码：123456</p>
+<p>over。。。</p>
+]]></content>
+      <categories>
+        <category>消息队列</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>kafka</tag>
       </tags>
   </entry>
 </search>
