@@ -12394,7 +12394,7 @@
 <p>这种智能映射，底层原理是动态模板映射，如果我们想修改这种智能映射的规则，其实只要修改动态模 板即可！</p>
 <p><strong>动态映射模板</strong></p>
 <p>示例：创建hui索引时，添加goods类型并设置动态模板，将string类型字段转换成keyword类型</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">PUT hui</span><br><span class="line">&#123;</span><br><span class="line">    &quot;mappings&quot;: &#123;</span><br><span class="line">        &quot;goods&quot;: &#123;</span><br><span class="line">            &quot;properties&quot;: &#123;</span><br><span class="line">                &quot;title&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;text&quot;,</span><br><span class="line">                    &quot;analyzer&quot;: &quot;ik_max_word&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;dynamic_templates&quot;: [</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;strings&quot;: &#123;     # 模板名称 ，自定义  </span><br><span class="line">                    &quot;match_mapping_type&quot;: &quot;string&quot;,  # 匹配的类型</span><br><span class="line">                        &quot;mapping&quot;: &#123;     # 映射规则</span><br><span class="line">                            &quot;type&quot;: &quot;keyword&quot;,</span><br><span class="line">                            &quot;index&quot;:false,</span><br><span class="line">                            &quot;store&quot;:true</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">PUT hui</span><br><span class="line">&#123;</span><br><span class="line">    &quot;mappings&quot;: &#123;</span><br><span class="line">        &quot;goods&quot;: &#123;</span><br><span class="line">            &quot;properties&quot;: &#123;</span><br><span class="line">                &quot;title&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;text&quot;,</span><br><span class="line">                    &quot;analyzer&quot;: &quot;ik_max_word&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;dynamic_templates&quot;: [</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;strings&quot;: &#123;     # 模板名称 ，自定义  </span><br><span class="line">                    	&quot;match_mapping_type&quot;: &quot;string&quot;,  # 匹配的类型</span><br><span class="line">                        &quot;mapping&quot;: &#123;     # 映射规则</span><br><span class="line">                            &quot;type&quot;: &quot;keyword&quot;,</span><br><span class="line">                            &quot;index&quot;:false,</span><br><span class="line">                            &quot;store&quot;:true</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>如果向该类型中添加文档时，添加了没指定映射的字段，如果是String类型，会自动转换成keyword类型。</p>
 <h1 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h1><h2 id="基本查询"><a href="#基本查询" class="headerlink" title="基本查询"></a>基本查询</h2><p>基本语法</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">GET &#x2F;索引库名&#x2F;_search</span><br><span class="line">&#123;</span><br><span class="line">    &quot;query&quot;:&#123;</span><br><span class="line">        &quot;查询类型&quot;:&#123;</span><br><span class="line">        	&quot;查询条件&quot;:&quot;查询条件值&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -12581,7 +12581,8 @@
 <p>@Document：声明索引库配置 </p>
 <ul>
 <li>indexName：索引库名称 </li>
-<li>type：类型名称，默认是“docs” shards：分片数量，默认5 </li>
+<li>type：类型名称，默认是“docs” </li>
+<li>shards：分片数量，默认5 </li>
 <li>replicas：副本数量，默认1 </li>
 </ul>
 <p>@Id：声明实体类的id </p>
@@ -12759,7 +12760,7 @@
 <p><strong>虚拟化技术主要作用</strong></p>
 <ul>
 <li>高性能的物理硬件产能过剩和老的旧的硬件产能过低的重组重用，透明化底层物理硬件 </li>
-<li>软件跨环境迁移问题(代码的水土不服</li>
+<li>软件跨环境迁移问题(代码的水土不服）</li>
 </ul>
 <p><strong>Docker</strong> 是一个开源的应用容器引擎，诞生于 2013 年初，基于 Go 语言实现， dotCloud 公司出品（后 改名为Docker Inc）； </p>
 <p>Docker 可以让开发者打包他们的应用，以及依赖包到一个轻量级、可移植的容器中，然后发布到任何 流行的 Linux 机器上。</p>
@@ -12868,7 +12869,7 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">apt-get update </span><br></pre></td></tr></table></figure>
 <p>2)安装vim编辑器</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">apt-get install vim</span><br></pre></td></tr></table></figure>
-<p>这里使用得centos操作系统，如果是ubantu操作系统，请将apt-get换成yum即可</p>
+<p>这里使用的是centos操作系统，如果是ubantu操作系统，请将apt-get换成yum即可</p>
 <h1 id="数据卷-Volumes"><a href="#数据卷-Volumes" class="headerlink" title="数据卷(Volumes)"></a>数据卷(Volumes)</h1><p>数据卷是宿主机中的一个目录或文件，当容器目录和数据卷目录绑定后，对方的修改会立即同步。</p>
 <p> 一个数据卷可以被多个容器同时挂载，一个容器也可以被挂载多个数据卷</p>
 <p><strong>数据卷作用</strong> </p>
@@ -13074,7 +13075,7 @@
 <ul>
 <li>拷贝后, 需要修改每一台的broker.id 和 host.name和listeners</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ip为11的服务器: broker.id&#x3D;0 , host.name&#x3D;node1 listeners&#x3D;PLAINTEXT:&#x2F;&#x2F;node1:9092</span><br><span class="line">ip为12的服务器: broker.id&#x3D;1 , host.name&#x3D;node2 listeners&#x3D;PLAINTEXT:&#x2F;&#x2F;node2:9092</span><br><span class="line">ip为13的服务器: broker.id&#x3D;2 , host.name&#x3D;node3 listeners&#x3D;PLAINTEXT:&#x2F;&#x2F;node3:9092</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ip为11的服务器: broker.id&#x3D;0 , host.name&#x3D;node1,listeners&#x3D;PLAINTEXT:&#x2F;&#x2F;node1:9092</span><br><span class="line">ip为12的服务器: broker.id&#x3D;1 , host.name&#x3D;node2,listeners&#x3D;PLAINTEXT:&#x2F;&#x2F;node2:9092</span><br><span class="line">ip为13的服务器: broker.id&#x3D;2 , host.name&#x3D;node3,listeners&#x3D;PLAINTEXT:&#x2F;&#x2F;node3:9092</span><br></pre></td></tr></table></figure>
 <ul>
 <li>在每一台的服务器执行创建数据文件的命令</li>
 </ul>
@@ -13274,7 +13275,7 @@
 <p>多长时间检查一次是否有log文件要删除。默认是300000ms，即5分钟。 </p>
 <p><strong>6、log.roll.hours</strong> </p>
 <p>多少时间会生成一个新的log segment，默认是168h，即7天。相同作用的还有log.roll.ms、segment.ms。 </p>
-<p>**7、log.segment.bytes **</p>
+<p><strong>7、log.segment.bytes</strong></p>
 <p>log segment多大之后会生成一个新的log segment，默认是1073741824，即1G。 </p>
 <p><strong>8、log.flush.interval.messages</strong> </p>
 <p>指定broker每收到几个消息就把消息从内存刷到硬盘（刷盘）。默认是9223372036854775807 好大。 </p>
@@ -13896,7 +13897,7 @@
 <li><p>然后再根据分表策略 找到要插入数据的表 pay_order_$-&gt;{order_id % 2 + 1}</p>
 </li>
 </ul>
-<p>查询时，会发送4条语句，db2两条，db3两条。</p>
+<p>查询时，会发送4条语句，db1两条，db2两条。</p>
 <h3 id="垂直分库"><a href="#垂直分库" class="headerlink" title="垂直分库"></a>垂直分库</h3><p>垂直分库是指按照业务将表进行分类，分布到不同的数据库上面，每个库可以放在不同的服务器上， 它的核心理念是专库专用. </p>
 <p>所以这里配置垂直分库就像是在操作一个单一的数据库。</p>
 <h4 id="创建数据库信息"><a href="#创建数据库信息" class="headerlink" title="创建数据库信息"></a>创建数据库信息</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE DATABASE lg_user CHARACTER SET &#39;utf8&#39;;</span><br><span class="line">DROP TABLE IF EXISTS users;</span><br><span class="line">CREATE TABLE users (</span><br><span class="line">    id BIGINT(20) PRIMARY KEY,</span><br><span class="line">    username VARCHAR(20) ,</span><br><span class="line">    phone VARCHAR(11),</span><br><span class="line">    STATUS VARCHAR(11)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
@@ -13937,7 +13938,7 @@
 <p>2）配置主库与从库的信息</p>
 <figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 配置m1与s1的关系，ms1 包含了 m1 和 s1</span></span><br><span class="line"><span class="meta">spring.shardingsphere.sharding.master-slave-rules.ms1.master-data-source-name</span>=<span class="string">m1</span></span><br><span class="line"><span class="meta">spring.shardingsphere.sharding.master-slave-rules.ms1.slave-data-source-names</span>=<span class="string">s1</span></span><br></pre></td></tr></table></figure>
 <ol start="3">
-<li>配置数据节点</li>
+<li> 配置数据节点</li>
 </ol>
 <figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="comment">#配置数据节点  products为逻辑表</span></span><br><span class="line"><span class="meta">spring.shardingsphere.sharding.tables.products.actual-data-nodes</span> = <span class="string">ms1.products</span></span><br></pre></td></tr></table></figure>
 <p><strong>测试</strong></p>
