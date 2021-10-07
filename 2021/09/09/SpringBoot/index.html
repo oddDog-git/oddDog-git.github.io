@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://z3.ax1x.com/2021/09/09/hOmZrt.png">
 <meta property="og:image" content="https://z3.ax1x.com/2021/09/14/4kgCZR.png">
 <meta property="article:published_time" content="2021-09-09T12:31:35.000Z">
-<meta property="article:modified_time" content="2021-09-17T14:24:49.935Z">
+<meta property="article:modified_time" content="2021-10-06T11:04:27.283Z">
 <meta property="article:author" content="怪狗狗">
 <meta property="article:tag" content="SpringBoot">
 <meta name="twitter:card" content="summary">
@@ -196,7 +196,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-17 22:24:49" itemprop="dateModified" datetime="2021-09-17T22:24:49+08:00">2021-09-17</time>
+                <time title="修改时间：2021-10-06 19:04:27" itemprop="dateModified" datetime="2021-10-06T19:04:27+08:00">2021-10-06</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -324,7 +324,7 @@
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写法二</span></span><br><span class="line"><span class="attr">person:</span></span><br><span class="line">	<span class="attr">map:</span> &#123;<span class="attr">k1:</span> <span class="string">v1</span>,<span class="attr">k2:</span> <span class="string">v2</span>&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="自定义配置文件"><a href="#自定义配置文件" class="headerlink" title="自定义配置文件"></a>自定义配置文件</h3><p>springboot只会自动识别application.properties/yaml/yml三个文件，我们也可以创建别的配置文件，不过需要我们手动加载。</p>
 <p><strong>使用@PropertySource加载配置文件</strong></p>
-<p>该注解是Spring框架已有的，再ssm中就是使用该注解来引入JDBC的相关配置</p>
+<p>该注解是Spring框架已有的，在ssm中就是使用该注解来引入JDBC的相关配置</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在类上指定自定义配置文件位置和名称</span></span><br><span class="line"><span class="meta">@PropertySource(&quot;classpath:hui.properties&quot;)</span> </span><br></pre></td></tr></table></figure>
 <h2 id="中文乱码问题解决"><a href="#中文乱码问题解决" class="headerlink" title="中文乱码问题解决"></a>中文乱码问题解决</h2><p><strong>调整文件编码格式</strong></p>
 <p><a target="_blank" rel="noopener" href="https://imgtu.com/i/hOmZrt"><img src="https://z3.ax1x.com/2021/09/09/hOmZrt.png" alt="hOmZrt.png"></a></p>
@@ -453,7 +453,7 @@
 <p><strong>选择变量表达式 *{…}</strong></p>
 <p>选择变量表达式和变量表达式用法类似，一般用于从被选定对象而不是上下文中获取属性值，如果 没有选定对象，则和变量表达式一样，示例代码如下 </p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">th:object</span>=<span class="string">&quot;$&#123;book&#125;&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>titile: <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">&quot;*&#123;title&#125;&quot;</span>&gt;</span>标题<span class="tag">&lt;/<span class="name">span</span>&gt;</span>.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>*{title} 选择变量表达式获取当前指定对象book的title属性值</p>
+<p><code>*&#123;title&#125;</code> 选择变量表达式获取当前指定对象book的title属性值</p>
 <p><strong>消息表达式 #{…}</strong></p>
 <p>主要用于Thymeleaf模板页面国际化内容的动态替换和展示，使用消息表达式#{…} 进行国际化设置时，还需要提供一些国际化配置文件。</p>
 <p>**链接表达式 @{…} **</p>
