@@ -11414,7 +11414,7 @@
 <td></td>
 </tr>
 <tr>
-<td></td>
+<td>分布式事务</td>
 <td></td>
 <td>阿里巴巴 seata 分布式事务方案</td>
 </tr>
@@ -11818,8 +11818,8 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@FeignClient(name = &quot;lagou-service-product&quot;,fallback =ProductFeignFallBack.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ProductFeign</span> </span>&#123;<span class="comment">/*省略*/</span>&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="Feign对请求压缩和响应压缩的支持"><a href="#Feign对请求压缩和响应压缩的支持" class="headerlink" title="Feign对请求压缩和响应压缩的支持"></a>Feign对请求压缩和响应压缩的支持</h3><p>Feign 支持对请求和响应进行GZIP压缩，以减少通信过程中的性能损耗。</p>
 <figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 开启feign的熔断功能</span></span><br><span class="line"><span class="attr">feign:</span></span><br><span class="line">  <span class="attr">hystrix:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># 开启请求响应压缩</span></span><br><span class="line">  <span class="attr">compression:</span></span><br><span class="line">    <span class="attr">request:</span></span><br><span class="line">      <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">      <span class="attr">mime-types:</span> <span class="string">text/xml,application/xml,application/json</span>  <span class="comment"># 设置压缩的数据类型，此处也是默认值</span></span><br><span class="line">      <span class="attr">min-request-size:</span> <span class="number">2048</span>  <span class="comment"># 设置触发压缩的大小下限，此处也是默认值</span></span><br><span class="line">    <span class="attr">response:</span></span><br><span class="line">      <span class="attr">enabled:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
-
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><p><strong>feign多参数问题</strong></p>
+<p>如果是get请求，则一定要使用 @RequestParam 注解修饰，如果是post请求，@RequestBody注解只能使用一次。</p>
 <h2 id="Gateway网关"><a href="#Gateway网关" class="headerlink" title="Gateway网关"></a>Gateway网关</h2><p><strong>网关</strong>：微服务架构中的重要组成部分 局域网中就有网关这个概念，局域网接收或者发送数据出去通过这个网关，比如用Vmware虚拟机 软件搭建虚拟机集群的时候，往往我们需要选择IP段中的一个IP作为网关地址。 而Spring Cloud GateWay只是众多网关解决方案中的一种</p>
 <p><strong>网关分类</strong>：</p>
 <ul>
@@ -12959,6 +12959,63 @@
 <p>举例:  加载将刚刚生成的压缩包 redis.tar</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker load -i redis.tar </span><br></pre></td></tr></table></figure>
 <p>执行后再次查看镜像，可以看到镜像已经恢复，可以再次运行测试</p>
+<h1 id="IEDA集成Docker部署微服务"><a href="#IEDA集成Docker部署微服务" class="headerlink" title="IEDA集成Docker部署微服务"></a>IEDA集成Docker部署微服务</h1><h2 id="Docker开启远程访问"><a href="#Docker开启远程访问" class="headerlink" title="Docker开启远程访问"></a>Docker开启远程访问</h2><ul>
+<li>Docker默认是不允许远程访问的</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 修改配置文件</span><br><span class="line">[root@A ~]# vim &#x2F;lib&#x2F;systemd&#x2F;system&#x2F;docker.service</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix://var/run/docker.sock</p>
+<p><a href="https://imgtu.com/i/5r7NtA"><img src="https://z3.ax1x.com/2021/10/21/5r7NtA.png" alt="5r7NtA.png"></a></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 重新加载配置文件</span><br><span class="line">[root@A ~]# systemctl daemon-reload</span><br><span class="line"></span><br><span class="line"># 重启docker</span><br><span class="line">[root@A ~]# service docker restart</span><br><span class="line"></span><br><span class="line"># 查看端口是否开启</span><br><span class="line">[root@A ~]# netstat -nlpt</span><br><span class="line"></span><br><span class="line"># 验证端口是否生效</span><br><span class="line">[root@A ~]# curl http:&#x2F;&#x2F;192.168.200.20:2375&#x2F;info</span><br></pre></td></tr></table></figure>
+<h2 id="IEDA集成插件"><a href="#IEDA集成插件" class="headerlink" title="IEDA集成插件"></a>IEDA集成插件</h2><p>准备: 在Plugins中搜索Docker，并安装</p>
+<ul>
+<li>连接</li>
+</ul>
+<p><a href="https://imgtu.com/i/5rHCAH"><img src="https://z3.ax1x.com/2021/10/21/5rHCAH.png" alt="5rHCAH.png" style="zoom: 67%;" /></a></p>
+<ul>
+<li>可添加镜像加速器  <a href="https://owi3yzzk.mirror.aliyuncs.com/">https://owi3yzzk.mirror.aliyuncs.com</a></li>
+</ul>
+<p><a href="https://imgtu.com/i/5rHmDS"><img src="https://z3.ax1x.com/2021/10/21/5rHmDS.png" alt="5rHmDS.png" style="zoom:67%;" /></a></p>
+<ul>
+<li>在services框中可查看Docker相关数据，如镜像、容器</li>
+</ul>
+<p><a href="https://imgtu.com/i/5rHnHg"><img src="https://z3.ax1x.com/2021/10/21/5rHnHg.png" alt="5rHnHg.png"></a></p>
+<h2 id="Docker的Maven插件"><a href="#Docker的Maven插件" class="headerlink" title="Docker的Maven插件"></a>Docker的Maven插件</h2><ul>
+<li>传统的过程中，要经历打包，部署，上传到linux，编写Dockerfile，构建镜像，创建容器等步骤</li>
+<li>docker-maven-plugin就是帮助我们在开发构成中，<b style='color:red'>自动生成镜像并推送到仓库中</b></li>
+<li>docker打包项目的插件有两种。<ul>
+<li>docker-maven-plugin</li>
+<li>dockerfile</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.spotify<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>docker-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--镜像名称 hui/test-docker-demo--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">imageName</span>&gt;</span>hui/$&#123;project.artifactId&#125;<span class="tag">&lt;/<span class="name">imageName</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--标签版本--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">imageTags</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">imageTag</span>&gt;</span>latest<span class="tag">&lt;/<span class="name">imageTag</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">imageTags</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--基础镜像，相当于Dockerfile里的from--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">baseImage</span>&gt;</span>java<span class="tag">&lt;/<span class="name">baseImage</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--标签版本--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">maintainer</span>&gt;</span>hui 1764501567@qq.com<span class="tag">&lt;/<span class="name">maintainer</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--入口点，project.build.finalName就是project标签下的build标签下的filename标签内容，test-docker-demo--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--相当于启动容器后，会自动执行java -jar/test-docker-demo.jar--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">entryPoint</span>&gt;</span>[&quot;java&quot;, &quot;-jar&quot;, &quot;/$&#123;project.build.finalName&#125;.jar&quot;]<span class="tag">&lt;/<span class="name">entryPoint</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--docker地址--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dockerHost</span>&gt;</span>http://192.168.204.141:2375<span class="tag">&lt;/<span class="name">dockerHost</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- 这里是复制 jar 包到 docker 容器指定目录配置 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">targetPath</span>&gt;</span>/<span class="tag">&lt;/<span class="name">targetPath</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--复制的根目录，target--&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">directory</span>&gt;</span>$&#123;project.build.directory&#125;<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--把哪个文件上传到docker，相当于Dockerfile里的add test-docker-demo.jar /--&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">include</span>&gt;</span>$&#123;project.build.finalName&#125;.jar<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这段配置中，镜像名称和标签版本可以自定义，其他不用改。</p>
+<h2 id="执行命令"><a href="#执行命令" class="headerlink" title="执行命令"></a>执行命令</h2><ul>
+<li>1.对项目进行打包，并构建镜像到docker上</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mvn clean package docker:build</span><br></pre></td></tr></table></figure>
+<p><b style='color:red'>注意：构建镜像，要将项目中用到的localhost改为docker服务器的ip</b>，然后再进行构建镜像</p>
+<p>命令执行完成，会自动将jar包镜像推送到docker</p>
+<ul>
+<li>2.对镜像构建容器，可构建多个</li>
+</ul>
+<p><a href="https://imgtu.com/i/5rbBdg"><img src="https://z3.ax1x.com/2021/10/21/5rbBdg.png" alt="5rbBdg.png"></a></p>
+<p><a href="https://imgtu.com/i/5rbDoQ"><img src="https://z3.ax1x.com/2021/10/21/5rbDoQ.png" alt="5rbDoQ.png"></a></p>
+<p><a href="https://imgtu.com/i/5rbRyV"><img src="https://z3.ax1x.com/2021/10/21/5rbRyV.png" alt="5rbRyV.png"></a></p>
+<ul>
+<li>如果出现以下的错误，请执行对应的命令即可，都是找不到可执行文件的原因</li>
+</ul>
+<p><a href="https://imgtu.com/i/5rbxTe"><img src="https://z3.ax1x.com/2021/10/21/5rbxTe.png" alt="5rbxTe.png"></a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@A ~]# cd &#x2F;usr&#x2F;libexec&#x2F;docker&#x2F;</span><br><span class="line">[root@A docker]# ln -s docker-proxy-current docker-proxy</span><br></pre></td></tr></table></figure>
+<ul>
+<li>找不到docker运行的命令</li>
+</ul>
+<p><a href="https://imgtu.com/i/5rqpYd"><img src="https://z3.ax1x.com/2021/10/21/5rqpYd.png" alt="5rqpYd.png"></a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@A docker]# cd &#x2F;usr&#x2F;libexec&#x2F;docker&#x2F;</span><br><span class="line">[root@A docker]# ln -s docker-runc-current docker-runc</span><br></pre></td></tr></table></figure>
+
+
 <p>over。。。</p>
 ]]></content>
       <categories>
