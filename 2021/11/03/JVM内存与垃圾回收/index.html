@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-bounce.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"odddog-git.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="java虚拟机（JVM，Java Virtual Machine）是一台执行java字节码的虚拟机计算机，他拥有独立的运行机制。JVM平台的各种语言可以共享java虚拟机带来的跨平台性、优秀的垃圾回收器，以及可靠的即时编译器。java技术的核心就是java虚拟机,因为所有的java程序都运行在Java虚拟机内部。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM内存与垃圾回收">
+<meta property="og:url" content="http://odddog-git.github.io/2021/11/03/JVM%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/index.html">
+<meta property="og:site_name" content="hui&#39;s Blog">
+<meta property="og:description" content="java虚拟机（JVM，Java Virtual Machine）是一台执行java字节码的虚拟机计算机，他拥有独立的运行机制。JVM平台的各种语言可以共享java虚拟机带来的跨平台性、优秀的垃圾回收器，以及可靠的即时编译器。java技术的核心就是java虚拟机,因为所有的java程序都运行在Java虚拟机内部。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://z3.ax1x.com/2021/11/03/IkL3uQ.jpg">
+<meta property="og:image" content="https://z3.ax1x.com/2021/11/03/Ikjg5n.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/11/03/IkjhvT.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/11/03/IkxN1P.jpg">
+<meta property="og:image" content="https://z3.ax1x.com/2021/11/03/IAVsN6.md.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/11/03/IAKq2V.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/11/03/IA8mC9.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/11/04/IVzXXq.jpg">
+<meta property="og:image" content="https://z3.ax1x.com/2021/11/04/IZS2UU.jpg">
+<meta property="og:image" content="https://z3.ax1x.com/2021/11/04/IZAup8.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/11/04/IZel80.png">
+<meta property="og:image" content="https://z3.ax1x.com/2021/11/04/IZKj7F.png">
+<meta property="article:published_time" content="2021-11-03T00:34:52.000Z">
+<meta property="article:modified_time" content="2021-11-04T05:10:59.272Z">
+<meta property="article:author" content="怪狗狗">
+<meta property="article:tag" content="垃圾回收">
+<meta property="article:tag" content="运行时数据区">
+<meta property="article:tag" content="类加载子系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://z3.ax1x.com/2021/11/03/IkL3uQ.jpg">
+
+<link rel="canonical" href="http://odddog-git.github.io/2021/11/03/JVM%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>JVM内存与垃圾回收 | hui's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://oddDog-git" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hui's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://odddog-git.github.io/2021/11/03/JVM%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/jerry.jpg">
+      <meta itemprop="name" content="怪狗狗">
+      <meta itemprop="description" content="踏上新征程----go！！！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hui's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JVM内存与垃圾回收
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-11-03 08:34:52" itemprop="dateCreated datePublished" datetime="2021-11-03T08:34:52+08:00">2021-11-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-11-04 13:10:59" itemprop="dateModified" datetime="2021-11-04T13:10:59+08:00">2021-11-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/11/03/JVM%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/11/03/JVM%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>java虚拟机</strong>（JVM，Java Virtual Machine）是一台执行java字节码的虚拟机计算机，他拥有独立的运行机制。JVM平台的各种语言可以共享java虚拟机带来的跨平台性、优秀的垃圾回收器，以及可靠的即时编译器。java技术的核心就是java虚拟机,因为所有的java程序都运行在Java虚拟机内部。<a id="more"></a></p>
+<p><strong>JVM的位置</strong></p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/IkL3uQ"><img src="https://z3.ax1x.com/2021/11/03/IkL3uQ.jpg" alt="IkL3uQ.jpg" style="zoom:50%;" /></a></p>
+<p><strong>JVM机构模型</strong></p>
+<p>java编译器输入的指令流基本上是一种基于栈的指令集架构，另一种指令集架构是则是基于寄存器的指令集架构。</p>
+<ul>
+<li>基于栈式架构的特点<ul>
+<li>设计与实现简单，使用于资源受限的系统</li>
+<li>避开了寄存器的分配难题：使用零地址方式分配</li>
+<li>指令集更小，编译器容易实现</li>
+<li>不需要硬件支持，可移植性更好，更好实现跨平台</li>
+</ul>
+</li>
+<li>基于寄存器架构的特点<ul>
+<li>指令集的架构完全依赖硬件，可移植性差</li>
+<li>性能优秀和执行更高效</li>
+<li>花费更少的指令取完成一项操作</li>
+<li>指令集以一地址指令、二地址指令和三地址指令为主</li>
+</ul>
+</li>
+</ul>
+<p><strong>举例</strong>  ：执行 2+3 操作</p>
+<ul>
+<li>基于栈的计算流程</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">iconst_2  &#x2F;&#x2F;常量2入栈</span><br><span class="line">istore_1</span><br><span class="line">iconst_3  &#x2F;&#x2F;常量3入栈</span><br><span class="line">istore_2  </span><br><span class="line">iload_1	  </span><br><span class="line">iload_2</span><br><span class="line">iadd	  &#x2F;&#x2F;常量2、3出栈，执行相加</span><br><span class="line">istore_0  &#x2F;&#x2F;结果5入栈</span><br></pre></td></tr></table></figure>
+<ul>
+<li>基于寄存器的计算流程</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov eax,2  &#x2F;&#x2F;将eax寄存器的值设为1</span><br><span class="line">add eax,3  &#x2F;&#x2F;使eax寄存器的值加3</span><br></pre></td></tr></table></figure>
+<p><strong>总结</strong> : 由于跨平台性的设计，java的指令都是根据栈来设计的。优点是跨平台，指令集小，编译器容易实现，缺点是性能下降，实现同样的功能需要跟多的指令。</p>
+<p><strong>JVM总体流程</strong></p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/Ikjg5n"><img src="https://z3.ax1x.com/2021/11/03/Ikjg5n.png" alt="Ikjg5n.png"></a></p>
+<h1 id="类加载子系统"><a href="#类加载子系统" class="headerlink" title="类加载子系统"></a>类加载子系统</h1><ul>
+<li><p>类加载子系统<strong>只</strong>负责加载Class文件，class文件的文件开头有特定的文件标识。</p>
+</li>
+<li><p>加载的类信息存放于放入区中，除了类的信息外，方法区中还会存放运行时常量池信息，可能还包括字符串字面量与数字常量（这部分信息是Class文件中常量池部分的内存映射）</p>
+</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/IkjhvT"><img src="https://z3.ax1x.com/2021/11/03/IkjhvT.png" alt="IkjhvT.png"  /></a></p>
+<h2 id="类的加载过程"><a href="#类的加载过程" class="headerlink" title="类的加载过程"></a>类的加载过程</h2><p><a target="_blank" rel="noopener" href="https://imgtu.com/i/IkxN1P"><img src="https://z3.ax1x.com/2021/11/03/IkxN1P.jpg" alt="IkxN1P.jpg" style="zoom: 44%;" /></a></p>
+<h3 id="加载（Loading）"><a href="#加载（Loading）" class="headerlink" title="加载（Loading）"></a>加载（Loading）</h3><ol>
+<li>通过一个类的全限定名获取定义此类的二进制字节流</li>
+<li>将这个字节流所代表的静态存储结构转换为方法区的运行时数据结构</li>
+<li><strong>在内存中生成一个代表这个类的java.lang.Class对象</strong>，作为方法区中该类的各种数据的访问入口</li>
+</ol>
+<p><strong>加载 .class文件的方式</strong></p>
+<ul>
+<li>从本地系统直接加载（常用）</li>
+<li>通过网络获取，如 Web Applet</li>
+<li>从zip压缩包中读取，成为日后jar、war格式的基础</li>
+<li>运行时计算生成，如 动态代理</li>
+<li>有其他文件生成，如 JSP应用</li>
+<li>从数据库中提取 .class文件</li>
+<li>从加密文件中获取，典型的防class文件被反编译的保护措施</li>
+</ul>
+<h3 id="连接（Linking）"><a href="#连接（Linking）" class="headerlink" title="连接（Linking）"></a>连接（Linking）</h3><ul>
+<li>验证（Verify）<ul>
+<li>确保class文件的字节流包含信息的准确性，不危害虚拟机的自身安全</li>
+<li>包括四种验证：文件格式验证、元数据验证、字节码验证、符号引用验证</li>
+</ul>
+</li>
+<li>准备（Prepare）<ul>
+<li>为类变量分配内存并且设置该类的默认初始值，即零值</li>
+<li>这里不包括final修饰的static，因为final在编译的时候就会分配了，准备阶段会显示初始化</li>
+</ul>
+</li>
+<li>解析（Resolve）<ul>
+<li>将常量池的符号引用转换成直接引用，直接引用就是直接指向目标的指针、相对偏移量或一个间接定位到目标的句柄</li>
+<li>事实上，解析操作往往会伴随着初始化之后再执行</li>
+</ul>
+</li>
+</ul>
+<h3 id="初始化（initialization）"><a href="#初始化（initialization）" class="headerlink" title="初始化（initialization）"></a>初始化（initialization）</h3><p>初始化阶段就是执行类构造方法 &lt;clinit&gt;() 的过程</p>
+<p><strong>clinit方法</strong> : 不需要定义，javac编译器自动收集类中所有 <strong>类变量的赋值动作</strong> 和 <strong>静态代码块中的语句</strong>  按顺序合并而来</p>
+<p>若该类有父类，JVM会保证先执行父类中的 &lt;clinit&gt;() 方法</p>
+<h2 id="类加载器的分类"><a href="#类加载器的分类" class="headerlink" title="类加载器的分类"></a>类加载器的分类</h2><p>JVM支持两种类型的类加载器，引导类加载器（BootStrap ClassLoader）、自定义类加载器（User-Defined Classloader）</p>
+<p>所有派生于抽象类ClassLoader的加载器都划分为自定义类加载器。再程序中常见的类加载器始终只有3个：</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/IAVsN6"><img src="https://z3.ax1x.com/2021/11/03/IAVsN6.md.png" alt="IAVsN6.md.png" style="zoom:80%;" /></a></p>
+<p><strong>启动类加载器（BootStrap ClassLoader）</strong></p>
+<ul>
+<li>该类加载是由C/C++编写的，嵌套再JVM内部</li>
+<li>它用来加载java的核心库，用于提供JVM自身需要的类</li>
+<li>出于安全考虑，只加载包名为java、Javax、sun等开头的类</li>
+<li>不继承java.lang.ClassLoader，没有父类加载器</li>
+<li>加载扩展类加载器和系统类加载器，并指定为他们的父类加载器</li>
+</ul>
+<p><strong>扩展类加载器（Extension ClassLoader）</strong></p>
+<ul>
+<li>java语言编写，派生于ClassLoader，父类加载器为启动类加载器</li>
+<li>从JDK的安装目录的jre/lib/ext 下加载类库，如果自定义插件jar文件放入该目录，也会加载。</li>
+</ul>
+<p><strong>系统类加载器（AppClassLoader）</strong></p>
+<ul>
+<li>java语言编写，派生于ClassLoader，父类加载器为启动类加载器</li>
+<li>负责加载环境变量classpath或系统属性java.class.path指定路径下的类库</li>
+<li>该类加载的是程序中默认的类加载器，一般java应用中所有的类是由它来完成加载</li>
+<li>通过 ClassLoader.getSystemClassLoader() 可获取到该类加载器</li>
+</ul>
+<p><strong>用户自定义类加载器</strong></p>
+<p>在必要时，我们可以自定义类加载器，来定制类的加载方式，需继承抽象类ClassLoader，实现相关方法。</p>
+<p>自定义类加载器作用：</p>
+<ul>
+<li>隔离加载类</li>
+<li>修改类加载的方式</li>
+<li>扩展加载源</li>
+<li>放置源码泄露</li>
+</ul>
+<h2 id="双亲委派机制"><a href="#双亲委派机制" class="headerlink" title="双亲委派机制"></a>双亲委派机制</h2><p>JVM对class文件采用 <strong>按需加载</strong> 方式，加载某个类时采用<strong>双亲委派模式</strong> 。</p>
+<p><strong>工作原理</strong></p>
+<ol>
+<li>如果一个类加载器收到了类加载请求，并不会自己先去加载，而是把这个请求委托给父类的加载器去执行</li>
+<li>如果父类加载器还存在父类加载器，则继续向上委托，最终到达顶层的启动类加载器</li>
+<li>如果父类加载器可以完成类的加载任务，就返回成功，否则子类才会尝试自己去加载</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/IAKq2V"><img src="https://z3.ax1x.com/2021/11/03/IAKq2V.png" alt="IAKq2V.png" style="zoom: 80%;" /></a></p>
+<p><strong>作用</strong></p>
+<ul>
+<li>避免类的重复加载</li>
+<li>保护程序安全，放置核心API被篡改<ul>
+<li>如自定义java.lang.String类，而引导类加载器会先加载jdk自带的类，进而报错，这样就保证对java核心的源代码的保护，这也是<strong>沙箱安全机制</strong></li>
+</ul>
+</li>
+</ul>
+<p><strong>补充</strong></p>
+<p>在JVM中表示两个class对象是否为同一个类存在的两个必要条件：</p>
+<ul>
+<li>类的完整类名必须一致，包括包名</li>
+<li>加载这个类的ClassLoader实例对象必须相同</li>
+</ul>
+<h1 id="运行时数据区"><a href="#运行时数据区" class="headerlink" title="运行时数据区"></a>运行时数据区</h1><p>JVM内存布局规定了java在运行过程中内存申请、分配、管理的策略，保证JVM的高效稳定运行。</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/IA8mC9"><img src="https://z3.ax1x.com/2021/11/03/IA8mC9.png" alt="IA8mC9.png" style="zoom: 67%;" /></a></p>
+<p>线程独享：程序计算器、栈、本地栈</p>
+<p>线程共享：堆、对外内存（永久代或元空间、代码缓存）</p>
+<h2 id="程序计数器（PC-Register）"><a href="#程序计数器（PC-Register）" class="headerlink" title="程序计数器（PC Register）"></a>程序计数器（PC Register）</h2><p>PC寄存器用来存储下一条指令的地址，交给执行引擎读取。</p>
+<ul>
+<li>它是一块很小的内存空间，是线程私有的，生命周期于线程声明周期一致。</li>
+<li>如何时间一个线程只有一个方法在执行，PC计计数器会存储当前线程正在执行的java方法的JVM指令地址，如果正在执行native方法，则是未指定值（undefined）</li>
+<li>它是程序控制流的指示器，分支、循环、跳转、异常处理、线程恢复等基础功能都需要依赖该计数器来完成</li>
+</ul>
+<p><strong>PC寄存器存储字节码指定地址作用</strong></p>
+<p>CPU需要不停切换各个线程来执行程序，PC寄存器保存当前线程下执行的位置，JVM的字节码解释器需要通过PC</p>
+<p>寄存器的值来明确下一条执行什么样的字节码指令。</p>
+<h2 id="虚拟机栈（Java-Virtual-Machine-Stack）"><a href="#虚拟机栈（Java-Virtual-Machine-Stack）" class="headerlink" title="虚拟机栈（Java Virtual Machine Stack）"></a>虚拟机栈（Java Virtual Machine Stack）</h2><p><strong>虚拟机栈出现的背景</strong>：由于跨平台性的设计，java的指令都是根据栈来设计的。优点是跨平台，指令集小，编译器容易实现，缺点是性能下降，实现同样的功能需要跟多的指令</p>
+<p>每个线程在创建时都会创建一个虚拟机栈，其内确保一个个的栈帧(Stack Frame),对应一次次的方法调用。</p>
+<p><strong>生命周期</strong> ：和线程的生命周期一致</p>
+<p><strong>作用</strong>：主管java程序的运行，它包方法的局部变量、部分结果，并参与方法的调用和返回。</p>
+<p><strong>JVM直接堆Java栈的操作只有两个</strong></p>
+<ul>
+<li>每个方法执行，伴随着进栈（入栈、压栈）</li>
+<li>执行结束后出栈操作</li>
+</ul>
+<p><strong>栈可能出现的异常</strong></p>
+<ul>
+<li>如果栈固定大小：每个虚拟机栈的容量在线程创建时就能确定下来，如果超过虚拟机栈允许的最大容量，就会抛出StackOverFlowError 异常。</li>
+<li>如果栈允许动态扩展：在尝试扩展的时候无法申请到足够的内存，或在创建新的线程时没有足够的内存去创建虚拟机栈，就会抛出 OutOfMemoryError 异常。</li>
+</ul>
+<p><strong>设置栈内存大小</strong>： -Xss  设置线程的最大栈空间</p>
+<h3 id="栈的存储单位"><a href="#栈的存储单位" class="headerlink" title="栈的存储单位"></a>栈的存储单位</h3><p>每个线程都有直接的栈，栈中的数据都是以<b style="color:red">栈帧（Stack Frame）</b>的格式存在,每个栈帧对应一个方法。</p>
+<p><strong>运行原理</strong></p>
+<ul>
+<li>在同一时间点上，只有一个活动栈帧（当前栈帧），执行引擎运行的所有字节码指令只对当前栈帧经行操作</li>
+<li>在当前放法中调用了其他方法，对应的新的栈帧会被创建出来，放在栈顶，成为新的当前栈</li>
+<li>不同线程中所包含的栈帧不允许存在相互应用的</li>
+<li>方法返回之际，当前栈帧会传回此方法的执行结果给前一个栈帧，当前虚拟机栈会执行出栈操作，将当前栈帧丢弃</li>
+<li>使用return指令正常的函数返回、抛出异常返回，都会导致栈帧被弹出</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/IVzXXq"><img src="https://z3.ax1x.com/2021/11/04/IVzXXq.jpg" alt="IVzXXq.jpg" style="zoom:50%;" /></a></p>
+<p><strong>栈帧的内部结构</strong></p>
+<ul>
+<li>局部变量表（Local Variables）</li>
+<li>操作数栈 (Operand Stack)</li>
+<li>动态链接 (Dynamic Linking)</li>
+<li>方法返回地址 (Return Address)</li>
+<li>一些附加信息，如对程序调试提供支持的信息</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/IZS2UU"><img src="https://z3.ax1x.com/2021/11/04/IZS2UU.jpg" alt="IZS2UU.jpg" style="zoom: 44%;" /></a></p>
+<h3 id="局部变量表-Local-Variables"><a href="#局部变量表-Local-Variables" class="headerlink" title="局部变量表(Local Variables)"></a>局部变量表(Local Variables)</h3><ul>
+<li>定义为一个数字数组，用于存储方法参数和定义在方法体内的局部变量，这些数据的类型包括各种<b style="color:red">基本数据类型</b>、<b style="color:red">对象引用(reference)</b></li>
+<li>局部变量表是建立在线程的栈上，是线程私有的数据，不存在数据安全问题</li>
+<li>局部变量表的容量大小实在编译期间确定下来，并保持在Code属性的<b style="color:red">Maximum local variables</b>数据项中</li>
+</ul>
+<p><strong>Slot</strong></p>
+<ul>
+<li>局部变量表中最基本的存储单元是Slot（变量槽），从0开始</li>
+<li>32为以内的各种基本数据类型占用一个Slot，64为的数据类型占用两个Slot<ul>
+<li>byte、short、char、boolean 在存储前被都转化成 int ，占据一个Slot</li>
+<li>long 、double 占据两个Slot</li>
+</ul>
+</li>
+<li>方法被调用时，它的方法参数和方法体内定义的局部变量会<b style="color:red">按顺序被复制</b>到每一个Slot中，通过索引即可访问局部变量表中指定的值</li>
+<li>如果当前方法是构造方法或非静态方法，会将 <b style="color:red">this</b> 放在index为0的Slot处</li>
+</ul>
+<p><strong>Slot的重复利用</strong></p>
+<p>如果一个局部变量过了其作用域，那么在其作用域之后声明的新的局部变量很有可能会重复利用过期局部变量的槽位，从而达到节省资源的目的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SlotTest</span></span>&#123;</span><br><span class="line">	<span class="comment">// 该方法中的局部变量表大小为2: index[0]:this 、index[1]:b</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> a = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 此时的b会复用a的槽位</span></span><br><span class="line">        <span class="keyword">int</span> b = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>静态变量与局部变量的对比</strong></p>
+<ul>
+<li>静态变量: 在<b style='color:red'>准备阶段</b>会赋予初始值，在<b style='color:red'>初始化</b>阶段，会赋予我们在代码中定义的值。</li>
+<li>局部变量：不存在系统初始化过程，所以一旦定义了局部变量则必须人为的初始化，否则无法使用。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 改代码是错误的，没有赋值，不能使用</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	System.out.println(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>补充</strong></p>
+<p>局部变量表中的变量是重要的垃圾回收根节点，只要被局部变量表中的直接或间接引用的对象都不会被回收。</p>
+<h3 id="操作数栈-Operand-Stack"><a href="#操作数栈-Operand-Stack" class="headerlink" title="操作数栈(Operand Stack)"></a>操作数栈(Operand Stack)</h3><ul>
+<li>操作数栈，用于保存计算过程的中间结果，同时作为计算过程中变量的临时存储空间。</li>
+<li>操作数栈是JVM执行引擎的工作区，其最大深度在编译器就定义好了，保存在Code属性的<b style='color:red'>max_stack</b></li>
+<li>在方法执行过程中，根据字节码指令，往栈中写入数据或提取数据，即入栈与出栈<ul>
+<li>如执行 复制、交换、求和等操作</li>
+<li><a target="_blank" rel="noopener" href="https://imgtu.com/i/IZAup8"><img src="https://z3.ax1x.com/2021/11/04/IZAup8.png" alt="IZAup8.png" style="zoom:50%;" /></a></li>
+</ul>
+</li>
+<li>栈中的元素可以是任意的java数据类型<ul>
+<li>32bit的类型占用一个栈单位深度</li>
+<li>64bit的类型占用两个栈单位深度</li>
+</ul>
+</li>
+<li>如果被调用的方法带有返回值，其返回值将会压入操作数栈中，并根性PC寄存器中下一条需要执行的字节码指令</li>
+</ul>
+<p>补充：JVM的<b style='color:red'>解释引擎是基于栈的执行引擎</b>，其中的栈指的就是操作数栈</p>
+<h3 id="动态链接-Dynamic-Linking"><a href="#动态链接-Dynamic-Linking" class="headerlink" title="动态链接(Dynamic Linking)"></a>动态链接(Dynamic Linking)</h3><p>动态链接（指向运行时常量池的方法引用）：每一个栈帧中内部都包含一个指向<b style='color:blue'>运行时常量池</b>中<b style='color:red'>该栈帧所属的方法引用</b>。</p>
+<p>在java源文件被编译到字节码文件中时，所有的变量与方法引用都在为符号引用（Symbolic Reference）保存到class文件的常量池里。当调用其他方法时，就是通过常量池中指向的方法的符号引用来表示。所以<b style='color:red'>动态链接的作用就是为了将这些符号引用转换成调用方法的直接引用</b>。</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/IZel80"><img src="https://z3.ax1x.com/2021/11/04/IZel80.png" alt="IZel80.png" style="zoom: 80%;" /></a></p>
+<h3 id="方法返回地址-Return-Address"><a href="#方法返回地址-Return-Address" class="headerlink" title="方法返回地址(Return Address)"></a>方法返回地址(Return Address)</h3><p>存放调用该方法时pc寄存器的值，用于方法的退出。</p>
+<p>一个方法结束，有两种方式:</p>
+<ul>
+<li><p>正常完成出口</p>
+<ul>
+<li>执行引擎遇到任意一个返回字节码指令(return)时,会有返回值传递给上层的方法调用者。</li>
+</ul>
+</li>
+<li><p>异常完成出口</p>
+<ul>
+<li>方法执行过程中遇到异常，并且该异常没有在经行处理，返回地址是要通过<b style='color:red'>异常表</b>来确定，并且没有返回值。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/IZKj7F"><img src="https://z3.ax1x.com/2021/11/04/IZKj7F.png" alt="IZKj7F.png"></a></p>
+</li>
+</ul>
+<p>方法的退出就是当前栈帧出栈的过程。此时，需要恢复上层方法中局部变量表、操作数栈，将返回值压入操作数栈中，设置PC寄存器值等，让调用者方法继续执行下去。</p>
+<h3 id="方法的调用"><a href="#方法的调用" class="headerlink" title="方法的调用"></a>方法的调用</h3><p><strong>符号引用转换为方法的直接引用</strong></p>
+<ul>
+<li><p>静态链接</p>
+<p>当字节码文件被装载到JVM内部时，如果被调用的目标方法在编译器可知，且运行期保持不变，这种情况下方法的符号引用转换成直接引用的过程为静态链接。</p>
+</li>
+<li><p>动态链接</p>
+<p>如果调用的方法在编译期间无法被确定下来，只能够在程序运行期间将调用方法的符号引用转换为直接引用，这种引用转换过程具备动态性，因此被称之为动态链接。</p>
+</li>
+</ul>
+<p><strong>方法的绑定机制</strong>：绑定是一个字段、方法或者类在符号引用被替换为直接引用的过程，仅仅发生一次。</p>
+<ul>
+<li>早期绑定<ul>
+<li>被调用的目标方法在编译器可知，且运行期间保持不变，因此可以使用静态链接的方式将符号引用转换为直接引用。</li>
+</ul>
+</li>
+<li>晚期绑定<ul>
+<li>被调用的方法在编译期间无法被确定下来，只能够在运行期间根据实际的类型绑定相关的方法。</li>
+</ul>
+</li>
+</ul>
+<p><strong>虚方法与非虚方法</strong></p>
+<p>非虚方法: 编译期间就确定了具体的调用版本，静态方法、私有方法、final方法、实例构造器、父类方法都是非虚方法</p>
+<p>其他的方法都称为虚方法</p>
+<p><strong>方法调用指令</strong></p>
+<ul>
+<li>普通调用指令<ul>
+<li><b style='color:blue'>invokestatic</b>：调用静态方法, 解析阶段可确定方法版本</li>
+<li><b style='color:blue'>invokespecial</b>：调用&lt;init&gt;方法、私有方法、父类方法, 解析阶段可确定方法版本</li>
+<li><b style='color:green'>invokevirtual</b>：调用所有的虚方法（final修饰的除外）</li>
+<li><b style='color:green'>invokeinterface</b>：调用接口方法</li>
+</ul>
+</li>
+<li>动态调用指令<ul>
+<li>invokedynamic：动态解析处需要调用的方法，然后执行</li>
+</ul>
+</li>
+</ul>
+<h2 id="本地方法接口"><a href="#本地方法接口" class="headerlink" title="本地方法接口"></a>本地方法接口</h2><h2 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><h2 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h2><h2 id="对象的实例化内存布局与访问定位"><a href="#对象的实例化内存布局与访问定位" class="headerlink" title="对象的实例化内存布局与访问定位"></a>对象的实例化内存布局与访问定位</h2><h2 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h2><h1 id="执行引擎"><a href="#执行引擎" class="headerlink" title="执行引擎"></a>执行引擎</h1><h1 id="StringTable"><a href="#StringTable" class="headerlink" title="StringTable"></a>StringTable</h1><h1 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h1>
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>感谢老铁们的支持!!!</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/weChatPay.png" alt="怪狗狗 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/aliPay.jpg" alt="怪狗狗 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" rel="tag"> 垃圾回收</a>
+              <a href="/tags/%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA/" rel="tag"> 运行时数据区</a>
+              <a href="/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%AD%90%E7%B3%BB%E7%BB%9F/" rel="tag"> 类加载子系统</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/10/21/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1-Seata/" rel="prev" title="分布式事务-Seata">
+      <i class="fa fa-chevron-left"></i> 分布式事务-Seata
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%AD%90%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.</span> <span class="nav-text">类加载子系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">类的加载过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%EF%BC%88Loading%EF%BC%89"><span class="nav-number">1.1.1.</span> <span class="nav-text">加载（Loading）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%EF%BC%88Linking%EF%BC%89"><span class="nav-number">1.1.2.</span> <span class="nav-text">连接（Linking）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%EF%BC%88initialization%EF%BC%89"><span class="nav-number">1.1.3.</span> <span class="nav-text">初始化（initialization）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E7%9A%84%E5%88%86%E7%B1%BB"><span class="nav-number">1.2.</span> <span class="nav-text">类加载器的分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6"><span class="nav-number">1.3.</span> <span class="nav-text">双亲委派机制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA"><span class="nav-number">2.</span> <span class="nav-text">运行时数据区</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8%EF%BC%88PC-Register%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">程序计数器（PC Register）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88%EF%BC%88Java-Virtual-Machine-Stack%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">虚拟机栈（Java Virtual Machine Stack）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%88%E7%9A%84%E5%AD%98%E5%82%A8%E5%8D%95%E4%BD%8D"><span class="nav-number">2.2.1.</span> <span class="nav-text">栈的存储单位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E8%A1%A8-Local-Variables"><span class="nav-number">2.2.2.</span> <span class="nav-text">局部变量表(Local Variables)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E6%95%B0%E6%A0%88-Operand-Stack"><span class="nav-number">2.2.3.</span> <span class="nav-text">操作数栈(Operand Stack)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5-Dynamic-Linking"><span class="nav-number">2.2.4.</span> <span class="nav-text">动态链接(Dynamic Linking)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E8%BF%94%E5%9B%9E%E5%9C%B0%E5%9D%80-Return-Address"><span class="nav-number">2.2.5.</span> <span class="nav-text">方法返回地址(Return Address)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E7%9A%84%E8%B0%83%E7%94%A8"><span class="nav-number">2.2.6.</span> <span class="nav-text">方法的调用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.3.</span> <span class="nav-text">本地方法接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88"><span class="nav-number">2.4.</span> <span class="nav-text">本地方法栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A0%86"><span class="nav-number">2.5.</span> <span class="nav-text">堆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E5%8C%BA"><span class="nav-number">2.6.</span> <span class="nav-text">方法区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E8%AE%BF%E9%97%AE%E5%AE%9A%E4%BD%8D"><span class="nav-number">2.7.</span> <span class="nav-text">对象的实例化内存布局与访问定位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98"><span class="nav-number">2.8.</span> <span class="nav-text">直接内存</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E"><span class="nav-number">3.</span> <span class="nav-text">执行引擎</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#StringTable"><span class="nav-number">4.</span> <span class="nav-text">StringTable</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6"><span class="nav-number">5.</span> <span class="nav-text">垃圾回收</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="怪狗狗"
+      src="/images/jerry.jpg">
+  <p class="site-author-name" itemprop="name">怪狗狗</p>
+  <div class="site-description" itemprop="description">踏上新征程----go！！！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/oddDog-git" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;oddDog-git" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://1764501567@qq.com/" title="E-Mail → https:&#x2F;&#x2F;1764501567@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://wpa.qq.com/msgrd?v=3&uin=1764501567&site=qq&menu=yes" title="http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;1764501567&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener" target="_blank">加我QQ</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">怪狗狗</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div> -->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'YVPmrsyUdC4uV9bapDgb8ll6-gzGzoHsz',
+      appKey     : 'MUI57EQtRoMQjLvpW68kiNyE',
+      placeholder: "快来评论吧！！！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
