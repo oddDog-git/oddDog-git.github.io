@@ -14334,15 +14334,15 @@
 <p><strong>作用</strong>：主管java程序的运行，它包方法的局部变量、部分结果，并参与方法的调用和返回。</p>
 <p><strong>JVM直接堆Java栈的操作只有两个</strong></p>
 <ul>
-<li>每个方法执行，伴随着进栈（入栈、压栈）</li>
-<li>执行结束后出栈操作</li>
+<li>每个方法执行，伴随着<b style='color:red'>进栈</b>（入栈、压栈）</li>
+<li>执行结束后<b style='color:red'>出栈</b>操作</li>
 </ul>
 <p><strong>栈可能出现的异常</strong></p>
 <ul>
 <li>如果栈固定大小：每个虚拟机栈的容量在线程创建时就能确定下来，如果超过虚拟机栈允许的最大容量，就会抛出StackOverFlowError 异常。</li>
 <li>如果栈允许动态扩展：在尝试扩展的时候无法申请到足够的内存，或在创建新的线程时没有足够的内存去创建虚拟机栈，就会抛出 OutOfMemoryError 异常。</li>
 </ul>
-<p><strong>设置栈内存大小</strong>： -Xss  设置线程的最大栈空间</p>
+<p><strong>设置栈内存大小</strong>： <b style='color:red'>-Xss</b>  设置线程的最大栈空间</p>
 <h3 id="栈的存储单位"><a href="#栈的存储单位" class="headerlink" title="栈的存储单位"></a>栈的存储单位</h3><p>每个线程都有直接的栈，栈中的数据都是以<b style="color:red">栈帧（Stack Frame）</b>的格式存在,每个栈帧对应一个方法。</p>
 <p><strong>运行原理</strong></p>
 <ul>
@@ -14461,7 +14461,46 @@
 </ul>
 </li>
 </ul>
-<h2 id="本地方法接口"><a href="#本地方法接口" class="headerlink" title="本地方法接口"></a>本地方法接口</h2><h2 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><h2 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h2><h2 id="对象的实例化内存布局与访问定位"><a href="#对象的实例化内存布局与访问定位" class="headerlink" title="对象的实例化内存布局与访问定位"></a>对象的实例化内存布局与访问定位</h2><h2 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h2><h1 id="执行引擎"><a href="#执行引擎" class="headerlink" title="执行引擎"></a>执行引擎</h1><h1 id="StringTable"><a href="#StringTable" class="headerlink" title="StringTable"></a>StringTable</h1><h1 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h1>]]></content>
+<p>前四条指令固定在虚拟机内部，方法的调用执行不可人为的干预，而invokeinterface指令则支持用户确定方法版本。</p>
+<p>invokeinterface实在java7中添加的，为了实现【动态类型语言】支持而做的改进。而java7中并没有提供直接生成invokeinterface指令的方法，直到java8的Lambda表达式的出现，才能够直接生成invokeinterface指令。</p>
+<p><strong>动态类型语言和静态类型语言</strong></p>
+<ul>
+<li>两者的区别在于对类型的检查是在编译期还是在运行期，满足前者就是静态类型语言，满足后者就是动态类型语言</li>
+<li>静态类型语言是判断变量自身的类型信息；动态类型语言是判断变量值的类型信息，变量没有类型信息</li>
+</ul>
+<p><strong>方法重写的本质</strong></p>
+<ol>
+<li>找到操作数栈顶的第一个元素所执行的实际类型，记作 C</li>
+<li>如果在类型 C 找到与常量中相对应的方法，则进行访问</li>
+<li>如果没找到，按照继承的关系从下往上依次对 C 的各个父类经行访问</li>
+<li>如果始终没找到合适的方法，则抛出 java.lang.AbstractMethodError异常，表示该方法是抽象方法，并且没有没实现。</li>
+</ol>
+<p>在访问方法时，需要进行访问权限校验，如果没通过，会抛出 java.lang.IllegalAccessError 异常</p>
+<p><strong>虚方法表(virtual method table)</strong></p>
+<ul>
+<li><p>如果在每次动态分派的过程中都要重新在类的方法元数据搜索合适的目标，这样就会影响到执行效率。因此，为了提高性能，JVM采用在类的方法区建立一个虚方法表，使用索引的方式来代替查找。</p>
+</li>
+<li><p>每个类都有一个虚方法表，表中存放着各个虚方法的实际路口。</p>
+</li>
+<li><p>虚方法表在类的加载的链接阶段被创建并初始化。</p>
+</li>
+</ul>
+<h2 id="本地方法栈（Native-Method-Stack）"><a href="#本地方法栈（Native-Method-Stack）" class="headerlink" title="本地方法栈（Native Method Stack）"></a>本地方法栈（Native Method Stack）</h2><p><a href="https://imgtu.com/i/IeEAyD"><img src="https://z3.ax1x.com/2021/11/04/IeEAyD.jpg" alt="IeEAyD.jpg" style="zoom: 67%;" /></a></p>
+<p><strong>本地方法</strong></p>
+<p>一个Native Method就是一个Java调用非Java代码的接口。该方法的实现由非Java语言实现，比如C/C++。</p>
+<p>本地接口的作用是融合不同的变成语言为Java所用，它的初衷是融合C/C++程序。</p>
+<p><strong>现状</strong> ：目前该方法使用的越来越少，除非是与硬件有关的应用。</p>
+<p><strong>本地方法栈概述</strong></p>
+<ul>
+<li>Java的虚拟机栈用于管理Java方法的调用，而本地方法栈用于管理本地方法的调用。</li>
+<li>本地方法栈也是线程私有的。</li>
+<li>允许被实现固定内存大小，或可动态扩展内存大小（与Java虚拟机栈基本相同）</li>
+<li>当某个线程调用有关本地方法时，它就进入了一个全新的且不受虚拟机限制的环境，它与虚拟机有同样的权限。</li>
+</ul>
+<p><strong>补充</strong></p>
+<p>不是所有的虚拟机都支持本地方法；在Hotspot JVM中，直接将本地方法和虚拟机栈合二为一。</p>
+<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>续。。。</p>
+<h2 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h2><h2 id="对象的实例化内存布局与访问定位"><a href="#对象的实例化内存布局与访问定位" class="headerlink" title="对象的实例化内存布局与访问定位"></a>对象的实例化内存布局与访问定位</h2><h2 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h2><h1 id="执行引擎"><a href="#执行引擎" class="headerlink" title="执行引擎"></a>执行引擎</h1><h1 id="StringTable"><a href="#StringTable" class="headerlink" title="StringTable"></a>StringTable</h1><h1 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h1>]]></content>
       <categories>
         <category>JVM</category>
       </categories>
