@@ -14217,7 +14217,7 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mov eax,2  &#x2F;&#x2F;将eax寄存器的值设为1</span><br><span class="line">add eax,3  &#x2F;&#x2F;使eax寄存器的值加3</span><br></pre></td></tr></table></figure>
 <p><strong>总结</strong> : 由于跨平台性的设计，java的指令都是根据栈来设计的。优点是跨平台，指令集小，编译器容易实现，缺点是性能下降，实现同样的功能需要跟多的指令。</p>
 <p><strong>JVM总体流程</strong></p>
-<p><a href="https://imgtu.com/i/Ikjg5n"><img src="https://z3.ax1x.com/2021/11/03/Ikjg5n.png" alt="Ikjg5n.png"></a></p>
+<p><a href="https://imgtu.com/i/Ikjg5n"><img src="https://z3.ax1x.com/2021/11/03/Ikjg5n.png" alt="Ikjg5n.png"  /></a></p>
 <h1 id="类加载子系统"><a href="#类加载子系统" class="headerlink" title="类加载子系统"></a>类加载子系统</h1><ul>
 <li><p>类加载子系统<strong>只</strong>负责加载Class文件，class文件的文件开头有特定的文件标识。</p>
 </li>
@@ -14765,7 +14765,7 @@
 <li>设置对象的对象头</li>
 <li>执行init方法经行初始化</li>
 </ol>
-<h3 id="对象的内存布局"><a href="#对象的内存布局" class="headerlink" title="对象的内存布局"></a>对象的内存布局</h3><p>对象内部包括三部分：对象头、实例数据、对其填充</p>
+<h3 id="对象的内存布局"><a href="#对象的内存布局" class="headerlink" title="对象的内存布局"></a>对象的内存布局</h3><p>对象内部包括三部分：对象头、实例数据、对齐填充</p>
 <p><strong>对象头(Header)</strong></p>
 <ul>
 <li>运行时数据(Mark Work)<ul>
@@ -14784,7 +14784,7 @@
 <ul>
 <li>它是真正存储有效信息，包括程序代码中定义的各种类型的字段（包括从父类继承下来的字段）</li>
 </ul>
-<p><strong>对其填充(Padding)</strong></p>
+<p><strong>对齐填充(Padding)</strong></p>
 <ul>
 <li>不是必须的，仅仅起到占位符的作用</li>
 </ul>
@@ -14810,7 +14810,92 @@
 <p><a href="https://imgtu.com/i/IGZn4x"><img src="https://z3.ax1x.com/2021/11/08/IGZn4x.png" alt="IGZn4x.png"  /></a></p>
 <p><strong>直接缓冲区</strong>：使用NIO时，操作系统划出直接的缓冲区可以被java代码直接访问，只有一份。NIO适合堆大文件的读写操作。</p>
 <p><a href="https://imgtu.com/i/IGZg5q"><img src="https://z3.ax1x.com/2021/11/08/IGZg5q.md.png" alt="IGZg5q.md.png"  /></a></p>
-<h1 id="执行引擎"><a href="#执行引擎" class="headerlink" title="执行引擎"></a>执行引擎</h1><p>续。。。</p>
+<h1 id="执行引擎-Excution-Engine"><a href="#执行引擎-Excution-Engine" class="headerlink" title="执行引擎(Excution Engine)"></a>执行引擎(Excution Engine)</h1><p><a href="https://imgtu.com/i/IGyQKK"><img src="https://z3.ax1x.com/2021/11/08/IGyQKK.png" alt="IGyQKK.png"></a></p>
+<p>执行引擎是JVM核心的组成部分之一</p>
+<p>“虚拟机”是一个相对于“物理机”的概念，这两种机器都有代码执行能力，区别是： </p>
+<ul>
+<li>物理机的执行引擎是直接建立在处理器、缓存、指令集和操作系统层面上的</li>
+<li><b style='color:red'>虚拟机的执行引擎是由软件自行实现的</b> , 因此可以不受物理条件制约地定制指令集与执行引擎的结构体系，能够执行那些不被硬件直接支持的指令集格式。</li>
+</ul>
+<p><strong>执行引擎的作用</strong></p>
+<ul>
+<li>JVM的主要任务是负责装载字节码到其内部，但字节码并不能够直接运行在操作系统之上，它内部包含的仅仅只是一些能够被JVM所识别的字节码指令、符号表，以及其他辅助信息。</li>
+<li>执行引擎的任务就是<b style='color:red'>将字节码指令解释/编译为对应平台上的本地机器指令</b>, 让Java程序运行起来。换言之，JVM的执行引擎充当了将高级语言翻译成机器语言的译者。</li>
+</ul>
+<p><strong>工作过程</strong></p>
+<ul>
+<li>执行引擎执行的字节码指令完全依赖于PC寄存器，每当执行完一项指令操作后，PC寄存器就会更新下一条需要被执行的指令地址。</li>
+<li>方法在执行过程中，执行引擎可能会通过存储在局部变量表中的对象引用准确定位到存储在Java堆中的对象实例信息，以及通过对象头中的元数据指令定位到目标对象的类型信息。</li>
+</ul>
+<h2 id="Java代码编译和执行的过程"><a href="#Java代码编译和执行的过程" class="headerlink" title="Java代码编译和执行的过程"></a>Java代码编译和执行的过程</h2><p>大部份的程序代码转换成物理机的目标代码或虚拟机能执行的指令集之前，都需要经过下图中的各个步骤:</p>
+<p><a href="https://imgtu.com/i/IGokqA"><img src="https://z3.ax1x.com/2021/11/08/IGokqA.jpg" alt="IGokqA.jpg" style="zoom:50%;" /></a></p>
+<p><strong>解释器(Interpreter)</strong></p>
+<p>当Java虚拟机启动时会根据预定义的规范对<b style='color:red'>字节码采用逐行解释的方式执行</b>,将每条字节码文件中的内容“翻译”成对应平台的本地机器指令执行，启动快，但执行效率低。</p>
+<p><strong>JIT编译器(Just In Time Compiler)</strong></p>
+<p>虚拟机将源代码直接编译成本地机器平台相关的机器语言，需要一定的执行时间，但编译为本地代码后，执行效率高。</p>
+<p><strong>Java是半编译半解释型语言</strong></p>
+<p>JDK1.0时代，将Java语言定义为”解释执行”还是比较正确的。再后来，Java也发展出可以直接生成本地代码的编译器。现在JVM在执行Java代码时，通常会将解释执行与编译执行二者结合起来</p>
+<p><strong>执行引擎基本执行流程</strong></p>
+<p><a href="https://imgtu.com/i/IGogJK"><img src="https://z3.ax1x.com/2021/11/08/IGogJK.jpg" alt="IGogJK.jpg"></a></p>
+<p><strong>字节码</strong></p>
+<ul>
+<li>字节码是一种中间状态的二进制代码，它比机器码更抽象，需要直译器转译后才能成为机器码</li>
+<li>字节码主要是为了实现特定软件的运行与软件环境，与硬件环境无关。</li>
+</ul>
+<h2 id="解释器"><a href="#解释器" class="headerlink" title="解释器"></a>解释器</h2><p>JVM设计者们的初中仅仅只是单纯的<b style='color:red'>为了满足Java程序实现跨平台特性</b>,  因此避免采用静态编译的方式直接生成本地机器指令，从而诞生了实现解释器在运行时采用逐行解释字节码执行程序的想法。<a href="https://imgtu.com/i/IG7uuQ"><img src="https://z3.ax1x.com/2021/11/08/IG7uuQ.jpg" alt="IG7uuQ.jpg" style="zoom: 50%;" /></a></p>
+<p>在Java的发展历史里，一共由两套解释执行器，古老的<b style='color:red'>字节码解释器</b>、现在普遍使用的<b style='color:red'>模板解释器</b></p>
+<ul>
+<li><p>字节码解释器在执行时通过<b style='color:blue'>纯软件代码</b>模拟字节码的执行，效率非常地下</p>
+</li>
+<li><p>模板解释器将<b style='color:blue'>每一条字节码和一个模板函数相关联</b>，模板函数中直接产生这条字节码执行时的机器码，从而很大程度上提高了解释器的性能</p>
+<ul>
+<li>在HotSpot VM中，解释器主要由Interpreter模板和Code模板构成<ul>
+<li>Interpreter模板：实现了解释器的核心功能</li>
+<li>Code模板: 用于管理HotSpot VM在运行时生成的本地机器指令</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>解释器在设计和实现上非常简单，出来Java语言外，如Python、Perl、Ruby等也是基于解释器执行的。如今，<b style='color:blue'>基于解释器执行已经被沦落为低效的代名词</b></p>
+<h2 id="JIT编译器"><a href="#JIT编译器" class="headerlink" title="JIT编译器"></a>JIT编译器</h2><p>现代虚拟机为了提高执行效率，会使用即时编译技术(JIL,Just In Time) 将方法编译成机器码后再执行。</p>
+<p>HotSpot MV 采用解释器与即时编译器并存的架构 : </p>
+<ul>
+<li>当程序启动后,解释器可以马上发挥作用，<b style='color:blue'>省去许多不必要的编译时间</b>，立即执行</li>
+<li>随着程序运行时间的推移，编译器逐渐发挥作用，根据热点探测功能，<b style='color:blue'>将有价值的字节码编译为本地机器指令</b>，以换取更高的程序执行效率。</li>
+</ul>
+<p><strong>热点代码</strong>：一个方法被调用多次方法，或者是一个方法体内部循环次数比较多的循环体。</p>
+<p>JIT编译器会将<b style='color:blue'>热点代码</b>直接编译为对应平台的本地机器指令, 由于这种编译方式发生在方法的执行过程中，因此被称之为<b style='color:blue'>栈上替换</b>，或简称为<b style='color:blue'>OSR(On Stack Replacement)编译</b></p>
+<p><strong>热点探测功能</strong> ： 判断热点代码</p>
+<ul>
+<li>目前HotSpot MV 所采用的热点探测方式是<b style='color:blue'>基于计数器的热点探测</b></li>
+<li>HotSpot MV为每一个方法都建立2给不同类型的计数器<ul>
+<li>方法调用计数器(Invocation Counter) : 统计方法的调用次数</li>
+<li>回边计数器(Back Edge Counter): 统计循环体执行的循环次数</li>
+</ul>
+</li>
+</ul>
+<p><strong>方法调用计数器</strong></p>
+<ul>
+<li><p>默认阈值在Client模式下是1500次，在Server模式下是10000次，超过这个阈值，就会触发JIT编译。</p>
+</li>
+<li><p>可通过<b style='color:blue'>-XX:CompileThreshold</b>参数来设置</p>
+</li>
+<li><p>当一个方法被调用时，先检查该方法是否存在被JIT编译过的版本</p>
+<ul>
+<li>如果存在，则优先使用编译后的本地代码来执行。</li>
+<li>如果不存在，则解释运行，并将此方的调用计数器值+1，然后判断<b style='color:blue'>方法调用计数器与回边计数器值之和</b>是否超过方法调用计数器的阈值，如果超过阈值，就向即时编译器提交一个该方法的代码编译请求。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://imgtu.com/i/IGjtij"><img src="https://z3.ax1x.com/2021/11/08/IGjtij.jpg" alt="IGjtij.jpg" style="zoom: 40%;" /></a></p>
+<ul>
+<li>热度衰减</li>
+</ul>
+<p><strong>回边计数器</strong></p>
+<p>统计一个方法中循环体代码执行的次数，在字节码中遇到控制流向后跳转的指令称之为 “回边”(Back Edge)。显然，建立回边计数器统计的目的就是为了触发OSR编译。</p>
+<p><a href="https://imgtu.com/i/IGvcB8"><img src="https://z3.ax1x.com/2021/11/08/IGvcB8.jpg" alt="IGvcB8.jpg" style="zoom:40%;" /></a></p>
+<p>续。。。</p>
 <h1 id="StringTable"><a href="#StringTable" class="headerlink" title="StringTable"></a>StringTable</h1><h1 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h1>]]></content>
       <categories>
         <category>JVM</category>
