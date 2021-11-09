@@ -14884,7 +14884,7 @@
 <li><p>当一个方法被调用时，先检查该方法是否存在被JIT编译过的版本</p>
 <ul>
 <li>如果存在，则优先使用编译后的本地代码来执行。</li>
-<li>如果不存在，则解释运行，并将此方的调用计数器值+1，然后判断<b style='color:blue'>方法调用计数器与回边计数器值之和</b>是否超过方法调用计数器的阈值，如果超过阈值，就向即时编译器提交一个该方法的代码编译请求。</li>
+<li>如果不存在，将此方的调用计数器值+1，然后判断<b style='color:blue'>方法调用计数器与回边计数器值之和</b>是否超过方法调用计数器的阈值，如果超过阈值，就向即时编译器提交一个该方法的代码编译请求，最后解释执行</li>
 </ul>
 </li>
 </ul>
@@ -14892,11 +14892,53 @@
 <ul>
 <li>热度衰减</li>
 </ul>
+<p>如果不做任何设置，方法调用计数器统计的并不是方法被调用的绝对次数，而是一个相对的执行频率。<b style='color:red'>一段时间之内方法调用的次数，当超过一定的时间限度</b>，如果方法调用次数仍然不足它提交给即时编译器，那这个方法的计数器就会被<b style='color:red'>减少一半</b>,这个过程称之为<b style='color:red'>方法调用计数器热度的衰减(Counter Decay)</b>,这段时间称之为<b style='color:red'>半衰周期(Counter Half Life Time)</b></p>
+<p>进行热度衰减的动作是在虚拟机经行垃圾收集时顺便进行的。</p>
+<p><b style='color:blue'>-XX:UseCounterDecay</b> 参数是关闭/开启热度衰减，默认开启。</p>
+<p><b style='color:blue'>-XX:CounterHalfLifeTime</b> 参数设置半衰周期的时间，单位是秒。</p>
 <p><strong>回边计数器</strong></p>
 <p>统计一个方法中循环体代码执行的次数，在字节码中遇到控制流向后跳转的指令称之为 “回边”(Back Edge)。显然，建立回边计数器统计的目的就是为了触发OSR编译。</p>
 <p><a href="https://imgtu.com/i/IGvcB8"><img src="https://z3.ax1x.com/2021/11/08/IGvcB8.jpg" alt="IGvcB8.jpg" style="zoom:40%;" /></a></p>
-<p>续。。。</p>
-<h1 id="StringTable"><a href="#StringTable" class="headerlink" title="StringTable"></a>StringTable</h1><h1 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h1>]]></content>
+<p><strong>HotSpot VM设置程序执行方式</strong></p>
+<ul>
+<li><b style='color:blue'>-Xint</b> : 完全采用解释器模式执行程序  </li>
+<li><b style='color:blue'>-Xcomp </b>: 完全采用即时编译器模式执行程序，如果即时编译出现问题，解释器就会介入执行</li>
+<li><b style='color:blue'>-Xmixed</b>: 采用解释器+即时编译器的混合模式共同执行程序  (默认方式)</li>
+</ul>
+<p><strong>HotSpot VM 中 JIT分类</strong></p>
+<p>HotSpot VM内嵌两个JIT编译器，分别为Client Compiler 和 Server Compiler ，一般简称为C1编译器与C2编译器，可使用如下指令指定采用哪种编译器：</p>
+<ul>
+<li><b style='color:blue'>-clinet</b> : 指定JVM运行在Client模式下，使用C1编译器<ul>
+<li>C1编译器对字节码进行<b style='color:red'>简单可靠的优化，耗时短</b>。以达到更快的编译速度。</li>
+</ul>
+</li>
+<li><b style='color:blue'>-server</b>: 指定JVM运行在Server模式下，使用C2编译器<ul>
+<li>C2编译器<b style='color:red'>耗时较长的优化，以及激进的优化</b>。但优化的代码执行效率更高。</li>
+</ul>
+</li>
+</ul>
+<p><strong>C1和C2编译器不同的优化策略</strong></p>
+<ul>
+<li>C1编译器<ul>
+<li>方法内联：将引用的函数代码编译到引用处，这样可以减少栈帧的生成，减少参数传递以及跳转的过程</li>
+<li>去虚拟化：对唯一的实习类进行内联</li>
+<li>冗余消除：在运行期间把不会执行的代码折叠掉</li>
+</ul>
+</li>
+<li>C2编译器  ： 优化主要是在全局层面，逃逸分析是优化的基础<ul>
+<li>标量替换：用标量值代替聚合对象的属性值</li>
+<li>栈上分配：对于为逃逸的对象分配到栈而不是堆</li>
+<li>同步消除：清除同步操作，通常值synchronized</li>
+</ul>
+</li>
+</ul>
+<p><strong>分层编译(Tiered Compilation)策略</strong></p>
+<ul>
+<li>程序解释执行（不开启性能监控）可以触发C1编译，将字节码编译成机器码，经行简单优化，也可以加上性能监控，C2编译会根据性能监控信息进行激进优化</li>
+<li>在Java7版本后，在-server 模式下会默认开启分层编译策略，有C1与C2相互协同来执行编译任务</li>
+</ul>
+<h1 id="StringTable"><a href="#StringTable" class="headerlink" title="StringTable"></a>StringTable</h1><p>续。。。</p>
+<h1 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h1>]]></content>
       <categories>
         <category>JVM</category>
       </categories>
