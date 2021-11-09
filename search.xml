@@ -14980,7 +14980,124 @@
 <li>较少收集Old区</li>
 <li>基本不动Perm区</li>
 </ul>
-<h2 id="垃圾回收相关算法"><a href="#垃圾回收相关算法" class="headerlink" title="垃圾回收相关算法"></a>垃圾回收相关算法</h2><p><a href="https://imgtu.com/i/ItqlYd"><img src="https://z3.ax1x.com/2021/11/09/ItqlYd.png" alt="ItqlYd.png" style="zoom: 67%;" /></a></p>
+<h2 id="垃圾回收相关算法"><a href="#垃圾回收相关算法" class="headerlink" title="垃圾回收相关算法"></a>垃圾回收相关算法</h2><h3 id="标记阶段"><a href="#标记阶段" class="headerlink" title="标记阶段"></a>标记阶段</h3><p>在GC执行垃圾回收之前，需要先区分处哪些是存活对象，哪些是死亡对象，只有被标记为已死亡的对象，才会被GC执行垃圾回收，释放掉器所占用的内存空间。</p>
+<p>当一个对象已经不在别任何的存活对象继续引用时，就可以宣布为已经死亡。</p>
+<p>判断对象存活一般有两种方式: <b style='color:red'>引用计数算法（Reference Counting）</b>  和  <b style='color:red'>可达性分析算法</b></p>
+<h4 id="引用计数算法"><a href="#引用计数算法" class="headerlink" title="引用计数算法"></a>引用计数算法</h4><ul>
+<li>对每个对象<b style='color:blue'>保存一个整形的引用计数器属性</b>，用于记录对象被引用的情况</li>
+<li>对于一个对象A，只要有任何一个对象引用了A，则A的引用计数器就+1；当引用失效时，引用计数器就-1。只要引用计数器的值为0 ，就表示对象A不可能在被使用，可进行回收。</li>
+</ul>
+<p><strong>优点</strong> ：实现简单，垃圾对象便于辨识；判断效率高，回收没有延迟性。</p>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>单独字段存储计算器，增加了<b style='color:blue'>存储空间的开销</b></li>
+<li>每次赋值都要更新计数器，伴随着加法和减法操作，增加了<b style='color:blue'>时间开销</b></li>
+<li><b style='color:blue'>无法处理循环引用</b>的情况。这是一条致命的缺陷，导致Java垃圾回收器中没有使用这类算法。</li>
+</ul>
+<p>然而Python语言则支持引用计数器，那么Python是任何解决循环引用？</p>
+<ol>
+<li>手动解除：在合适的时机，解除引用关系</li>
+<li>使用弱引用weakref，weakref是python提供的标准库，旨在解决循环引用</li>
+</ol>
+<h4 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h4><p>可达性分析算法不仅实现简单和执行高效，更重要的是可以有效的<b style='color:blue'>解决在引用计数算法中循环引用的问题，防止内存泄漏的发生</b>，通常也叫做<b style='color:blue'>追踪性垃圾收集(Tracing Garbage Collection)</b></p>
+<p><strong>基本思路</strong></p>
+<ul>
+<li>以<b style='color:blue'>根对象集合(GC Roots) </b>为起点，按照从上至下的方式<b style='color:blue'>搜索被根对象集合所连接的目标对象是否可达</b></li>
+<li>可达性分析后，内存中存活的对象都会被GC Roots 直接或间接连接着，搜索所走过的路径称之为<b style='color:red'>引用链(Reference Chain)</b></li>
+<li>如果目标没有别任何引用链相连，则是不可达的，可标记为垃圾对象</li>
+</ul>
+<p><strong>根对象集合(GC Roots)</strong>   是一组必须活跃的引用，包括以下几类元素:</p>
+<ul>
+<li>虚拟机栈中引用的对象，如方法中使用的参数、局部变量表</li>
+<li>本地方法栈内JNI引用的对象</li>
+<li>方法区中类静态属性引用的对象</li>
+<li>方法区中常量引用的对象，如StringTable里的引用</li>
+<li>所有被同步锁synchronized持有的对象</li>
+<li>java虚拟机内部的引用，如基本数据类型对应的Class类型、异常对象、系统类加载器等</li>
+</ul>
+<p><strong>注意</strong>：如果要使用可达性分析算法来判断内存是否可回收，那么分析工作必须在一个保证一致性的快照中进行，否则无法保证其准确性。这也是导致GC进行时必须触发”Stop The World”的一个重要原因</p>
+<h3 id="对象的finalization机制"><a href="#对象的finalization机制" class="headerlink" title="对象的finalization机制"></a>对象的finalization机制</h3><ul>
+<li>对象终止机制允许开发人员提供<b style='color:blue'>对象被销毁之前定义处理逻辑</b>。</li>
+<li>对象被回收前，总会先调用当前对象的<code>finalize()</code>方法，finalize()方法是Object类的方法，允许被重写。</li>
+</ul>
+<p>永远不要主动调用对象的 <code>finalize()</code> 方法,应该交给垃圾回收机制调用，理由如下:</p>
+<ol>
+<li>finalize() 可能导致对象复活</li>
+<li>finalize() 方法的执行时间是没有保障的，它完全由GC线程决定。</li>
+<li>一个糟糕的finalize() 会严重影响GC的性能</li>
+</ol>
+<p><strong>对象一般处于三种可能的在状态</strong></p>
+<ul>
+<li>可触及的：从根节点开始，可以达到这个对象</li>
+<li>可复活的：对象的引用都被释放，但是对象有可能在finalize() 中复活</li>
+<li>不可触及的：不可达且没有重写finalize() ,或对象的finalize() 被调用，并且没有被复活。</li>
+</ul>
+<p>只有不可触及的对象才会被回收，并且 <b style='color:blue'>finalize()只会被调用一次</b></p>
+<h3 id="清除阶段"><a href="#清除阶段" class="headerlink" title="清除阶段"></a>清除阶段</h3><p>当成功区分出垃圾对象后，GC接下来的任务就是执行垃圾回收，释放无用的对象所占用的内存。</p>
+<p>目前JVM比较常见的三种垃圾收集算法分别是 <b style='color:red'>标记—清除算法(Mark-Sweep)</b>、<b style='color:red'>复制算法(Copying)</b>、<b style='color:red'>标记—压缩算法(Mark-Compact)</b></p>
+<h4 id="标记—清除算法"><a href="#标记—清除算法" class="headerlink" title="标记—清除算法"></a>标记—清除算法</h4><p>这是一种非常基础和常见的垃圾收集算法。</p>
+<p><strong>执行过程</strong></p>
+<p>当堆中有效内存被耗尽时，执行STW;<b style='color:blue'>阶段一:</b>标记阶段先标记哪些对象是可达的，<b style='color:blue'>阶段二 :</b>Collector对堆内存从头到尾进行线性遍历，如果发现某个对象在Header中没有标记为可达对象，则将其回收</p>
+<p><a href="https://imgtu.com/i/IYgxdf"><img src="https://z3.ax1x.com/2021/11/09/IYgxdf.jpg" alt="IYgxdf.jpg" style="zoom: 33%;" /></a></p>
+<p><strong>注意: 怎么清除(回收)</strong></p>
+<p>这里所谓的清除不是真的置空，而是把需要清理的对象地址保存在空闲列表中。下次有新对象需要加载时，分配相应的大小直接覆盖。</p>
+<p><strong>缺点</strong></p>
+<ul>
+<li>效率不高</li>
+<li>进行GC时，需要STW，导致用户体验差</li>
+<li>清理了出来的内存是不连续的，容易产生内存碎片，并且需要唯一一个空闲列表</li>
+</ul>
+<h4 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h4><p>将活着的内存空间分为两块，每次只使用其中一块，在垃圾回收时将正在使用的内存中的存活对象复制到未被使用的内存块中，然后清除正在使用的内存卡中的所有对象，交换两个内存的角色，最后完成垃圾回收。</p>
+<p><a href="https://imgtu.com/i/IYWCKs"><img src="https://z3.ax1x.com/2021/11/09/IYWCKs.jpg" alt="IYWCKs.jpg" style="zoom:33%;" /></a></p>
+<p><strong>优点</strong></p>
+<ul>
+<li>没有标记和清除过程，实现简单，允许高效</li>
+<li>不会出现”碎片”问题</li>
+<li>如果系统中的垃圾对象很多，需要复制的存活对象非常少</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>需要两倍的内存空间</li>
+<li>存活对象要移动，所以相应的引用地址也需要改变</li>
+</ul>
+<p>在新生代，一次通常可以回收70%—90%的内存空间，所以用复制算法堪称完美。</p>
+<h4 id="标记—压缩算法"><a href="#标记—压缩算法" class="headerlink" title="标记—压缩算法"></a>标记—压缩算法</h4><p><strong>背景</strong></p>
+<p>复制算法的高性能时建立在存活对象少、垃圾对象多的前提下的。这种情况在新生代经常发生，但是在老年代则相反。因此<b style='color:red'>基于老年代垃圾回收的特性，需要使用其他的算法</b>。</p>
+<p>标记-清除算法可以应用在老年代，但是该算法不仅效率低下，而且还会产生内存碎片，所以需要在此基础上进行改进。标记—压缩算法由此诞生</p>
+<p><strong>执行过程</strong></p>
+<ul>
+<li><p>第一阶段和标记清除算法一样，从根节点开始标记所有被引用的对象。</p>
+</li>
+<li><p>第二阶段将所有对象压缩到内存的一段，按顺序排放，之后，清理边界外所有的空间</p>
+</li>
+</ul>
+<p><a href="https://imgtu.com/i/ItW9X9"><img src="https://z3.ax1x.com/2021/11/09/ItW9X9.jpg" alt="ItW9X9.jpg" style="zoom:33%;" /></a></p>
+<p>标记-压缩算法的最终效果等同于标记-清除算法执行后再进行一次内存碎片整理。因此也可以把它称之为<b style='color:red'>标记—清除—压缩(Mark-Sweep-Compact)算法</b></p>
+<p><strong>标记-清除与标记-压缩的区别</strong></p>
+<ul>
+<li>标记-清除算法是一种<b style='color:blue'>非移动式的回收算法</b>,标记-压缩算法是<b style='color:blue'>移动式的</b></li>
+<li>标记的存活对象会被整理，按照内存地址依次排序，这样的话JVM<b style='color:blue'>只需要持有一个内存的起始地址即</b>可，这比维护一个空间列表要少了许多开销</li>
+</ul>
+<p><strong>优点</strong></p>
+<ul>
+<li>消除了标记-清除算法中内存区域分散的缺点</li>
+<li>消除了复制算法中，两倍内存的代价</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>效率低</li>
+<li>移动对象的同时，如果对象被其他对象引用，还需要调整引用的地址</li>
+<li>移动过程需要STW</li>
+</ul>
+<h4 id="增量收集算法"><a href="#增量收集算法" class="headerlink" title="增量收集算法"></a>增量收集算法</h4><p>上述算法中，再GC过程中，应用软件将处于Stop The World的状态。如果GC时间过长，应用程序将被挂起很久，<b style='color:blue'>将严重影响用户体验或系统的稳定性</b>。为了解决该问题，增量收集(Incremental Collecting)算法诞生了</p>
+<p><strong>基本思路</strong></p>
+<p>每次，垃圾收集线程只收集一小片区域的内存空间，接着切换到应用程序线程，直到垃圾收集完成。</p>
+<p>总的来说，增量收集算法的基础仍是传统的标记-清除和复制算法。</p>
+<p><strong>缺点</strong></p>
+<p>虽然能减少系统单次达到停顿时间，但是，因为线程切换和上下文切换的消耗，会使得垃圾回收的总体成本上升，<b style='color:blue'>造成系统吞吐量的下降</b></p>
+<h4 id="分区算法"><a href="#分区算法" class="headerlink" title="分区算法"></a>分区算法</h4><p>一般来说，堆空间越大，一次GC所需的时间就越长，STW时间也更长。为了更好的控制GC产生的停顿时间，<b style='color:blue'>将一块大的内存区域分割成多个小块</b>，根据目标的停顿时间，每次合理地回收若干个小区间，而不是整个堆空间,从而减少一次GC所产生的停顿。</p>
+<p>每一个小区间都独立使用，该算法的好处是可以控制停顿的时间。</p>
+<p><a href="https://imgtu.com/i/ItqlYd"><img src="https://z3.ax1x.com/2021/11/09/ItqlYd.png" alt="ItqlYd.png" style="zoom: 67%;" /></a></p>
 <h2 id="垃圾回收相关概念"><a href="#垃圾回收相关概念" class="headerlink" title="垃圾回收相关概念"></a>垃圾回收相关概念</h2><p>续。。。</p>
 <h2 id="垃圾回收器"><a href="#垃圾回收器" class="headerlink" title="垃圾回收器"></a>垃圾回收器</h2><h1 id="JVM指令助记符"><a href="#JVM指令助记符" class="headerlink" title="JVM指令助记符"></a>JVM指令助记符</h1><p>变量到操作数栈：iload,iload_,lload,lload_,fload,fload_,dload,dload_,aload,aload_<br>操作数栈到变量：istore,istore_,lstore,lstore_,fstore,fstore_,dstore,dstor_,astore,astore_<br>常数到操作数栈：bipush,sipush,ldc,ldc_w,ldc2_w,aconst_null,iconst_ml,iconst_,lconst_,fconst_,dconst_<br>加：iadd,ladd,fadd,dadd<br>减：isub,lsub,fsub,dsub<br>乘：imul,lmul,fmul,dmul<br>除：idiv,ldiv,fdiv,ddiv<br>余数：irem,lrem,frem,drem<br>取负：ineg,lneg,fneg,dneg<br>移位：ishl,lshr,iushr,lshl,lshr,lushr<br>按位或：ior,lor<br>按位与：iand,land<br>按位异或：ixor,lxor<br>类型转换：i2l,i2f,i2d,l2f,l2d,f2d(放宽数值转换)<br>i2b,i2c,i2s,l2i,f2i,f2l,d2i,d2l,d2f(缩窄数值转换)<br>创建类实便：new<br>创建新数组：newarray,anewarray,multianwarray<br>访问类的域和类实例域：getfield,putfield,getstatic,putstatic<br>把数据装载到操作数栈：baload,caload,saload,iaload,laload,faload,daload,aaload<br>从操作数栈存存储到数组：bastore,castore,sastore,iastore,lastore,fastore,dastore,aastore<br>获取数组长度：arraylength<br>检相类实例或数组属性：instanceof,checkcast<br>操作数栈管理：pop,pop2,dup,dup2,dup_xl,dup2_xl,dup_x2,dup2_x2,swap<br>有条件转移：ifeq,iflt,ifle,ifne,ifgt,ifge,ifnull,ifnonnull,if_icmpeq,if_icmpene,<br>if_icmplt,if_icmpgt,if_icmple,if_icmpge,if_acmpeq,if_acmpne,lcmp,fcmpl<br>fcmpg,dcmpl,dcmpg<br>复合条件转移：tableswitch,lookupswitch<br>无条件转移：goto,goto_w,jsr,jsr_w,ret<br>调度对象的实便方法：invokevirtual<br>调用由接口实现的方法：invokeinterface<br>调用需要特殊处理的实例方法：invokespecial<br>调用命名类中的静态方法：invokestatic<br>方法返回：ireturn,lreturn,freturn,dreturn,areturn,return<br>异常：athrow<br>finally关键字的实现使用：jsr,jsr_w,ret</p>
 <p>over。。。</p>
