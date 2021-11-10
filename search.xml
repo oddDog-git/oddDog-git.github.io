@@ -15098,8 +15098,104 @@
 <h4 id="分区算法"><a href="#分区算法" class="headerlink" title="分区算法"></a>分区算法</h4><p>一般来说，堆空间越大，一次GC所需的时间就越长，STW时间也更长。为了更好的控制GC产生的停顿时间，<b style='color:blue'>将一块大的内存区域分割成多个小块</b>，根据目标的停顿时间，每次合理地回收若干个小区间，而不是整个堆空间,从而减少一次GC所产生的停顿。</p>
 <p>每一个小区间都独立使用，该算法的好处是可以控制停顿的时间。</p>
 <p><a href="https://imgtu.com/i/ItqlYd"><img src="https://z3.ax1x.com/2021/11/09/ItqlYd.png" alt="ItqlYd.png" style="zoom: 67%;" /></a></p>
-<h2 id="垃圾回收相关概念"><a href="#垃圾回收相关概念" class="headerlink" title="垃圾回收相关概念"></a>垃圾回收相关概念</h2><p>续。。。</p>
-<h2 id="垃圾回收器"><a href="#垃圾回收器" class="headerlink" title="垃圾回收器"></a>垃圾回收器</h2><h1 id="JVM指令助记符"><a href="#JVM指令助记符" class="headerlink" title="JVM指令助记符"></a>JVM指令助记符</h1><p>变量到操作数栈：iload,iload_,lload,lload_,fload,fload_,dload,dload_,aload,aload_<br>操作数栈到变量：istore,istore_,lstore,lstore_,fstore,fstore_,dstore,dstor_,astore,astore_<br>常数到操作数栈：bipush,sipush,ldc,ldc_w,ldc2_w,aconst_null,iconst_ml,iconst_,lconst_,fconst_,dconst_<br>加：iadd,ladd,fadd,dadd<br>减：isub,lsub,fsub,dsub<br>乘：imul,lmul,fmul,dmul<br>除：idiv,ldiv,fdiv,ddiv<br>余数：irem,lrem,frem,drem<br>取负：ineg,lneg,fneg,dneg<br>移位：ishl,lshr,iushr,lshl,lshr,lushr<br>按位或：ior,lor<br>按位与：iand,land<br>按位异或：ixor,lxor<br>类型转换：i2l,i2f,i2d,l2f,l2d,f2d(放宽数值转换)<br>i2b,i2c,i2s,l2i,f2i,f2l,d2i,d2l,d2f(缩窄数值转换)<br>创建类实便：new<br>创建新数组：newarray,anewarray,multianwarray<br>访问类的域和类实例域：getfield,putfield,getstatic,putstatic<br>把数据装载到操作数栈：baload,caload,saload,iaload,laload,faload,daload,aaload<br>从操作数栈存存储到数组：bastore,castore,sastore,iastore,lastore,fastore,dastore,aastore<br>获取数组长度：arraylength<br>检相类实例或数组属性：instanceof,checkcast<br>操作数栈管理：pop,pop2,dup,dup2,dup_xl,dup2_xl,dup_x2,dup2_x2,swap<br>有条件转移：ifeq,iflt,ifle,ifne,ifgt,ifge,ifnull,ifnonnull,if_icmpeq,if_icmpene,<br>if_icmplt,if_icmpgt,if_icmple,if_icmpge,if_acmpeq,if_acmpne,lcmp,fcmpl<br>fcmpg,dcmpl,dcmpg<br>复合条件转移：tableswitch,lookupswitch<br>无条件转移：goto,goto_w,jsr,jsr_w,ret<br>调度对象的实便方法：invokevirtual<br>调用由接口实现的方法：invokeinterface<br>调用需要特殊处理的实例方法：invokespecial<br>调用命名类中的静态方法：invokestatic<br>方法返回：ireturn,lreturn,freturn,dreturn,areturn,return<br>异常：athrow<br>finally关键字的实现使用：jsr,jsr_w,ret</p>
+<h2 id="垃圾回收相关概念"><a href="#垃圾回收相关概念" class="headerlink" title="垃圾回收相关概念"></a>垃圾回收相关概念</h2><h3 id="System-gc"><a href="#System-gc" class="headerlink" title="System.gc()"></a>System.gc()</h3><p>通过<code>System.gc()</code> 或 <code>Runtime.getRuntime.gc()</code>的调用，会<b style='color:blue'>显示触发Full GC</b>，对老年代和新生代进行回收。</p>
+<p>再一般情况下，垃圾回收是自动进行的，无需手动触发，否则就太过于麻烦了。我们一般在测试代码中才调用System.gc() 方法</p>
+<h3 id="内存溢出与内存泄漏"><a href="#内存溢出与内存泄漏" class="headerlink" title="内存溢出与内存泄漏"></a>内存溢出与内存泄漏</h3><p><strong>内存溢出</strong></p>
+<p>没有空闲内存，并且垃圾收集器也无法提供更多内存时，会抛 OutOfMemoryError异常，表示内存溢出</p>
+<p>java堆内存不够，原因有二:</p>
+<ol>
+<li>堆内存设置不够</li>
+<li>代码中创建了大量大对象，并且长时间不能被垃圾收集器收集</li>
+</ol>
+<p>在抛出OutOfMemoryError 之前，通常垃圾收集器都会被触发，其尽所能去清理空间。当然，不是在任何情况下垃圾收集器都会被触发，如出现一个超大对象，超过堆的最大值。</p>
+<p><strong>内存泄漏</strong></p>
+<p>内存泄漏指 当对象不会再被程序用到了，但是GC有不能回收他们的情况。</p>
+<p>尽管内存泄漏不会立刻引起程序崩溃，但是一旦发生内存泄漏，程序中可用的内存会逐步蚕食，直至耗尽。</p>
+<p>举例:</p>
+<ol>
+<li><p>单例模式</p>
+<p>单例的生命周期和应用程序时一样长的，如果再单例程序中持有对外部对象的引用的话，这个外部对象时不能被回收的</p>
+</li>
+<li><p>一些提供close的资源未关闭</p>
+<p>例如<b style='color:blue'>数据库连接池(dataSource.getConnection())</b>  , <b style='color:blue'>网络连接(socket)</b> ，<b style='color:blue'>io连接</b> 都必须手动close，否则时不能被回收的</p>
+</li>
+</ol>
+<h3 id="垃圾回收的并行与并发"><a href="#垃圾回收的并行与并发" class="headerlink" title="垃圾回收的并行与并发"></a>垃圾回收的并行与并发</h3><p><strong>并发(Concurrent)</strong> ：多个事情在同一时间段内同时发生，在某一时间点只会处理一件事</p>
+<p>**并行(Parallel)**：多个事情在同一时间点同时发生，只有在多CPU或多核的情况下才会发生</p>
+<p>在垃圾收集器的上下文语境中:</p>
+<ul>
+<li>串行(Serial)：单线程执行，如果内存不够，暂停程序，执行GC，回收完，再启动程序的线程。</li>
+<li>并行(Parallel)：多条垃圾收集线程并行工作，但用户线程仍处于等待状态</li>
+</ul>
+<p><a href="https://imgtu.com/i/IUp6sJ"><img src="https://z3.ax1x.com/2021/11/10/IUp6sJ.png" alt="IUp6sJ.png" style="zoom: 67%;" /></a></p>
+<ul>
+<li>并发（Conrurrent）：用户现场与垃圾收集线程同时执行（不一定是并行，可能会交替执行），垃圾回收线程再执行时不会停顿用户的程序<ul>
+<li>用户线程继续运行，而垃圾收集程序线程运行于另一个CPU上</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://imgtu.com/i/IU91T1"><img src="https://z3.ax1x.com/2021/11/10/IU91T1.png" alt="IU91T1.png"></a></p>
+<h3 id="安全点与安全区域"><a href="#安全点与安全区域" class="headerlink" title="安全点与安全区域"></a>安全点与安全区域</h3><p><strong>安全点(Safepoint)</strong></p>
+<ul>
+<li><p>再程序执行时并非在所有地方都能停顿下来开始GC，只有在特定的位置才能停顿下来开始GC，这些位置被成为”安全点”。</p>
+</li>
+<li><p>Safe Point 的选择很重要，<b style='color:blue'>如果太少可能导致GC等待的时间太长，如果太频繁可能导致运行时的性能问题</b>。所以会选择执行时间比较长的指令作为Safe Point ，如方法调用、循环跳转和异常跳转等。</p>
+</li>
+<li><p>在GC发生时，检查所有线程都跑到安全点的方式：</p>
+<ul>
+<li>抢先式中断(目前没有虚拟机采用)<ul>
+<li>首先中断所有线程，如果还有线程不在安全点，就恢复该线程，让线程跑到安全点。</li>
+</ul>
+</li>
+<li>主动式中断<ul>
+<li>设置一个中断标志，各个线程运行到Safe Point时主动轮询这个标志，如果中断标志位真，就将自己进行中断挂起。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>安全区域(Safe Region)</strong></p>
+<ul>
+<li>当程序“不执行”的时候，如线程处于Sleep状态或Blocked状态，这时线程无法相应JVM的中断请求，”走“到安全点将自己中断挂起。这种情况下，就需要安全区域来解决。</li>
+<li>安全区域是指在一段代码片段中，对象的引用关系不会发生变化，在这个区域中的任何位置开始GC都是安全的，安全区域可以看做是安全点的扩展。</li>
+</ul>
+<p><strong>安全区域的实际执行</strong></p>
+<ol>
+<li>当线程运行到Safe Region时，首先标识已经进入到了Safe Region，如果在这段时间发生GC，JVM会忽略标识为Safe Region状态的线程</li>
+<li>当线程即将离开Safe Region时，会检查GC是否已完成，如果完成则继续运行，否则线程必须等待直到收到可以离开Safe Region的信号为止</li>
+</ol>
+<h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><p>在JDK1.2之后，java对引用的概念进行了扩展，将引用分为强、软、弱、虚4种，引用强度依次递减。除了强引用外，其他3种引用均可在java.lang.ref包中找到。</p>
+<p><strong>强引用（Strong Reference）——不回收</strong></p>
+<ul>
+<li>默认的引用类型，系统99%以上都是强引用。直接给一个变量赋值操作，该变量就指向对象的一个强引用。</li>
+<li>强引用如果是可触及的，垃圾收集器就永远不会收掉强引用的对象，所以强引用是造成java内存泄漏的主要原因之一</li>
+<li>强引用可直接访问目标对象</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 以下两个引用都是强引用</span></span><br><span class="line">String s = <span class="keyword">new</span> String(<span class="string">&quot;abc&quot;</span>);</span><br><span class="line">String s2 = s;</span><br></pre></td></tr></table></figure>
+<p><strong>软引用(Soft Reference)——内存不足即回收</strong></p>
+<ul>
+<li>软引用是用来描述一些还有用的，但非必要的对象。<b style='color:blue'>只被软引用关联着的对象，在系统要发生内存溢出前，会把这些对象列进回收范围之中进行第二次回收</b>，如果回收后还是没有足够的内存，才会抛出内存溢出异常。</li>
+<li>软引用通常用来实现内存敏感的缓存。如：<b style='color:blue'>高速缓存</b>就用到软引用。如果有空闲内存，就暂时保留缓存，当内存不足时清理掉，这样就保证使用缓存的同时，不会耗尽内存。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Object obj = <span class="keyword">new</span> Object();<span class="comment">//声明强引用</span></span><br><span class="line"><span class="comment">// 创建软引用，指向 obj 指向的对象地址</span></span><br><span class="line">SoftReference&lt;Object&gt; sf = <span class="keyword">new</span> SoftReference&lt;&gt;(obj); </span><br><span class="line">obj = <span class="keyword">null</span>; <span class="comment">// 销毁强引用</span></span><br></pre></td></tr></table></figure>
+<p><strong>弱引用(Weak Reference)——发现即回收</strong></p>
+<ul>
+<li>弱引用来描述那些非必须对象，<b style='color:blue'>只被弱引用关联的对象只能生存到下一次垃圾收集发生为止</b>。</li>
+<li>由于垃圾收集器的线程优先级很低，因此弱引用也是可以存在比较长的时间，可以用来保存一些可有可无的缓存数据。</li>
+<li>弱引用和软引用一样，在构造弱引用时，也可以指定一个引用队列，当弱引用对象被回收时，就会加入指定的引用队列，通过该队列可以跟踪对象的回收情况。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Object obj = <span class="keyword">new</span> Object();<span class="comment">//声明强引用</span></span><br><span class="line"><span class="comment">// 创建弱引用，指向 obj 指向的对象地址</span></span><br><span class="line">WeakReference&lt;Object&gt; wr = <span class="keyword">new</span> WeakReference&lt;&gt;(obj); </span><br><span class="line">obj = <span class="keyword">null</span>; <span class="comment">// 销毁强引用</span></span><br></pre></td></tr></table></figure>
+<p><strong>虚引用(Phantom Reference)——对象回收跟踪</strong></p>
+<ul>
+<li>也称”幽灵引用“或”幻影引用“，如果一个对象仅持有虚引用，那么它和没有引用几乎是一样的。随时都会被回收</li>
+<li>它不能单独使用，也无法通过虚引用获取。当试图用虚引用的get()方法获取对象时，返回的是null</li>
+<li>为一个对象设置虚引用关联的唯一目的在于<b style='color:blue'>跟踪垃圾回收过程</b>。如：在对象被回收时收到一个系统通知</li>
+<li>由于虚引用可以跟踪对象的回收时间，因此，也可以将一些资源释放操作放置在虚引用中执行和记录</li>
+<li>虚引用必须和引用队列一起使用，创建虚引用时必须提供一个引用队列作为参数。当GC准备回收一个对象时，如果发现它还有虚引用，就会在回收对象后，将这个虚引用加入引用队列，以通知应用程序对象的回收情况。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Object obj = <span class="keyword">new</span> Object();<span class="comment">//声明强引用</span></span><br><span class="line">ReferenceQueue queue = <span class="keyword">new</span> ReferenceQueue(); <span class="comment">// 创建引用队列</span></span><br><span class="line">PhantomReference&lt;Object&gt; pr = <span class="keyword">new</span> PhantomReference&lt;&gt;(obj,queue); </span><br><span class="line">obj = <span class="keyword">null</span>; <span class="comment">// 销毁强引用</span></span><br></pre></td></tr></table></figure>
+<h2 id="垃圾回收器"><a href="#垃圾回收器" class="headerlink" title="垃圾回收器"></a>垃圾回收器</h2><p>续。。</p>
+<h1 id="JVM指令助记符"><a href="#JVM指令助记符" class="headerlink" title="JVM指令助记符"></a>JVM指令助记符</h1><p>变量到操作数栈：iload,iload_,lload,lload_,fload,fload_,dload,dload_,aload,aload_<br>操作数栈到变量：istore,istore_,lstore,lstore_,fstore,fstore_,dstore,dstor_,astore,astore_<br>常数到操作数栈：bipush,sipush,ldc,ldc_w,ldc2_w,aconst_null,iconst_ml,iconst_,lconst_,fconst_,dconst_<br>加：iadd,ladd,fadd,dadd<br>减：isub,lsub,fsub,dsub<br>乘：imul,lmul,fmul,dmul<br>除：idiv,ldiv,fdiv,ddiv<br>余数：irem,lrem,frem,drem<br>取负：ineg,lneg,fneg,dneg<br>移位：ishl,lshr,iushr,lshl,lshr,lushr<br>按位或：ior,lor<br>按位与：iand,land<br>按位异或：ixor,lxor<br>类型转换：i2l,i2f,i2d,l2f,l2d,f2d(放宽数值转换)<br>i2b,i2c,i2s,l2i,f2i,f2l,d2i,d2l,d2f(缩窄数值转换)<br>创建类实便：new<br>创建新数组：newarray,anewarray,multianwarray<br>访问类的域和类实例域：getfield,putfield,getstatic,putstatic<br>把数据装载到操作数栈：baload,caload,saload,iaload,laload,faload,daload,aaload<br>从操作数栈存存储到数组：bastore,castore,sastore,iastore,lastore,fastore,dastore,aastore<br>获取数组长度：arraylength<br>检相类实例或数组属性：instanceof,checkcast<br>操作数栈管理：pop,pop2,dup,dup2,dup_xl,dup2_xl,dup_x2,dup2_x2,swap<br>有条件转移：ifeq,iflt,ifle,ifne,ifgt,ifge,ifnull,ifnonnull,if_icmpeq,if_icmpene,<br>if_icmplt,if_icmpgt,if_icmple,if_icmpge,if_acmpeq,if_acmpne,lcmp,fcmpl<br>fcmpg,dcmpl,dcmpg<br>复合条件转移：tableswitch,lookupswitch<br>无条件转移：goto,goto_w,jsr,jsr_w,ret<br>调度对象的实便方法：invokevirtual<br>调用由接口实现的方法：invokeinterface<br>调用需要特殊处理的实例方法：invokespecial<br>调用命名类中的静态方法：invokestatic<br>方法返回：ireturn,lreturn,freturn,dreturn,areturn,return<br>异常：athrow<br>finally关键字的实现使用：jsr,jsr_w,ret</p>
 <p>over。。。</p>
 ]]></content>
       <categories>
