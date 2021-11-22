@@ -15715,8 +15715,209 @@
 <p>该例子体现的实际就是<strong>可见性</strong>，它保证的是在多个线程之间，一个线程对 volatile 变量的修改对另一个线程可 见， 但是不能保证原子性。</p>
 <h3 id="同步模式之Balking"><a href="#同步模式之Balking" class="headerlink" title="同步模式之Balking"></a>同步模式之Balking</h3><p>Balking （犹豫）模式用在一个线程发现另一个线程或本线程已经做了某一件相同的事，那么本线程就无需再做 了，直接结束返回</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MonitorServer</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 标记是否已有线程启动</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> starting;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!starting) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (!starting) &#123;</span><br><span class="line">                    starting = <span class="keyword">true</span>; <span class="comment">// 标记已启动监控线程</span></span><br><span class="line">                    <span class="comment">// 真正启动监控线程</span></span><br><span class="line">                    <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">                        System.out.println(<span class="string">&quot;启动监控线程。。。&quot;</span>);</span><br><span class="line">                        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                            <span class="comment">//....</span></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;).start();</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                System.out.println(<span class="string">&quot;监控线程已启动&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;监控线程已启动&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="有序性"><a href="#有序性" class="headerlink" title="有序性"></a>有序性</h2><p>续。。。</p>
-<h1 id="共享模型之无锁"><a href="#共享模型之无锁" class="headerlink" title="共享模型之无锁"></a>共享模型之无锁</h1><h1 id="不可变类"><a href="#不可变类" class="headerlink" title="不可变类"></a>不可变类</h1><h1 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h1><h1 id="JUC"><a href="#JUC" class="headerlink" title="JUC"></a>JUC</h1><p>over。。。</p>
+<h2 id="有序性"><a href="#有序性" class="headerlink" title="有序性"></a>有序性</h2><p>JVM 会在不影响正确性的前提下，可以调整语句的执行顺序,如下面的代码：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static int i;</span><br><span class="line">static int j;</span><br><span class="line">&#x2F;&#x2F; 在某个线程内执行如下赋值操作</span><br><span class="line">i &#x3D; ...;</span><br><span class="line">j &#x3D; ...;</span><br></pre></td></tr></table></figure>
+<p>至于是先执行 i 还是 先执行 j ，对最终的结果不会产生影响，所以代码真正执行时，也可能是这样的</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">j &#x3D; ...;</span><br><span class="line">i &#x3D; ...;</span><br></pre></td></tr></table></figure>
+<p>这种特性称之为『指令重排』，多线程下『指令重排』会影响正确性。</p>
+<p><strong>解决方法</strong></p>
+<p>volatile 修饰的变量，可以禁用指令重排</p>
+<h2 id="内存屏障"><a href="#内存屏障" class="headerlink" title="内存屏障"></a>内存屏障</h2><p><strong>cpu缓存结构</strong></p>
+<p>如果缓存中有数据，就会先取缓存读取。</p>
+<p><a href="https://imgtu.com/i/IjfwuT"><img src="https://z3.ax1x.com/2021/11/21/IjfwuT.png" alt="IjfwuT.png" style="zoom: 67%;" /></a></p>
+<table>
+<thead>
+<tr>
+<th>从 cpu到</th>
+<th>大约需要的时钟周期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>寄存器</td>
+<td>1 cycle</td>
+</tr>
+<tr>
+<td>L1</td>
+<td>3~4 cycle</td>
+</tr>
+<tr>
+<td>L2</td>
+<td>10~20 cycle</td>
+</tr>
+<tr>
+<td>L3</td>
+<td>40~45 cycle</td>
+</tr>
+<tr>
+<td>内存</td>
+<td>120~240 cycle</td>
+</tr>
+</tbody></table>
+<p><strong>内存屏障 Memory Barrier (Memory Fence)</strong></p>
+<ul>
+<li>可见性 <ul>
+<li>写屏障（sfence）保证在该屏障之前的，对共享变量的改动，都同步到主存当中 </li>
+<li>读屏障（lfence）保证在该屏障之后，对共享变量的读取，加载的是主存中最新数据 </li>
+</ul>
+</li>
+<li>有序性 <ul>
+<li>写屏障会确保指令重排序时，不会将写屏障之前的代码排在写屏障之后 </li>
+<li>读屏障会确保指令重排序时，不会将读屏障之后的代码排在读屏障之前</li>
+</ul>
+</li>
+</ul>
+<h2 id="volatile原理"><a href="#volatile原理" class="headerlink" title="volatile原理"></a>volatile原理</h2><p>volatile 的底层实现原理是内存屏障，Memory Barrier（Memory Fence） </p>
+<ul>
+<li>对 volatile 变量的 <strong>写指令后会加入写屏障</strong> </li>
+<li>对 volatile 变量的 <strong>读指令前会加入读屏障</strong></li>
+</ul>
+<h3 id="volatile保证可见性和有序性"><a href="#volatile保证可见性和有序性" class="headerlink" title="volatile保证可见性和有序性"></a>volatile保证可见性和有序性</h3><p><strong>写指令后加入写屏障</strong></p>
+<ul>
+<li>而写屏障回保证在该屏障之前的，对共享变量的改动，都同步到主存当中（可见性）</li>
+<li>写屏障会确保指令重排序时，不会将写屏障之前的代码排在写屏障之后 （有序性）</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">actor2</span><span class="params">(I_Result r)</span> </span>&#123;</span><br><span class="line">    num = <span class="number">2</span>;</span><br><span class="line">    ready = <span class="keyword">true</span>; <span class="comment">// ready 是 volatile 赋值带写屏障</span></span><br><span class="line">    <span class="comment">// 写屏障</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>读指令前会加入读屏障</strong></p>
+<ul>
+<li>读屏障保证在该屏障之后，对共享变量的读取，加载的是主存中最新数据 （可见性）</li>
+<li>读屏障会确保指令重排序时，不会将读屏障之后的代码排在读屏障之前（有序性）</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">actor1</span><span class="params">(I_Result r)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 读屏障</span></span><br><span class="line">    <span class="keyword">if</span>(ready) &#123; <span class="comment">// ready 是 volatile 读取值带读屏障</span></span><br><span class="line">        r.r1 = num + num;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        r.r1 = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="double-checked-locking-问题"><a href="#double-checked-locking-问题" class="headerlink" title="double-checked locking 问题"></a>double-checked locking 问题</h3><p>以著名的 double-checked locking 单例模式为例,我们一般都是这样设计：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123; &#125; <span class="comment">// 私有化构造方法</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Singleton INSTANCE = <span class="keyword">null</span>;</span><br><span class="line">    <span class="comment">// 获取单例实例</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(INSTANCE == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 当多个线程首次访问需要加锁</span></span><br><span class="line">            <span class="keyword">synchronized</span>(Singleton.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>) &#123; <span class="comment">// 双重检查</span></span><br><span class="line">                    INSTANCE = <span class="keyword">new</span> Singleton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> INSTANCE;  <span class="comment">// 返回实例</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码在多线程环境下还是有问题的。</p>
+<p>将 创建单例对象 <code>INSTANCE = new Singleton();</code> 代码翻译成字节码为:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">17: new #3   			&#x2F;&#x2F; 创建对象到堆中，并入操作数栈中</span><br><span class="line">20: dup					&#x2F;&#x2F; 复制一份引用到操作数栈中</span><br><span class="line">21: invokespecial #4 	&#x2F;&#x2F; 调用对象的构造方法，经行初始化，消耗栈顶一个元素</span><br><span class="line">24: putstatic #2 		&#x2F;&#x2F; 再消耗一个栈顶元素，赋值给静态字段 INSTANCE</span><br></pre></td></tr></table></figure>
+<ul>
+<li>JVM也许会优化为 ：先执行 24，再执行21。</li>
+<li>如果t1线程执行了24指令，t2线程刚好进来了，判断 INSTANCE不为null，就直接获取了 INSTANCE</li>
+<li>而此时t1还没执行 21行指令，说明 t2获取的INSTANCE 是一个未初 始化完毕的单例</li>
+</ul>
+<p><strong>解决</strong></p>
+<p>对 INSTANCE 使用 volatile 修饰即可，可以禁用指令重排，但要注意在 JDK 5 以上的版本的 volatile 才会真正有效</p>
+<h3 id="单例模式饿汉式的另一种实现"><a href="#单例模式饿汉式的另一种实现" class="headerlink" title="单例模式饿汉式的另一种实现"></a>单例模式饿汉式的另一种实现</h3><p>采用内部类的方式：当类被使用到时，才会被类加载器所加载，并创建单例对象</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123; &#125;</span><br><span class="line">    <span class="comment">//  单例对象为内部类的一个静态成员</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">LazyHolder</span> </span>&#123;</span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">final</span> Singleton INSTANCE = <span class="keyword">new</span> Singleton();</span><br><span class="line">    &#125;</span><br><span class="line">   	<span class="comment">// 从内部类中获取单例对象</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> LazyHolder.INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="happens-before"><a href="#happens-before" class="headerlink" title="happens-before"></a>happens-before</h2><p>happens-before 规定了对共享变量的写操作对其它线程的读操作可见，它是可见性与有序性的一套规则总结。</p>
+<ol>
+<li>线程解锁 m 之前对变量的写，对于接下来对 m 加锁的其它线程对该变量的读可见</li>
+<li>线程对 volatile 变量的写，对接下来其它线程对该变量的读可见</li>
+<li>线程 start 前对变量的写，对该线程开始后对该变量的读可见</li>
+<li>线程结束前对变量的写，对其它线程得知它结束后的读可见（比如其它线程调用 t1.isAlive() 或 t1.join()等待 它结束）</li>
+<li>线程 t1 打断 t2（interrupt）前对变量的写，对于其他线程得知 t2 被打断后对变量的读可见</li>
+<li>对变量默认值（0，false，null）的写，对其它线程对该变量的读可见</li>
+</ol>
+<h1 id="共享模型之无锁"><a href="#共享模型之无锁" class="headerlink" title="共享模型之无锁"></a>共享模型之无锁</h1><h2 id="CAS"><a href="#CAS" class="headerlink" title="CAS"></a>CAS</h2><p>以下这段代码，在多线程不加锁的情况下，也可以正常执行，因为共享变量是一个原子整数。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> AtomicInteger count = <span class="keyword">new</span> AtomicInteger(<span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对 count - 10</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> prev = count.get();  <span class="comment">// 拿到旧值</span></span><br><span class="line">        <span class="keyword">int</span> next = prev - <span class="number">10</span>;	 <span class="comment">// 计算出新值</span></span><br><span class="line">        <span class="comment">// 如果成功就退出</span></span><br><span class="line">        <span class="keyword">if</span> (count.compareAndSet(prev, next)) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中的关键是 <strong>compareAndSet</strong>，它的简称就是 CAS （也有 Compare And Swap 的说法），它必须是原子操作。</p>
+<p><strong>为什么无锁效率高</strong></p>
+<ol>
+<li>无锁情况下，即使重试失败，线程始终在高速运行，没有停歇；而 synchronized 会让线程在没有获得锁的时 候，发生上下文切换，进入阻塞。</li>
+<li>但无锁情况下，因为线程要保持运行，需要额外 CPU 的支持，虽然不会进入阻塞，但由于没有分到时间片，仍然会进入可运行状态，还 是会导致上下文切换，反而会影响效率。</li>
+</ol>
+<p><strong>CAS与synchronized</strong></p>
+<ul>
+<li>CAS 是基于乐观锁的思想：最乐观的估计，不怕别的线程来修改共享变量，就算改了也没关系，继续重试</li>
+<li>synchronized 是基于悲观锁的思想：最悲观的估计，得防着其它线程来修改共享变量，我上了锁你们都别想 改，我改完了解开锁，你们才有机会。</li>
+</ul>
+<p>所以结合CAS和volatile可以实现无锁并发，适用与线程数少，多核CPU的场景下。</p>
+<h2 id="原子整数"><a href="#原子整数" class="headerlink" title="原子整数"></a>原子整数</h2><p>J.U.C 并发包提供了  AtomicInteger 、AtomicBoolean、AtomicIong 原子类</p>
+<p>以AtomicInteger为例：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>get()</td>
+<td>直接获取</td>
+</tr>
+<tr>
+<td>set(int value)</td>
+<td>直接修改</td>
+</tr>
+<tr>
+<td>getAndIncrement()</td>
+<td>获取并自增</td>
+</tr>
+<tr>
+<td>incrementAndSet()</td>
+<td>自增并获取</td>
+</tr>
+<tr>
+<td>decrementAndGet()</td>
+<td>自减并获取</td>
+</tr>
+<tr>
+<td>getAndDecrement()</td>
+<td>获取并自减</td>
+</tr>
+<tr>
+<td>getAndAdd(int i)</td>
+<td>获取并加值</td>
+</tr>
+<tr>
+<td>addAndGet(int i)</td>
+<td>加值并获取</td>
+</tr>
+<tr>
+<td>getAndUpdate(p-&gt;p+2)</td>
+<td>获取并修改，传递一个lambda</td>
+</tr>
+<tr>
+<td>updateAndGet(p-&gt;p+2)</td>
+<td>修改并获取，传递一个lambda</td>
+</tr>
+<tr>
+<td>compareAndSet(int oldValue,int newValue)</td>
+<td>如果旧值一致就修改，并返回true，否则false</td>
+</tr>
+</tbody></table>
+<p><strong>使用AtomicInteger创建一个cas锁（不要用于实践）</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CasLock</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 0表示没上锁，1表示已经上锁</span></span><br><span class="line">    <span class="keyword">private</span> AtomicInteger state = <span class="keyword">new</span> AtomicInteger(<span class="number">0</span>);</span><br><span class="line">	<span class="comment">// 获取锁，如果获取失败，会一直重试</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="comment">// 如果上锁成功，退出循环</span></span><br><span class="line">            <span class="keyword">if</span> (state.compareAndSet(<span class="number">0</span>, <span class="number">1</span>)) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unlock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        state.set(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="原则引用"><a href="#原则引用" class="headerlink" title="原则引用"></a>原则引用</h2><p>三种原子引用：AtomicReference、AtomicStampedReference、AtomicMarkableReference</p>
+<h3 id="AtomicReference"><a href="#AtomicReference" class="headerlink" title="AtomicReference"></a>AtomicReference</h3><p>如果一个对象，我们需要保证它的原子性，可以通过创建原子引用</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 创建原子引用，包装一个String类型</span></span><br><span class="line"><span class="keyword">private</span> AtomicReference&lt;String&gt; val = <span class="keyword">new</span> AtomicReference&lt;&gt;(<span class="string">&quot;A&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 修改原子引用中的数据</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        String prev = val.get();</span><br><span class="line">        String next = <span class="string">&quot;C&quot;</span>;</span><br><span class="line">        <span class="comment">// 如果成功就退出</span></span><br><span class="line">        <span class="keyword">if</span> (val.compareAndSet(prev, next)) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="AtomicStampedReference"><a href="#AtomicStampedReference" class="headerlink" title="AtomicStampedReference"></a>AtomicStampedReference</h3><p><strong>ABA问题</strong></p>
+<p>上面的例子中，调用<code>compareAndSet(prev, next)</code>方法，只是判断<strong>旧值如果相等就修改</strong>，如果在执行该操作之前，有一个线程把 A 修改成B，又有一个线程把B修改成A ，<code>compareAndSet(prev, next)</code>操作依旧会成功。</p>
+<p>如果要有其它线程【动过了】共享变量，不管最终旧值是否相等，都应该cas失败，这时比较值是不够的，还需要加上一个版本号</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 参数一：值  参数二：版本号</span></span><br><span class="line"><span class="keyword">private</span> AtomicStampedReference&lt;String&gt; reference = <span class="keyword">new</span> AtomicStampedReference&lt;&gt;(<span class="string">&quot;A&quot;</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 修改</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        String val = reference.getReference(); <span class="comment">// 旧值</span></span><br><span class="line">        <span class="keyword">int</span> stamp = reference.getStamp();      <span class="comment">// 版本号</span></span><br><span class="line">        <span class="comment">// 需要传递旧新版本号</span></span><br><span class="line">        <span class="keyword">if</span> (reference.compareAndSet(val, <span class="string">&quot;C&quot;</span>, stamp, stamp + <span class="number">1</span>)) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="AtomicMarkableReference"><a href="#AtomicMarkableReference" class="headerlink" title="AtomicMarkableReference"></a>AtomicMarkableReference</h3><p>AtomicStampedReference给原子引用加上版本号，我们可以知道变量在中途被更改了几次。</p>
+<p>但有时我们并不关心变量更改了几次，只单纯的关心<strong>是否更改过</strong>，可以使用AtomicMarkableReference</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 使用boolean类型标记是否修改过</span></span><br><span class="line">AtomicMarkableReference&lt;String&gt; reference = <span class="keyword">new</span> AtomicMarkableReference&lt;&gt;(<span class="string">&quot;A&quot;</span>,<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="原则数组"><a href="#原则数组" class="headerlink" title="原则数组"></a>原则数组</h2><ul>
+<li>AtomicIntegerArray : 整数型</li>
+<li>AtomicLongArray ： 长整数型</li>
+<li>AtomicReferenceArray：引用型</li>
+</ul>
+<p>需求：创建一个长度为10的数组，创建10个线程，每个线程循环给数组添加1000次,输出最后结果</p>
+<ul>
+<li>如果使用正常的数组，需要加锁才能实现，如果使用原子数组则不需要加锁</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">    <span class="comment">// 创建原子数组</span></span><br><span class="line">    AtomicIntegerArray array = <span class="keyword">new</span> AtomicIntegerArray(<span class="number">10</span>);</span><br><span class="line">    <span class="comment">// 启动10个线程</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">10</span>; j++) &#123;</span><br><span class="line">        <span class="comment">// 每个线程给数组每个位置处添加100</span></span><br><span class="line">        <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++) &#123;</span><br><span class="line">                <span class="comment">// i%10 位置处自增</span></span><br><span class="line">                array.incrementAndGet(i % <span class="number">10</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line">    Thread.sleep(<span class="number">1000</span>); <span class="comment">// 睡眠一下，等待结果</span></span><br><span class="line">    <span class="comment">// 打印</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; array.length(); i++) &#123;</span><br><span class="line">        System.out.print(array.get(i) + <span class="string">&quot;\t&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1000	1000	1000	1000	1000	1000	1000	1000	1000	1000</span><br></pre></td></tr></table></figure>
+<h2 id="字段更新器"><a href="#字段更新器" class="headerlink" title="字段更新器"></a>字段更新器</h2><ul>
+<li>AtomicReferenceFieldUpdater   引用型</li>
+<li>AtomicIntegerFieldUpdater      整数型</li>
+<li>AtomicLongFieldUpdater       长整数型</li>
+</ul>
+<p>利用字段更新器，可以针对对象的某个域（Field）进行原子操作，<b style="color:red">只能配合 volatile 修饰的字段使用</b>，否则会出现 异常</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">java.lang.IllegalArgumentException: Must be volatile type</span><br></pre></td></tr></table></figure>
+<p>以 AtomicIntegerFieldUpdater为例：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> val = <span class="number">10</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="comment">// 创建字段更新器</span></span><br><span class="line">        AtomicIntegerFieldUpdater updater = AtomicIntegerFieldUpdater.newUpdater(Test.class,<span class="string">&quot;val&quot;</span>);</span><br><span class="line">       	<span class="comment">// 创建对象</span></span><br><span class="line">        Test test = <span class="keyword">new</span> Test();</span><br><span class="line">        System.out.println(updater.compareAndSet(test, <span class="number">0</span>, <span class="number">20</span>)); <span class="comment">// 失败</span></span><br><span class="line">        System.out.println(updater.compareAndSet(test, <span class="number">10</span>, <span class="number">20</span>)); <span class="comment">// 成功</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="原子累加器"><a href="#原子累加器" class="headerlink" title="原子累加器"></a>原子累加器</h2><p>AtomicInteger与AtomicLong都有自增的方法，且都是原子操作，但是经行累加是效率不行。</p>
+<p>如果只是进行累加操作，可以使用<strong>原子累加器 LongAdder</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">LongAdder adder = <span class="keyword">new</span> LongAdder(); <span class="comment">// 创建原子累加器</span></span><br><span class="line">adder.increment(); <span class="comment">// 累加</span></span><br><span class="line">System.out.println(adder.longValue()); <span class="comment">// 获取并输出结果</span></span><br></pre></td></tr></table></figure>
+<h2 id="Unsafe"><a href="#Unsafe" class="headerlink" title="Unsafe"></a>Unsafe</h2><p>Unsafe 对象提供了非常底层的，操作内存、线程的方法，Unsafe 对象不能直接调用，只能通过反射获得</p>
+<h3 id="获取Unsafe对象"><a href="#获取Unsafe对象" class="headerlink" title="获取Unsafe对象"></a>获取Unsafe对象</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// unsafe对象获取器</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnsafeAccessor</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Unsafe unsafe;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Field theUnsafe = Unsafe.class.getDeclaredField(<span class="string">&quot;theUnsafe&quot;</span>);</span><br><span class="line">            theUnsafe.setAccessible(<span class="keyword">true</span>); <span class="comment">// 运行访问</span></span><br><span class="line">            unsafe = (Unsafe) theUnsafe.get(<span class="keyword">null</span>); <span class="comment">// 获取,因为是静态成员，所以传递一个null</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (NoSuchFieldException | IllegalAccessException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Unsafe <span class="title">getUnsafe</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> unsafe;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="使用Unsafe中的CAS操作"><a href="#使用Unsafe中的CAS操作" class="headerlink" title="使用Unsafe中的CAS操作"></a>使用Unsafe中的CAS操作</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 定义一个类</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Unsafe unsafe = UnsafeAccessor.getUnsafe(); <span class="comment">// 获取unsafe对象</span></span><br><span class="line">    <span class="comment">// 获取Student的属性</span></span><br><span class="line">    Field name = Student.class.getDeclaredField(<span class="string">&quot;name&quot;</span>);</span><br><span class="line">    Field age = Student.class.getDeclaredField(<span class="string">&quot;age&quot;</span>);</span><br><span class="line">    <span class="comment">// 获得成员变量的偏移量</span></span><br><span class="line">    <span class="keyword">long</span> nameOffset = unsafe.objectFieldOffset(name);</span><br><span class="line">    <span class="keyword">long</span> ageOffset = unsafe.objectFieldOffset(age);</span><br><span class="line">    <span class="comment">// 创建对象</span></span><br><span class="line">    Student student = <span class="keyword">new</span> Student(<span class="string">&quot;怪狗狗&quot;</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="comment">// 使用cas修改属性 , 修改成功返回true</span></span><br><span class="line">    unsafe.compareAndSwapObject(student, nameOffset, <span class="string">&quot;怪狗狗&quot;</span>, <span class="string">&quot;oddDog&quot;</span>);</span><br><span class="line">    unsafe.compareAndSwapInt(student, ageOffset, <span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line">    System.out.println(student);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Student&#123;name&#x3D;&#39;oddDog&#39;, age&#x3D;2&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="自定义一个原子整数"><a href="#自定义一个原子整数" class="headerlink" title="自定义一个原子整数"></a>自定义一个原子整数</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyAtomicInteger</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> data;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Unsafe unsafe;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">long</span> dataOffset;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        unsafe = UnsafeAccessor.getUnsafe();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// data 属性在 MyAtomicInteger 对象中的偏移量，用于 Unsafe 直接访问该属性</span></span><br><span class="line">            dataOffset = unsafe.objectFieldOffset(MyAtomicInteger.class.getDeclaredField(<span class="string">&quot;data&quot;</span>));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (NoSuchFieldException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//  添加值--原子操作</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> oldValue = data; <span class="comment">// 获取旧值</span></span><br><span class="line">            <span class="comment">// cas修改值，如果成功，返回</span></span><br><span class="line">            <span class="keyword">if</span> (unsafe.compareAndSwapInt(<span class="keyword">this</span>, dataOffset, old, old + value)) &#123;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="不可变类"><a href="#不可变类" class="headerlink" title="不可变类"></a>不可变类</h1><h1 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h1><h1 id="JUC"><a href="#JUC" class="headerlink" title="JUC"></a>JUC</h1><p>over。。。</p>
 ]]></content>
       <categories>
         <category>concurrent</category>
