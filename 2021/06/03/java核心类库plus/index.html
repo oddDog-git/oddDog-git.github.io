@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://z3.ax1x.com/2021/06/03/21n25j.png">
 <meta property="og:image" content="https://z3.ax1x.com/2021/06/03/21BBkj.png">
 <meta property="article:published_time" content="2021-06-03T03:28:33.000Z">
-<meta property="article:modified_time" content="2021-07-25T13:10:46.743Z">
+<meta property="article:modified_time" content="2021-12-02T03:08:04.402Z">
 <meta property="article:author" content="怪狗狗">
 <meta property="article:tag" content="基础">
 <meta name="twitter:card" content="summary">
@@ -198,7 +198,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-07-25 21:10:46" itemprop="dateModified" datetime="2021-07-25T21:10:46+08:00">2021-07-25</time>
+                <time title="修改时间：2021-12-02 11:08:04" itemprop="dateModified" datetime="2021-12-02T11:08:04+08:00">2021-12-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -460,7 +460,7 @@
 <h2 id="BufferedOutputStream-与-BufferedInputStream"><a href="#BufferedOutputStream-与-BufferedInputStream" class="headerlink" title="BufferedOutputStream  与 BufferedInputStream"></a>BufferedOutputStream  与 BufferedInputStream</h2><p>要用于描述缓冲输入输出流，此时不用为写入的每个字节调用底层系统.使用方法和 FileOutputStream 与  FileInputStream  基本相同</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 构造方法需要一个 InputStream 或 OutputStream的实现类，当然缓冲流中也可以指定一个缓存区</span></span><br><span class="line">BufferedInputStream bin = <span class="keyword">new</span> BufferedInputStream(<span class="keyword">new</span> FileInputStream(<span class="string">&quot;c://superMan.png&quot;</span>));</span><br><span class="line">BufferedOutputStream bout = <span class="keyword">new</span> BufferedOutputStream(<span class="keyword">new</span> FileOutputStream(<span class="string">&quot;c://superMan04.png&quot;</span>));</span><br></pre></td></tr></table></figure>
 <h2 id="BufferedWriter-与-BufferedReader"><a href="#BufferedWriter-与-BufferedReader" class="headerlink" title="BufferedWriter  与  BufferedReader"></a>BufferedWriter  与  BufferedReader</h2><p>使用方法同上，不过 BufferedWriter 可以写入行newLine( ) ，BufferedReader可以读取一行readLine( ) ，如果读取完毕返回null</p>
-<h2 id="OutputStreamWriter-与-InputStreamReader"><a href="#OutputStreamWriter-与-InputStreamReader" class="headerlink" title="OutputStreamWriter  与   InputStreamReader"></a>OutputStreamWriter  与   InputStreamReader</h2><p>类主要用于实现从字符流到字节流的转换，一个是输出时的转换，一个时输入时的转换</p>
+<h2 id="OutputStreamWriter-与-InputStreamReader"><a href="#OutputStreamWriter-与-InputStreamReader" class="headerlink" title="OutputStreamWriter  与   InputStreamReader"></a>OutputStreamWriter  与   InputStreamReader</h2><p>类主要用于实现从字符流到字节流的转换，一个是输出时的转换，一个是输入时的转换</p>
 <h2 id="PrintStream-与-PrintWriter"><a href="#PrintStream-与-PrintWriter" class="headerlink" title="PrintStream   与 PrintWriter"></a>PrintStream   与 PrintWriter</h2><p>主要用于更加方便地打印各种数据内容 ，例如熟悉的 ：println()</p>
 <h2 id="ObjectOutputStream-与-ObjectInputStream"><a href="#ObjectOutputStream-与-ObjectInputStream" class="headerlink" title="ObjectOutputStream   与  ObjectInputStream"></a>ObjectOutputStream   与  ObjectInputStream</h2><p>用于对对象的输入输出。只能将支持 java.io.Serializable 接口的对象写入流中。 类通过实现 java.io.Serializable 接口以启用其序列化功能。</p>
 <p><strong>序列化</strong> : 主要指将一个对象需要存储的相关信息有效组织成字节序列的转化过程。</p>
@@ -1207,7 +1207,7 @@
 <li>jdk动态代理(理解):使用java反射包中的类和接口实现动态代理的功能。反射包java.lang.reflect,里面有三个类:InvocationHandler,Method,Proxy</li>
 <li>cglib动态代理(了解): cglib是第三方的工具库,创建代理对象<ul>
 <li>cglib的原理是继承，cglib通过继承目标类，创建它的子类，在子类中<br>重写父类中同名的方法，实现功能的修改。</li>
-<li>因为cglib是继承，重写方法，所以要求目标类不能是fina1的，方法也不能是final的。cglib的要求目标类比较宽松，只要能继承就可以了。cglib在很多的框架中使用，<br>比如mybatis，spring框架中都有使用。</li>
+<li>因为cglib是继承，重写方法，所以要求目标类不能是fina1的，方法也不能是final的。cglib的要求目标类比较宽松，只要能继承就可以了。cglib在很多的框架中使用，比如mybatis，spring框架中都有使用。</li>
 </ul>
 </li>
 </ul>
