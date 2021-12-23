@@ -8392,6 +8392,7 @@
 <h2 id="页面跳转"><a href="#页面跳转" class="headerlink" title="页面跳转"></a>页面跳转</h2><h3 id="void原始ServletAPI"><a href="#void原始ServletAPI" class="headerlink" title="void原始ServletAPI"></a>void原始ServletAPI</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//  通过request、response对象实现响应</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/returnVoid&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">returnVoid</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span><span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">// 通过request实现转发</span></span><br><span class="line">    request.setAttribute(<span class="string">&quot;username&quot;</span>, <span class="string">&quot;怪狗狗&quot;</span>);</span><br><span class="line">    request.getRequestDispatcher(<span class="string">&quot;/WEB-INF/pages/success.jsp&quot;</span>).forward(request,response);</span><br><span class="line">    <span class="comment">// 通过response实现重定向，WEB-INF下的jsp页面不能重定向</span></span><br><span class="line">    response.sendRedirect(request.getContextPath() + <span class="string">&quot;/index.jsp&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="返回字符串逻辑视图"><a href="#返回字符串逻辑视图" class="headerlink" title="返回字符串逻辑视图"></a>返回字符串逻辑视图</h3><p><strong>直接返回字符串</strong></p>
 <p>此种方式会将返回的<strong>字符串</strong>与<strong>视图解析器</strong>的前后缀拼接后跳转到指定页面，这种方式本质是<strong>转发</strong>。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/hello&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;/WEB-INF/page/hello.jsp&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>forward转发</strong></p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 则路径必须写成实际视图url，不能写逻辑视图</span></span><br><span class="line"><span class="comment">// model是用来传递数据给前端，相当于 request 域</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/forward&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">forward</span><span class="params">(Model model)</span> </span>&#123;</span><br><span class="line">    model.addAttribute(<span class="string">&quot;username&quot;</span>, <span class="string">&quot;拉勾招聘&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;forward:/WEB-INF/pages/success.jsp&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>redirect重定向</strong></p>
@@ -8442,13 +8443,13 @@
 </tr>
 <tr>
 <td>新增</td>
-<td>/user/save POST</td>
-<td>/user</td>
+<td>/user/save</td>
+<td>POST /user</td>
 </tr>
 <tr>
 <td>修改</td>
-<td>/user/update PUT</td>
-<td>/user</td>
+<td>/user/update</td>
+<td>PUT /user</td>
 </tr>
 <tr>
 <td>删除</td>
@@ -8781,7 +8782,7 @@
 </ul>
 <h3 id="发布前端项目"><a href="#发布前端项目" class="headerlink" title="发布前端项目"></a>发布前端项目</h3><ul>
 <li>在Linux系统上复制一个新的tomcat，端口号改为 8081</li>
-<li>将dist目录放到tomcat的webapp下</li>
+<li>将dist目录放到tomcat的webapp下，并重命名  <code>edu-boss</code></li>
 <li>运行tomcat，即可访问前端项目</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.&#x2F;bin&#x2F;startup.sh </span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;动态查看日志</span><br><span class="line">tail -f logs&#x2F;catalina.out </span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;访问</span><br><span class="line">http:&#x2F;&#x2F;47.115.139.213:8081&#x2F;edu-boss&#x2F;</span><br></pre></td></tr></table></figure>
@@ -8976,6 +8977,12 @@
 </li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">create &#x2F;china   # 创建普通节点</span><br><span class="line">create &#x2F;usa &quot;pujing&quot;   # 创建节点并添加数据</span><br><span class="line">create -e &#x2F;hui		# 创建临时节点</span><br><span class="line">create -e -s &#x2F;dog	# 创建临时且带序号节点，序号从0开始递增。</span><br></pre></td></tr></table></figure>
+<ul>
+<li>获取节点的值</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">get &#x2F;usa</span><br></pre></td></tr></table></figure>
+
+
 <ul>
 <li>修改节点数据</li>
 </ul>
