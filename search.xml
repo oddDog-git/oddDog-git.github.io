@@ -16501,7 +16501,333 @@
   <entry>
     <title>mongoDB</title>
     <url>/2022/01/19/mongoDB/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p>MongoDB是一个介于<code>关系数据库</code>和<code>非关系数据库</code>之间的产品，是非关系数据库当中功能最丰富，最像关系数据库的。<strong>他支持的数据结构非常松散，是类似json的bson格式，因此可以存储比较复杂的数据类型</strong>。<a id="more"></a></p>
+<p><strong>应用场景</strong></p>
+<ul>
+<li>游戏场景，使用 MongoDB 存储游戏用户信息，用户的装备、 积分等直接以内嵌文档的形式存储，方便查询、更新 </li>
+<li>物流场景，使用 MongoDB 存储订单信息，订单状态在运送过 程中会不断更新，以 MongoDB 内嵌数组的形式来存储，一次 查询就能将订单所有的变更读取出来。 </li>
+<li>社交场景，使用 MongoDB 存储存储用户信息，以及用户发表 的朋友圈信息，通过地理位置索引实现附近的人、地点等功能 </li>
+<li>物联网场景，使用 MongoDB 存储所有接入的智能设备信息， 以及设备汇报的日志信息，并对这些信息进行多维度的分析 </li>
+<li>视频直播，使用 MongoDB 存储用户信息、礼物信息等</li>
+</ul>
+<p><strong>优点</strong></p>
+<ul>
+<li> 弱一致性（最终一致），更能保证用户的访问速度</li>
+<li>文档结构的存储方式，能够更便捷的获 取数据</li>
+<li>内置GridFS，支持大容量的存储<ul>
+<li>GridFS是一个出色的分布式文件系统，可以支持海量的数据存 储。 </li>
+<li>内置了GridFS了MongoDB，能够满足对大数据集的快速范围查 询。</li>
+</ul>
+</li>
+<li>内置Sharding</li>
+<li>第三方支持丰富</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>事务支持不友好</li>
+<li>占用空间过大<ul>
+<li>空间的预分配：为避免形成过多的硬盘碎片，mongodb 每次空间不足时都会申请生成一大块的硬盘空间，而且申请 的量从64M、128M、256M那 样的指数递增，直到2G为单 个文件的最大体积。</li>
+<li>删除记录不释放空间：这很容易理解，为避免记录删除 后的数据的大规模挪动，原记录空间不删除，只标记“已删 除”即可，以后还可以重复利用。</li>
+<li>可以定期运行 <code>db.repairDatabase()</code>来整理记录，但这个 过程会比较缓慢</li>
+</ul>
+</li>
+</ul>
+<h1 id="安装与配置"><a href="#安装与配置" class="headerlink" title="安装与配置"></a>安装与配置</h1><p>官网： <a href="http://www.mongodb.org/">www.mongodb.org</a>   , 这里下载的是 <code>mongodb-linux-x86_64-rhel70-4.2.18.tgz</code></p>
+<ul>
+<li>将压缩包上传到 linux 下的 /opt 目录，并解压</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">tar -zxvf mongodb-linux-x86_64-rhel70-4.2.18.tgz</span><br></pre></td></tr></table></figure>
+<ul>
+<li>进入 mongoDB 目录中，创建配置文件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vim mongo.conf</span><br><span class="line">## 文件内容如下</span><br><span class="line">dbpath&#x3D;&#x2F;data&#x2F;mongo&#x2F;     # 数据库目录，默认&#x2F;data&#x2F;db</span><br><span class="line">port&#x3D;27017				# 监听的端口，默认27017</span><br><span class="line">bind_ip&#x3D;0.0.0.0			# 监听IP地址，默认全部可以访问</span><br><span class="line">fork&#x3D;true				# 是否已后台启动的方式登入</span><br><span class="line">logpath&#x3D;&#x2F;data&#x2F;mongo&#x2F;MongoDB.log	 # 日志路径</span><br><span class="line">logappend&#x3D;true			# 是否追加日志</span><br><span class="line">auth&#x3D;false				# 是否开启用户密码登入</span><br></pre></td></tr></table></figure>
+<ul>
+<li>创建数据库目录  <code>dbpath=/data/mongo/</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir -p &#x2F;data&#x2F;mongo&#x2F;</span><br></pre></td></tr></table></figure>
+<p><strong>启动，指定配置文件</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.&#x2F;bin&#x2F;mongod -f mongo.conf</span><br></pre></td></tr></table></figure>
+<p><strong>进入mongo，可指定ip与端口</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.&#x2F;bin&#x2F;mongo (--host&#x3D;主机IP --prot&#x3D;端口)</span><br></pre></td></tr></table></figure>
+<p>(这里使用的GUI工具是 NoSQLBooster，可取官网自行下载)</p>
+<h1 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h1><ul>
+<li>查看数据库</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">show dbs;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>切换数据库 (如果没有则新增，新数据库要插入了一个文档后才显示)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">use 数据库名;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>删除数据库</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.dropDatabase();</span><br></pre></td></tr></table></figure>
+<ul>
+<li>创建集合 (相当于表)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.createCollection(&quot;集合名&quot;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查看集合</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">show tables;</span><br><span class="line">show collections;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>删除集合</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.集合名.drop();</span><br></pre></td></tr></table></figure>
+<h2 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h2><p>插入一条数据，dept集合如果没有会自动创建（数据为json格式）</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">db.dept.insert(</span><br><span class="line">   &#123;</span><br><span class="line">       <span class="attr">&quot;did&quot;</span>:<span class="number">1</span>,</span><br><span class="line">       <span class="attr">&quot;dname&quot;</span>:<span class="string">&quot;开发部&quot;</span>,</span><br><span class="line">       <span class="attr">&quot;loc&quot;</span>:<span class="string">&quot;A区1座&quot;</span></span><br><span class="line">   &#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">var dataVar = &#123;</span><br><span class="line">     &quot;did&quot;:2,</span><br><span class="line">     &quot;dname&quot;:&quot;市场部&quot;,</span><br><span class="line">     &quot;loc&quot;:&quot;深圳&quot;,</span><br><span class="line">     &quot;count&quot;:20</span><br><span class="line">&#125;</span><br><span class="line">db.dept.insert(dataVar);</span><br></pre></td></tr></table></figure>
+<p>插入多条数据</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">for(var i = 1; i&lt;100;i++)&#123;</span><br><span class="line"> db.dept.insert(&#123;&quot;did&quot;:i,&quot;dname&quot;:&quot;测试&quot;+i+&quot;部&quot;&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>MondoDB中的每一条数据都有 <code>_id</code>字段，该字段是由 <strong>时间戳+机器码+进程的pid+计数器</strong> 组成的,绝对不会重复</p>
+<h2 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h2><p>remove( ) 有两个可选项 </p>
+<ul>
+<li>满足条件的删除 </li>
+<li>是否只删除一条，默认 false</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">db.dept.remove(&#123;</span><br><span class="line">     &quot;_id&quot; : ObjectId(&quot;6114d0d2430f6b4dcc876c41&quot;)</span><br><span class="line">&#125;,true);</span><br></pre></td></tr></table></figure>
+<p>删除名称中含有 “测试”的数据</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">db.dept.remove(&#123;</span><br><span class="line">	&quot;dname&quot;: /测试/</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>清空集合</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.dept.remove(&#123;&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h2><p>对于Mongo而言,最好的办法不是修 改,而是删掉,重新添加.</p>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><p>update(更新条件, 新对象数据, upsert , multi)</p>
+<ul>
+<li>upsert  : 数据没有时是否执行新增操作</li>
+<li>multi : 是否匹配多个结果</li>
+</ul>
+<p>根据id执行简单的修改 </p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">var newData=&#123;</span><br><span class="line">     &quot;id&quot;:1,</span><br><span class="line">     &quot;name&quot;:&quot;吕布&quot;,</span><br><span class="line">     &quot;age&quot;:29	</span><br><span class="line">&#125;</span><br><span class="line">db.dept.update(&#123;</span><br><span class="line"> 	&quot;_id&quot;: ObjectId(&quot;6114df1d430f6b4dcc876c42&quot;),</span><br><span class="line">&#125;, newData);</span><br></pre></td></tr></table></figure>
+<h3 id="修改器"><a href="#修改器" class="headerlink" title="修改器"></a>修改器</h3><p>初始化一条数据</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">db.student.insert(&#123;</span><br><span class="line">    &quot;name&quot;:&quot;王二麻子&quot;,</span><br><span class="line">    &quot;age&quot;:88,</span><br><span class="line">    &quot;score&quot;:99</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><font color="red">$inc</font> : 针对数字字段,增加某个数字字段的值</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 修改王二麻子的age+2，score-10</span></span><br><span class="line">db.student.update(&#123;&quot;name&quot;:&quot;王二麻子&quot;&#125;,&#123;</span><br><span class="line">	&quot;$inc&quot;:&#123;&quot;age&quot;:2,&quot;score&quot;:-10&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><font color="red">$set</font> : 重新设定内容</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 修改王二麻子的名称</span></span><br><span class="line">db.student.update(&#123;&quot;name&quot;:&quot;王二麻子&quot;&#125;,&#123;</span><br><span class="line">	&quot;$set&quot;:&#123;&quot;name&quot;:&quot;张三&quot;&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><font color="red">$unset</font>：删除某个字段</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 删除&quot;score&quot;字段</span></span><br><span class="line">db.student.update(&#123;&quot;name&quot;:&quot;张三&quot;&#125;,&#123;</span><br><span class="line">	&quot;$unset&quot;:&#123;&quot;score&quot;:1&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><font color="red">$push</font>：给字段追加内容（数组操作）</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 给subject字段添加一门科目</span></span><br><span class="line">db.student.update(&#123;&quot;name&quot;:&quot;张三&quot;&#125;,&#123;</span><br><span class="line">	&quot;$push&quot;:&#123;&quot;subject&quot;:&quot;语文&quot;&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><font color="red">$pushAll</font>：追加数组，在高版本该修改其已淘汰，可使用 $push+$each</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 添加多门科目</span></span><br><span class="line">db.student.update(&#123;&quot;name&quot;:&quot;张三&quot;&#125;,&#123;</span><br><span class="line">	&quot;$push&quot;:&#123;&quot;subject&quot;:&#123;</span><br><span class="line">		&quot;$each&quot;:[&quot;语文&quot;,&quot;物理&quot;,&quot;化学&quot;,&quot;数学&quot;]</span><br><span class="line">    &#125;&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><font color="red">$addToSet</font>：追加内容到数组，如果存在就不新增</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 添加一门科目，如果已存在就不添加</span></span><br><span class="line">db.student.update(&#123;&quot;name&quot;:&quot;张三&quot;&#125;,&#123;</span><br><span class="line">	&quot;$addToSet&quot;:&#123;&quot;subject&quot;:&quot;物理&quot;&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><font color="red">$pop</font>: 删除数组中的内容</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 删除第一门科目</span></span><br><span class="line">db.student.update(&#123;&quot;name&quot;:&quot;张三&quot;&#125;,&#123;</span><br><span class="line">	&quot;$pop&quot;:&#123;&quot;subject&quot;:-1&#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 删除最后一门科目</span></span><br><span class="line">db.student.update(&#123;&quot;name&quot;:&quot;张三&quot;&#125;,&#123;</span><br><span class="line">	&quot;$pop&quot;:&#123;&quot;subject&quot;:1&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><font color="red">$pull </font>:  删除数组中指定的内容, 不存在则没变化</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 删除语文课</span><br><span class="line">db.student.update(&#123;&quot;name&quot;:&quot;张三&quot;&#125;,&#123;</span><br><span class="line">	&quot;$pull&quot;:&#123;&quot;subject&quot;:&quot;语文&quot;&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><font color="red">$pullAll</font>: 删除数组中多个内容</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 删除多门课</span></span><br><span class="line">db.student.update(&#123;&quot;name&quot;:&quot;张三&quot;&#125;,&#123;</span><br><span class="line">	&quot;$pullAll&quot;:&#123;&quot;subject&quot;:[&quot;物理&quot;,&quot;数学&quot;]&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><font color="red">$rename</font>: 字段重命名</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 将&quot;subject&quot;重命名为&quot;学科&quot;</span></span><br><span class="line">db.student.update(&#123;&quot;name&quot;:&quot;张三&quot;&#125;,&#123;</span><br><span class="line">	&quot;$rename&quot;:&#123;&quot;subject&quot;:&quot;学科&quot;&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h2><p>普通查询 <strong>db.集合名.find({查询条件})</strong> </p>
+<p>投影查询 <strong>db.集合名.find( {查询条件} , {控制字段的显示})</strong></p>
+<p>查询一条 <strong>db.集合名.findOne()</strong></p>
+<p>0不显示  , 1显示</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 查询did为1,并只显示dname与address字段(要么全为1或全为0)</span><br><span class="line">db.dept.find(</span><br><span class="line">   &#123;&quot;did&quot;:1&#125;,</span><br><span class="line">   &#123;&quot;dname&quot;:1,&quot;address&quot;:1&#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h3 id="关系运算"><a href="#关系运算" class="headerlink" title="关系运算"></a>关系运算</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>条件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>等于</td>
+<td>{key:{“<strong>$eq</strong>“:value}}  或   {key:value}</td>
+</tr>
+<tr>
+<td>大于</td>
+<td>{key:{“<strong>$gt</strong>“:value}}</td>
+</tr>
+<tr>
+<td>小于</td>
+<td>{key:{“<strong>$lt</strong>“:value}}</td>
+</tr>
+<tr>
+<td>大于等于</td>
+<td>{key:{“<strong>$gte</strong>“:value}}</td>
+</tr>
+<tr>
+<td>小于等于</td>
+<td>{key:{“<strong>$lte</strong>“:value}}</td>
+</tr>
+<tr>
+<td>不等于</td>
+<td>{key:{“<strong>$ne</strong>“:value}}</td>
+</tr>
+</tbody></table>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 查询18岁以上的同学</span><br><span class="line">db.student.find(&#123;</span><br><span class="line">	&quot;age&quot;:&#123;&quot;$gt&quot;:18&#125;</span><br><span class="line">&#125;)</span><br><span class="line">&#x2F;&#x2F; 查询18岁以上的女同学(与关系)</span><br><span class="line">db.student.find(&#123;</span><br><span class="line">	&quot;age&quot;:&#123;&quot;$gt&quot;:18&#125;,</span><br><span class="line">	&quot;sex&quot;:&quot;女&quot;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="逻辑运算"><a href="#逻辑运算" class="headerlink" title="逻辑运算"></a>逻辑运算</h3><p>与 <strong>$and</strong></p>
+<p>或  <strong>$or</strong></p>
+<p>非  <strong>$not/$nor</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 查询年龄在18-20之间的同学(与关系)</span><br><span class="line">db.student.find(&#123;</span><br><span class="line">	&quot;age&quot;:&#123;</span><br><span class="line">		&quot;$gt&quot;:18,</span><br><span class="line">		&quot;$lt&quot;:20</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 18岁以上,或者性别是女的同学(或关系)</span><br><span class="line">db.stuent.find(&#123;</span><br><span class="line">	&quot;$or&quot;:[</span><br><span class="line">		&#123;&quot;age&quot;:&#123;&quot;$gt&quot;:18&#125;&#125;,</span><br><span class="line">		&#123;&quot;sex&quot;:&quot;女&quot;&#125;</span><br><span class="line">	]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 22岁以下,性别是男的同学(使用&quot;$nor&quot;取反操作)</span><br><span class="line">db.stuent.find(&#123;</span><br><span class="line">	&quot;$nor&quot;:[</span><br><span class="line">		&#123;&quot;age&quot;:&#123;&quot;$gte&quot;:22&#125;&#125;,</span><br><span class="line">		&#123;&quot;sex&quot;:&quot;女&quot;&#125;</span><br><span class="line">	]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="求模"><a href="#求模" class="headerlink" title="求模"></a>求模</h3><p>求余数   <strong>{key:{“$mod”:[x,y]}}</strong>  , 表示获取满足  key% x == y 的数据</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 获取年龄为奇数的同学</span><br><span class="line">db.student.find(&#123;</span><br><span class="line">	&quot;age&quot;:&#123;&quot;$mod&quot;:[2,1]&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="范围"><a href="#范围" class="headerlink" title="范围"></a>范围</h3><p><strong>$in</strong> 在范围内</p>
+<p><strong>$nin</strong>  不在范围内</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 查询 张三,李四,王五</span><br><span class="line">db.student.find(&#123;</span><br><span class="line">	&quot;name&quot;:&#123;&quot;$in&quot;:[&quot;张三&quot;,&quot;李四&quot;,&quot;王五&quot;]&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="数组查询"><a href="#数组查询" class="headerlink" title="数组查询"></a>数组查询</h3><p>初始化一些数据</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">db.student.insert(&#123;&quot;name&quot;:&quot;辉-A&quot;,&quot;address&quot;:&quot;中关村1&quot;,&quot;subject&quot;:[&quot;语文&quot;,&quot;数学&quot;,&quot;英语&quot;]&#125;);</span><br><span class="line">db.student.insert(&#123;&quot;name&quot;:&quot;辉-B&quot;,&quot;address&quot;:&quot;中关村2&quot;,&quot;subject&quot;:[&quot;语文&quot;,&quot;数学&quot;,&quot;英语&quot;,&quot;物理&quot;]&#125;);</span><br><span class="line">db.student.insert(&#123;&quot;name&quot;:&quot;辉-C&quot;,&quot;address&quot;:&quot;中关村3&quot;,&quot;subject&quot;:[&quot;语文&quot;,&quot;数学&quot;,&quot;英语&quot;,&quot;物理&quot;,&quot;化学&quot;]&#125;);</span><br><span class="line">db.student.insert(&#123;&quot;name&quot;:&quot;辉-D&quot;,&quot;address&quot;:&quot;中关村4&quot;,&quot;subject&quot;:[&quot;物理&quot;,&quot;化学&quot;]&#125;);</span><br><span class="line">db.student.insert(&#123;&quot;name&quot;:&quot;辉-E&quot;,&quot;address&quot;:&quot;中关村5&quot;,&quot;subject&quot;:[&quot;语文&quot;,&quot;数学&quot;,&quot;化学&quot;]&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>$all</strong>   并查询数组</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 查询同时有 语文 和 数学 课程的同学</span><br><span class="line">db.student.find(&#123;</span><br><span class="line">    &quot;subject&quot; : &#123;</span><br><span class="line">        &quot;$all&quot; : [&quot;语文&quot;,&quot;数学&quot;]</span><br><span class="line">   &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>key.index</strong> 查询数组中指定下标内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 查询第一门课为数学的学生</span><br><span class="line">db.student.find(&#123;</span><br><span class="line">    &quot;subject.0&quot; : &quot;数学&quot;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>$size</strong>  数组长度</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 查询只有两门课的学生</span><br><span class="line">db.student.find(&#123;</span><br><span class="line">    &quot;subject&quot; : &#123;</span><br><span class="line">    	&quot;$size&quot;:2</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>$slice</strong>  投影查询,只返回数组中指定的内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 查询年龄为19,只返回前两门课</span><br><span class="line">db.student.find(</span><br><span class="line">	&#123;&quot;age&quot;:19&#125;,</span><br><span class="line">	&#123;&quot;subject&quot;:&#123;</span><br><span class="line">		&quot;$slice&quot;:2</span><br><span class="line">	&#125;&#125;</span><br><span class="line">)</span><br><span class="line">&#x2F;&#x2F; 返回后两节课</span><br><span class="line">&quot;$slice&quot;:-2</span><br><span class="line">&#x2F;&#x2F; 返回从索引1开始,获取两节课</span><br><span class="line">&quot;$slice&quot;:[1,2]</span><br></pre></td></tr></table></figure>
+<h3 id="嵌套集合"><a href="#嵌套集合" class="headerlink" title="嵌套集合"></a>嵌套集合</h3><p>初始化数据</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.student.insert(&#123;</span><br><span class="line">    &quot;name&quot;:&quot;辉&quot;,</span><br><span class="line">    &quot;age&quot;:21,</span><br><span class="line">    &quot;pets&quot;:[</span><br><span class="line">       &#123;</span><br><span class="line">            &quot;name&quot;:&quot;旺财&quot;,</span><br><span class="line">            &quot;age&quot;:3,</span><br><span class="line">            &quot;brand&quot;:&quot;狗&quot;</span><br><span class="line">       &#125;,</span><br><span class="line">       &#123;</span><br><span class="line">            &quot;name&quot;:&quot;tom&quot;,</span><br><span class="line">            &quot;age&quot;:4,</span><br><span class="line">            &quot;brand&quot;:&quot;猫&quot;</span><br><span class="line">       &#125;</span><br><span class="line">   ]</span><br><span class="line">&#125;);  </span><br></pre></td></tr></table></figure>
+<p><strong>$elemMatch</strong> 遍历数组中的每一条数据</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 查询20以上并养猫的人</span><br><span class="line">db.student.find(&#123;</span><br><span class="line">	&quot;age&quot;:&#123;&quot;$gt&quot;:20&#125;,</span><br><span class="line">	&quot;pets&quot;:&#123;</span><br><span class="line">		&quot;$elemMatch&quot;:&#123;</span><br><span class="line">			&quot;brand&quot;:&quot;猫&quot;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="字段是否存在"><a href="#字段是否存在" class="headerlink" title="字段是否存在"></a>字段是否存在</h3><p><strong>$exists</strong>  </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 查询有宠物的人</span><br><span class="line">db.student.find(&#123;</span><br><span class="line">    &quot;pets&quot;:&#123;</span><br><span class="line">        &quot;$exists&quot; : true</span><br><span class="line">   &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="模糊查询"><a href="#模糊查询" class="headerlink" title="模糊查询"></a>模糊查询</h3><p>想模糊查询,必须使用正则</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 查询名字包含辉的同学</span></span><br><span class="line">db.student.find(&#123;</span><br><span class="line">    &quot;name&quot; : &#123;</span><br><span class="line">        &quot;$regex&quot; : /辉/</span><br><span class="line">   &#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 上面写法中$regex可省略</span></span><br><span class="line">db.student.find(&#123;</span><br><span class="line">    &quot;name&quot; : /辉/</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 查询姓名中包含a的,可加i,忽略大小写</span></span><br><span class="line">db.student.find(&#123;</span><br><span class="line">    &quot;name&quot; : /a/i</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>以上模糊查询对数组也生效</p>
+<h3 id="分页与排序"><a href="#分页与排序" class="headerlink" title="分页与排序"></a>分页与排序</h3><p><strong>skip(n)</strong>  跳过多少行 <code>(pageNum-1)*pageSize</code></p>
+<p><strong>limit(n)</strong>  获取多少行数据</p>
+<p><strong>sort({})</strong>   排序,1为升序,-1为降序</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 获取第一页数据,每页显示10条数据,却年龄升序</span><br><span class="line">db.student.find().skip(0).limit(10).sort(&#123;</span><br><span class="line">	&quot;age&quot;:1</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="条件过滤where"><a href="#条件过滤where" class="headerlink" title="条件过滤where"></a>条件过滤where</h3><ul>
+<li>查询年龄40岁以上的学生</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">db.student.find(&#123;</span><br><span class="line">    &quot;$where&quot;:&quot;this.age &gt; 40&quot;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>缺点</strong>   将MongoDB中的BSON数据转成了Javascript 语法结构循环验证</p>
+<p>不方便使用数据库的索引机制.并不推荐使用,只需知道有这种查询方式即可</p>
+<h2 id="游标"><a href="#游标" class="headerlink" title="游标"></a>游标</h2><p>游标就是让数据一行行的执行，类似与java中的foreach循环</p>
+<p>使用 find() 函数可返回游标，然后使用游标的两个函数 <code>hasNext()</code> 、<code>next()</code></p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">var you = db.student.find();</span><br><span class="line">while(you.hasNext())&#123;</span><br><span class="line">    print(you.next().name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><p>索引能够加快搜索性能,索引分两种: 自动创建的 和 手动创建的</p>
+<p><strong>查看集合中索引</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.student.getIndexes();</span><br></pre></td></tr></table></figure>
+<p>_id_  为自动创建的索引</p>
+<p><a href="https://imgtu.com/i/7ygDyt"><img src="https://s4.ax1x.com/2022/01/20/7ygDyt.png" alt="7ygDyt.png"></a></p>
+<p><strong>创建索引</strong></p>
+<p><code>db.集合名.ensureIndex()</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F;为age创建一个降序索引</span><br><span class="line">db.student.ensureIndex(&#123;</span><br><span class="line">	&quot;age&quot;:-1</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p><strong>删除索引</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 删除刚刚创建的索引</span><br><span class="line">db.student.dropIndex(&#123;</span><br><span class="line">	&quot;age&quot;:-1</span><br><span class="line">&#125;);</span><br><span class="line">&#x2F;&#x2F; 删除全部索引,默认索引不能删除</span><br><span class="line">db.student.dropIndexes();</span><br></pre></td></tr></table></figure>
+<h2 id="唯一索引"><a href="#唯一索引" class="headerlink" title="唯一索引"></a>唯一索引</h2><p>用在有一个字段,让该字段的内容不能重复</p>
+<ul>
+<li>给name字段加上唯一索引,如果添加重复的值,会报错</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.student.ensureIndex(</span><br><span class="line">	&#123;&quot;name&quot;,1&#125;,</span><br><span class="line">	&#123;&quot;unique&quot;:true&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h2 id="过期索引"><a href="#过期索引" class="headerlink" title="过期索引"></a>过期索引</h2><p>程序会出现若干秒之后，信息删除,这个间隔时间大多数情况下并不准确</p>
+<p>删除过程是由后台程序每60s跑一次，而且删除也需要一些 时间，存在误差</p>
+<ul>
+<li>添加一个10s的过期索引</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.phones.ensureIndex(</span><br><span class="line">	&#123;&quot;time&quot;,1&#125;,</span><br><span class="line">	&#123;&quot;expireAfterSeconds&quot;:10&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>添加数据</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">db.phones.insert(&#123;&quot;num&quot;:110,&quot;time&quot;: ISODate(&quot;2020-01-01T22:55:13.369Z&quot;)&#125;);</span><br></pre></td></tr></table></figure>
+<p>过期索引中最好的时间类型是<strong>ISODate</strong>（0时区的时间），0 时区到Date会有一定的换算程序，所以用Date删除的时间偏差更大</p>
+<h2 id="全文索引"><a href="#全文索引" class="headerlink" title="全文索引"></a>全文索引</h2><p>模糊查询只能根据某个字段进行查询,而全文查询能查询整个集合.</p>
+<ul>
+<li>初始化一些数据</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">db.news.insert(&#123;&quot;title&quot;:&quot;NoSQL&quot;,&quot;context&quot;:&quot;MongoDB&quot;&#125;);</span><br><span class="line">db.news.insert(&#123;&quot;title&quot;:&quot;js java&quot;,&quot;context&quot;:&quot;前端技术&quot;&#125;);</span><br><span class="line">db.news.insert(&#123;&quot;title&quot;:&quot;编程语言&quot;,&quot;context&quot;:&quot;java&quot;&#125;);</span><br><span class="line">db.news.insert(&#123;&quot;title&quot;:&quot;java&quot;,&quot;context&quot;:&quot;好语言&quot;&#125;);</span><br><span class="line">db.news.insert(&#123;&quot;title&quot;:&quot;java&quot;,&quot;context&quot;:&quot;java&quot;&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>设置全文索引</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">db.news.ensureIndex(&#123;</span><br><span class="line">   &quot;title&quot;:&quot;text&quot;,</span><br><span class="line">   &quot;context&quot;:&quot;text&quot;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 可给所有字段添加全文索引</span></span><br><span class="line">db.news.ensureIndex(&#123;</span><br><span class="line">    &quot;$**&quot;:&quot;text&quot;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p><strong>全文搜索</strong></p>
+<p>使用 <code>$text</code> 与 <code>$search</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.news.find(&#123;</span><br><span class="line">	&quot;$text&quot;:&#123;</span><br><span class="line">		&quot;$search&quot;:&quot;java&quot;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查询多个关键字(或关系)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;&quot;$search&quot;:&quot;关键字1 关键字2&quot;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查询多个关键字(且关系)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;&quot;$search&quot;:&quot; \&quot;关键字1\&quot; \&quot;关键字2\&quot; &quot;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查询多个关键字(差关系)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;&quot;$search&quot;:&quot;关键字1 -关键字2&quot;&#125;  &#x2F;&#x2F; 存在关键字1且不存在关键字2</span><br></pre></td></tr></table></figure>
+<h2 id="地理信息索引"><a href="#地理信息索引" class="headerlink" title="地理信息索引"></a>地理信息索引</h2><p>2DSphere(球面索引) :  摇一摇，大众点评，美团都是基于2D索引的，保存的信息都是坐标，坐标都是经纬度.</p>
+<ul>
+<li>初始化一些数据</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">db.shops.insert(&#123;&#x27;loc&#x27;:[10,10]&#125;);</span><br><span class="line">db.shops.insert(&#123;&#x27;loc&#x27;:[11,11]&#125;);</span><br><span class="line">db.shops.insert(&#123;&#x27;loc&#x27;:[13,12]&#125;);</span><br><span class="line">db.shops.insert(&#123;&#x27;loc&#x27;:[50,14]&#125;);</span><br><span class="line">db.shops.insert(&#123;&#x27;loc&#x27;:[66,66]&#125;);</span><br><span class="line">db.shops.insert(&#123;&#x27;loc&#x27;:[110,119]&#125;);</span><br><span class="line">db.shops.insert(&#123;&#x27;loc&#x27;:[93,24]&#125;);</span><br><span class="line">db.shops.insert(&#123;&#x27;loc&#x27;:[99,54]&#125;);</span><br><span class="line">db.shops.insert(&#123;&#x27;loc&#x27;:[77,7]&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>创建2D索引</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.shops.ensureIndex(&#123;</span><br><span class="line">	&quot;loc&quot;:&quot;2d&quot;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>坐标查询</strong></p>
+<ul>
+<li>$near : 查询距离某个点距离最近的坐标点;</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 查询[11,11]坐标点附件的点,可设置查询范围</span></span><br><span class="line">db.shops.find(&#123;</span><br><span class="line">	&quot;loc&quot;:&#123;</span><br><span class="line">		&quot;$near&quot;:[11,11],</span><br><span class="line">		&quot;$maxDistance&quot;:5</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>$geoWithin : 查询某个形状内的坐标点;<ul>
+<li>矩形范围 $box</li>
+<li>圆形范围 $center</li>
+<li>多边形范围 $polygon</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 矩形范围</span></span><br><span class="line">db.shops.find(&#123;</span><br><span class="line">	&quot;loc&quot;:&#123;</span><br><span class="line">		&quot;$genWithin&quot;:&#123;</span><br><span class="line">			&quot;$box&quot;:[[9,9],[11,11]]</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 圆形范围</span></span><br><span class="line">db.shops.find(&#123;</span><br><span class="line">	&quot;loc&quot;:&#123;</span><br><span class="line">		&quot;$genWithin&quot;:&#123;</span><br><span class="line">			&quot;$center&quot;:[[9,9],3] 			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 多边形范围, 如下是三角形</span></span><br><span class="line">db.shops.find(&#123;</span><br><span class="line">	&quot;loc&quot;:&#123;</span><br><span class="line">		&quot;$genWithin&quot;:&#123;</span><br><span class="line">			&quot;$polygon&quot;:[[1,2],[2,5],[5,3]]</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="索引的限制"><a href="#索引的限制" class="headerlink" title="索引的限制"></a>索引的限制</h2><ol>
+<li>如果MongoDB的索引项超过索引限制，即1024 bytes，将不会 创建该索引（创建失败），并且插入数据和更新数据会报错 </li>
+<li>一个collections最多能够有64个索引</li>
+<li>针对复合索引,包含的索引属性不能够超过31个属性 </li>
+<li>查询不能够同时使用文本索引和地理空间索引(Queries cannot use both text and Geospatial Indexes) </li>
+<li>包含2d 属性的索引，只能够针对地理空间属性</li>
+</ol>
+<h1 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h1><p>所谓的”聚合”,也就是”分组统计”</p>
+<h2 id="数据量"><a href="#数据量" class="headerlink" title="数据量"></a>数据量</h2><ul>
+<li>获取集合中的数据量</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.student.count();</span><br></pre></td></tr></table></figure>
+<ul>
+<li>获取查询后的数据量</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">db.student.count(&#123;&quot;name&quot;:&#x2F;辉&#x2F;&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="消除重复数据"><a href="#消除重复数据" class="headerlink" title="消除重复数据"></a>消除重复数据</h2><p>没有直接的函数支持.所以我们只能用,最原始的runCommand()</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 查询所有student,消除重复的name</span><br><span class="line">db.runCOmmand(&#123;</span><br><span class="line">	&quot;distinct&quot;:&quot;student&quot;,</span><br><span class="line">	&quot;key&quot;:&quot;name&quot;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="聚合框架"><a href="#聚合框架" class="headerlink" title="聚合框架"></a>聚合框架</h2><p>MongoDB中的MapReduce写起来的很复杂 , 所以在 Mongo2.x之后,提供了聚合框架.</p>
+<p>函数 : <strong>aggregate()</strong></p>
+<ul>
+<li>初始化数据</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">db.emps.insert(&#123;&quot;name&quot;:&quot;张三&quot;,&quot;sex&quot;:&quot;男&quot;,&quot;age&quot;:19,&quot;job&quot;:&quot;程序猿&quot;,&quot;salary&quot;:5000&#125;);</span><br><span class="line">db.emps.insert(&#123;&quot;name&quot;:&quot;李四&quot;,&quot;sex&quot;:&quot;女&quot;,&quot;age&quot;:18,&quot;job&quot;:&quot;美工&quot;,&quot;salary&quot;:6000&#125;);</span><br><span class="line">db.emps.insert(&#123;&quot;name&quot;:&quot;王五&quot;,&quot;sex&quot;:&quot;女&quot;,&quot;age&quot;:21,&quot;job&quot;:&quot;测试&quot;,&quot;salary&quot;:7000&#125;);</span><br><span class="line">db.emps.insert(&#123;&quot;name&quot;:&quot;赵六&quot;,&quot;sex&quot;:&quot;女&quot;,&quot;age&quot;:21,&quot;job&quot;:&quot;程序猿&quot;,&quot;salary&quot;:5500&#125;);</span><br><span class="line">db.emps.insert(&#123;&quot;name&quot;:&quot;孙七&quot;,&quot;sex&quot;:&quot;男&quot;,&quot;age&quot;:22,&quot;job&quot;:&quot;测试&quot;,&quot;salary&quot;:8000&#125;);</span><br><span class="line">db.emps.insert(&#123;&quot;name&quot;:&quot;田八&quot;,&quot;sex&quot;:&quot;女&quot;,&quot;age&quot;:22,&quot;job&quot;:&quot;程序猿&quot;,&quot;salary&quot;:3000&#125;);</span><br><span class="line">db.emps.insert(&#123;&quot;name&quot;:&quot;钱九&quot;,&quot;sex&quot;:&quot;男&quot;,&quot;age&quot;:23,&quot;job&quot;:&quot;美工&quot;,&quot;salary&quot;:4500&#125;);</span><br><span class="line">db.emps.insert(&#123;&quot;name&quot;:&quot;周十&quot;,&quot;sex&quot;:&quot;男&quot;,&quot;age&quot;:17,&quot;job&quot;:&quot;程序猿&quot;,&quot;salary&quot;:9000&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="group"><a href="#group" class="headerlink" title="$group"></a>$group</h3><p>获取每个职位的人数,总工资,平均工资,最高工资,最低工资</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">db.emps.aggregate(&#123;</span><br><span class="line">	&quot;$group&quot;:&#123;</span><br><span class="line">		&quot;_id&quot;:&quot;$job&quot;,  // 根据&quot;job&quot;字段分组</span><br><span class="line">        &quot;count&quot;:&#123;	   // 人数,使用 $sum,每次+1</span><br><span class="line">            &quot;$sum&quot;:1</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;salary_sum&quot;:&#123; //总工资,每个职位在工资相加</span><br><span class="line">            &quot;$sum&quot;:&quot;$salary&quot; </span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;salary_avg&quot;:&#123;</span><br><span class="line">            &quot;$avg&quot;:&quot;$salary&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;salary_max&quot;:&#123;</span><br><span class="line">            &quot;$max&quot;:&quot;$salary&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;salary_min&quot;:&#123;</span><br><span class="line">            &quot;$min&quot;:&quot;$salary&quot;</span><br><span class="line">        &#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>获取每个职位中员工的姓名,使用 “$push” (如果要消除重复name,可使用”$addToSet”)</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">db.emps.aggregate(&#123;</span><br><span class="line">	&quot;$group&quot;:&#123;</span><br><span class="line">		&quot;_id&quot;:&quot;$job&quot;,</span><br><span class="line">		&quot;names&quot;:&#123;</span><br><span class="line">			&quot;$push&quot;:&quot;$name&quot;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="project"><a href="#project" class="headerlink" title="$project"></a>$project</h3><p>数据列的显示规则,投影查询</p>
+<h3 id="sort"><a href="#sort" class="headerlink" title="$sort"></a>$sort</h3><h3 id="分页"><a href="#分页" class="headerlink" title="分页"></a>分页</h3><h3 id="unwind"><a href="#unwind" class="headerlink" title="$unwind"></a>$unwind</h3><h3 id="out"><a href="#out" class="headerlink" title="$out"></a>$out</h3><h3 id="geoNear"><a href="#geoNear" class="headerlink" title="$geoNear"></a>$geoNear</h3><h3 id="lookup"><a href="#lookup" class="headerlink" title="$lookup"></a>$lookup</h3><h2 id="固定集合"><a href="#固定集合" class="headerlink" title="固定集合"></a>固定集合</h2><p>规定集合大小，如果保存内容超过了集合的长度，那么会采用 <strong>LRU</strong>的算法，将最早的数据移除，来保存新的数据</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">db.createCollection(&quot;depts&quot;,&#123;</span><br><span class="line">    &quot;capped&quot;:true,  // true:固定集合</span><br><span class="line">    &quot;size&quot;:1024, // 集合空间容量 1024字节</span><br><span class="line">    &quot;max&quot;:5 // 最多有5条记录</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h1 id="java操作"><a href="#java操作" class="headerlink" title="java操作"></a>java操作</h1>]]></content>
       <categories>
         <category>数据库</category>
       </categories>
