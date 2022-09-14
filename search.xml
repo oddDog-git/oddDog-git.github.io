@@ -13415,7 +13415,28 @@
 <p>docker pull  leaderhui/hui:v1</p>
 </li>
 </ol>
-<h1 id="IEDA集成Docker部署微服务"><a href="#IEDA集成Docker部署微服务" class="headerlink" title="IEDA集成Docker部署微服务"></a>IEDA集成Docker部署微服务</h1><h2 id="Docker开启远程访问"><a href="#Docker开启远程访问" class="headerlink" title="Docker开启远程访问"></a>Docker开启远程访问</h2><ul>
+<h1 id="springboot项目部署到docker"><a href="#springboot项目部署到docker" class="headerlink" title="springboot项目部署到docker"></a>springboot项目部署到docker</h1><ol>
+<li><p>打包好springboot项目，上传到服务器</p>
+</li>
+<li><p>创建Dockerfile文件</p>
+<ul>
+<li>进入到jar包同一文件夹</li>
+<li>创建Dockerfile文件  touch Dockerfile</li>
+</ul>
+<p>注意: 文件名必须为Dockerfile，不能是其他名称</p>
+</li>
+<li><p>编辑DockerFile文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">FROM openjdk:11-jre</span><br><span class="line">MAINTAINER &quot;1764501567@qq.com&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 把apaas-test-1.0-SNAPSHOT.jar添加到容器里，并重命名为app.jar</span></span><br><span class="line">ADD apaas-test-1.0-SNAPSHOT.jar app.jar</span><br><span class="line"><span class="meta">#</span><span class="bash"> 设置端口号，此处只开放一个端口8801</span></span><br><span class="line">EXPOSE 8801</span><br><span class="line"><span class="meta">#</span><span class="bash"> 执行命令，此处运行app.jar</span></span><br><span class="line">RUN bash -c &#x27;touch /app.jar&#x27;</span><br><span class="line">ENTRYPOINT [&quot;java&quot;,&quot;-jar&quot;,&quot;app.jar&quot;]</span><br></pre></td></tr></table></figure></li>
+<li><p>制作docker镜像</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker build -f Dockerfile -t excel_export:v1.0 . </span><br></pre></td></tr></table></figure>
+<p>注意: 后面有个小点不能省略</p>
+</li>
+<li><p>生成并运行容器</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker run -d -p 8801:8801 --name=excel_export excel_export:v1.0</span><br><span class="line"><span class="meta">#</span><span class="bash"> 部署多个节点</span></span><br><span class="line">docker run -d -p 8802:8801 --name=excel_export2 excel_export:v1.0</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看日志</span></span><br><span class="line">docker logs -f excel_export</span><br></pre></td></tr></table></figure>
+<h1 id="IEDA集成Docker部署微服务"><a href="#IEDA集成Docker部署微服务" class="headerlink" title="IEDA集成Docker部署微服务"></a>IEDA集成Docker部署微服务</h1></li>
+</ol>
+<h2 id="Docker开启远程访问"><a href="#Docker开启远程访问" class="headerlink" title="Docker开启远程访问"></a>Docker开启远程访问</h2><ul>
 <li>Docker默认是不允许远程访问的</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 修改配置文件</span><br><span class="line">[root@A ~]# vim &#x2F;lib&#x2F;systemd&#x2F;system&#x2F;docker.service</span><br></pre></td></tr></table></figure>
