@@ -6736,6 +6736,10 @@
 <td>man [章节号] 命令/函数名</td>
 <td>查询指定的命令或函数</td>
 </tr>
+<tr>
+<td>date -s “20140225 20:16:00” #yyyymmdd hh:mm:ss</td>
+<td>同步系统时间</td>
+</tr>
 </tbody></table>
 <h1 id="vi工具的使用"><a href="#vi工具的使用" class="headerlink" title="vi工具的使用"></a>vi工具的使用</h1><p>vi和vim是Linux系统命令行下的文本编辑器，通常格式为：vi 文件名 或 vim 文件名。</p>
 <p><strong>三种模式之间的切换</strong></p>
