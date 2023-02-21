@@ -47,7 +47,7 @@
 <meta property="og:image" content="https://z3.ax1x.com/2021/10/21/5rbxTe.png">
 <meta property="og:image" content="https://z3.ax1x.com/2021/10/21/5rqpYd.png">
 <meta property="article:published_time" content="2021-09-22T07:20:27.000Z">
-<meta property="article:modified_time" content="2022-09-14T02:44:34.242Z">
+<meta property="article:modified_time" content="2022-09-16T08:31:34.412Z">
 <meta property="article:author" content="怪狗狗">
 <meta property="article:tag" content="docker">
 <meta name="twitter:card" content="summary">
@@ -211,7 +211,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-09-14 10:44:34" itemprop="dateModified" datetime="2022-09-14T10:44:34+08:00">2022-09-14</time>
+                <time title="修改时间：2022-09-16 16:31:34" itemprop="dateModified" datetime="2022-09-16T16:31:34+08:00">2022-09-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -490,12 +490,12 @@
 <li><p>编辑DockerFile文件</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">FROM openjdk:11-jre</span><br><span class="line">MAINTAINER &quot;1764501567@qq.com&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 把apaas-test-1.0-SNAPSHOT.jar添加到容器里，并重命名为app.jar</span></span><br><span class="line">ADD apaas-test-1.0-SNAPSHOT.jar app.jar</span><br><span class="line"><span class="meta">#</span><span class="bash"> 设置端口号，此处只开放一个端口8801</span></span><br><span class="line">EXPOSE 8801</span><br><span class="line"><span class="meta">#</span><span class="bash"> 执行命令，此处运行app.jar</span></span><br><span class="line">RUN bash -c &#x27;touch /app.jar&#x27;</span><br><span class="line">ENTRYPOINT [&quot;java&quot;,&quot;-jar&quot;,&quot;app.jar&quot;]</span><br></pre></td></tr></table></figure></li>
 <li><p>制作docker镜像</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -f Dockerfile -t excel_export:v1.0 . </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -f Dockerfile -t hui_test:v1.0 . </span><br></pre></td></tr></table></figure>
 <p>注意: 后面有个小点不能省略</p>
 </li>
 <li><p>生成并运行容器</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 8801:8801 --name=excel_export excel_export:v1.0</span><br><span class="line"><span class="meta">#</span><span class="bash"> 部署多个节点</span></span><br><span class="line">docker run -d -p 8802:8801 --name=excel_export2 excel_export:v1.0</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看日志</span></span><br><span class="line">docker logs -f excel_export</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 8801:8801 --name=hui_test hui_test:v1.0</span><br><span class="line"><span class="meta">#</span><span class="bash"> 部署多个节点</span></span><br><span class="line">docker run -d -p 8802:8801 --name=hui_test2 hui_test:v1.0</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看日志</span></span><br><span class="line">docker logs -f hui_test</span><br></pre></td></tr></table></figure>
 <h1 id="IEDA集成Docker部署微服务"><a href="#IEDA集成Docker部署微服务" class="headerlink" title="IEDA集成Docker部署微服务"></a>IEDA集成Docker部署微服务</h1></li>
 </ol>
 <h2 id="Docker开启远程访问"><a href="#Docker开启远程访问" class="headerlink" title="Docker开启远程访问"></a>Docker开启远程访问</h2><ul>
@@ -735,7 +735,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
